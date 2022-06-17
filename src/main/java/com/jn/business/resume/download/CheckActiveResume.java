@@ -11,7 +11,7 @@ class CheckActiveResume  extends CcpNextStepFactory{
 	}
 
 	@Override
-	public CcpStepResult executeDecisionTree(CcpMapDecorator values) {
+	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		Integer status = values.getAsIntegerNumber("status");
 		boolean resumeIsNotActive = new Integer(1).equals(status) == false;
 		if(resumeIsNotActive) {

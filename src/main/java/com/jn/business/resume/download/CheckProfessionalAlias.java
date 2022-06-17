@@ -14,7 +14,7 @@ class CheckProfessionalAlias  extends CcpNextStepFactory {
 	}
 
 	@Override
-	public CcpStepResult executeDecisionTree(CcpMapDecorator values) {
+	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		String alias = values.getAsString("alias");
 		CcpMapDecorator first;
 		try {

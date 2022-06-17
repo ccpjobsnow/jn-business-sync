@@ -13,7 +13,7 @@ class DownloadThisResume extends CcpNextStepFactory {
 	}
 
 	@Override
-	public CcpStepResult executeDecisionTree(CcpMapDecorator values) {
+	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		CcpMapDecorator resume = this.getResume(values);
 		
 		CcpMapDecorator newValues = values.put("resume", resume);

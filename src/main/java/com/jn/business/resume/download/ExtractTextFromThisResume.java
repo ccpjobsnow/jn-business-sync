@@ -19,7 +19,7 @@ class ExtractTextFromThisResume extends CcpNextStepFactory {
 
 
 	@Override
-	public CcpStepResult executeDecisionTree(CcpMapDecorator values) {
+	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		CcpMapDecorator resume = values.getInternalMap("resume");
 		String base64 = resume.getAsString("base64");
 		String resumeText = this.textExtractor.extractText(base64);

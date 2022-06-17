@@ -15,7 +15,7 @@ class CheckExistenceOfThisRecruiter  extends CcpNextStepFactory{
 	}
 
 	@Override
-	public CcpStepResult executeDecisionTree(CcpMapDecorator values) {
+	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		String recruiter = values.getAsString("recruiter");
 		try {
 			JnBusinessEntity.recruiter.get(recruiter);

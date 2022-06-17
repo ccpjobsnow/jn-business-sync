@@ -13,7 +13,7 @@ class CheckWhoBelongsThisResume  extends CcpNextStepFactory{
 	}
 
 	@Override
-	public CcpStepResult executeDecisionTree(CcpMapDecorator values) {
+	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		String professional = values.getAsString("profesional");
 		String recruiter = values.getAsString("recruiter");
 		boolean isNotTheSamePerson = recruiter.equals(professional) == false;
