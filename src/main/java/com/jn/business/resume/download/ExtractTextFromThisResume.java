@@ -2,8 +2,8 @@ package com.jn.business.resume.download;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.text.extractor.CcpTextExtractor;
-import com.ccp.exceptions.process.CcpStepResult;
 import com.ccp.process.CcpNextStepFactory;
+import com.ccp.process.CcpStepResult;
 
 class ExtractTextFromThisResume extends CcpNextStepFactory {
 

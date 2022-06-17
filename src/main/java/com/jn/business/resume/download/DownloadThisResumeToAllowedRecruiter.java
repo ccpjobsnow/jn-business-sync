@@ -4,7 +4,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpBusiness;
 import com.ccp.dependency.injection.CcpEspecification;
 import com.ccp.especifications.text.extractor.CcpTextExtractor;
-import com.ccp.exceptions.process.CcpStepResult;
+import com.ccp.process.CcpStepResult;
 
 import static com.jn.business.resume.download.Steps.*;
 @CcpBusiness

@@ -1,8 +1,9 @@
 package com.jn.business.resume.download;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.exceptions.process.CcpStepResult;
 import com.ccp.process.CcpNextStepFactory;
+import com.ccp.process.CcpStepResult;
+
 import static com.jn.business.resume.download.Steps.*;
 
 class DownloadThisResume extends CcpNextStepFactory {
