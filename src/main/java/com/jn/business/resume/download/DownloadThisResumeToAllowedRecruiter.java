@@ -21,7 +21,7 @@ public class DownloadThisResumeToAllowedRecruiter {
 		CheckActiveResume verifyResumeStatus = new CheckActiveResume(businessName);
 		CheckExistenceOfThisRecruiter verifyRecruiterShip = new CheckExistenceOfThisRecruiter(businessName);
 		CheckWhoBelongsThisResume verifyWhoBelongsResume = new CheckWhoBelongsThisResume(businessName);
-		CheckExistenceProfessionalAlias verifyProfessionalAlias = new CheckExistenceProfessionalAlias(businessName);
+		CheckExistenceOfProfessionalAlias verifyProfessionalAlias = new CheckExistenceOfProfessionalAlias(businessName);
 		ExtractTextFromThisResume extractTextFromResume = new ExtractTextFromThisResume(this.textExtractor, businessName);
 		CheckRecruiterPermissionToViewThisResume verifyPermissionToViewResume = new CheckRecruiterPermissionToViewThisResume(businessName);
 		

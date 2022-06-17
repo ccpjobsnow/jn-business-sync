@@ -6,10 +6,10 @@ import com.ccp.process.CcpNextStepFactory;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.JnBusinessEntity;
 
-class CheckExistenceProfessionalAlias  extends CcpNextStepFactory {
+class CheckExistenceOfProfessionalAlias  extends CcpNextStepFactory {
 
 	
-	public CheckExistenceProfessionalAlias(String businessName) {
+	public CheckExistenceOfProfessionalAlias(String businessName) {
 		super(businessName);
 	}
 
