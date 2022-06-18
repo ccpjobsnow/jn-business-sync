@@ -1,20 +1,23 @@
 package com.jn.business.resume.download;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.process.CcpNextStepFactory;
 import com.ccp.process.CcpStepResult;
 
 import static com.jn.business.resume.download.Steps.*;
 
 class DownloadThisResume extends CcpNextStepFactory {
-
-	public DownloadThisResume(String businessName) {
+	private final  CcpFileBucket fileBucket;
+	public DownloadThisResume(String businessName, CcpFileBucket fileBucket) {
 		super(businessName);
+		this.fileBucket = fileBucket;
 	}
 
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
-		CcpMapDecorator resume = this.getResume(values);
+		
+		String resume = this.getResume(values);
 		
 		CcpMapDecorator newValues = values.put("resume", resume);
 		
@@ -27,7 +30,13 @@ class DownloadThisResume extends CcpNextStepFactory {
 		return  new CcpStepResult(newValues, 200, this);
 	}
 
-	private CcpMapDecorator getResume(CcpMapDecorator values) {
-		return values;
+	private String getResume(CcpMapDecorator values) {
+		String professional = values.getAsString("professional");
+		String resumeHash = values.getAsString("resumeHash");
+		
+		String tenant = System.getenv("tenant");
+	
+		String resume = this.fileBucket.read(tenant, "curriculos", professional + "/" + resumeHash);
+		return resume;
 	}
 }

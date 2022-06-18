@@ -3,6 +3,7 @@ package com.jn.business.resume.download;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpBusiness;
 import com.ccp.dependency.injection.CcpEspecification;
+import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.especifications.text.extractor.CcpTextExtractor;
 import com.ccp.process.CcpStepResult;
 
@@ -12,17 +13,21 @@ public class DownloadThisResumeToAllowedRecruiter {
 
 	@CcpEspecification
 	private CcpTextExtractor textExtractor;
+
+	@CcpEspecification
+	private CcpFileBucket fileBucket;
+	
 	
 	public CcpMapDecorator downloadTheResumeToAllowedRecruiter(String recruiter, String professionalAlias, String viewMode) {
 		String businessName = DownloadThisResumeToAllowedRecruiter.class.getName();
 		
 		
-		DownloadThisResume downloadTheResume = new DownloadThisResume(businessName);
 		CheckActiveResume verifyResumeStatus = new CheckActiveResume(businessName);
-		CheckExistenceOfThisRecruiter verifyRecruiterShip = new CheckExistenceOfThisRecruiter(businessName);
+		DownloadThisResume downloadTheResume = new DownloadThisResume(businessName, this.fileBucket);
 		CheckWhoBelongsThisResume verifyWhoBelongsResume = new CheckWhoBelongsThisResume(businessName);
+		CheckExistenceOfThisRecruiter verifyRecruiterShip = new CheckExistenceOfThisRecruiter(businessName);
 		CheckExistenceOfProfessionalAlias verifyProfessionalAlias = new CheckExistenceOfProfessionalAlias(businessName);
-		ExtractTextFromThisResume extractTextFromResume = new ExtractTextFromThisResume(this.textExtractor, businessName);
+		ExtractTextFromThisResume extractTextFromResume = new ExtractTextFromThisResume(businessName, this.textExtractor);
 		CheckRecruiterPermissionToViewThisResume verifyPermissionToViewResume = new CheckRecruiterPermissionToViewThisResume(businessName);
 		
 		verifyProfessionalAlias.addStep(THIS_RESUME_HAS_A_VALID_ALIAS, verifyWhoBelongsResume);

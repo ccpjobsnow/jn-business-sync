@@ -11,7 +11,7 @@ class ExtractTextFromThisResume extends CcpNextStepFactory {
 	
 	
 	
-	public ExtractTextFromThisResume(CcpTextExtractor textExtractor, String businessName) {
+	public ExtractTextFromThisResume(String businessName, CcpTextExtractor textExtractor) {
 		super(businessName);
 		this.textExtractor = textExtractor;
 	}
