@@ -1,13 +1,14 @@
-package com.jn.business.resume.download;
+package com.jn.business.commons.resume.download;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.process.CcpNextStepFactory;
+import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.JnBusinessEntity;
+import static com.jn.business.commons.resume.download.StepList_DownloadThisResumeToAllowedRecruiter.*;
 
-class CheckRecruiterPermissionToViewThisResume extends CcpNextStepFactory{
+class Step_CheckRecruiterPermissionToViewThisResume extends CcpNextStep{
 
-	public CheckRecruiterPermissionToViewThisResume(String businessName) {
+	public Step_CheckRecruiterPermissionToViewThisResume(String businessName) {
 		super(businessName);
 	}
 
@@ -20,7 +21,7 @@ class CheckRecruiterPermissionToViewThisResume extends CcpNextStepFactory{
 			return  new CcpStepResult(values, 403, this);
 		}
 		
-		return  new CcpStepResult(values, 200, this);
+		return  new CcpStepResult(values, THIS_PROCESS_HAS_FINISHED, this);
 	}
 
 }

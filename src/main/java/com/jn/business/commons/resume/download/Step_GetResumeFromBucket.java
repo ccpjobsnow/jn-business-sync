@@ -1,15 +1,17 @@
-package com.jn.business.resume.download;
+package com.jn.business.commons.resume.download;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
-import com.ccp.process.CcpNextStepFactory;
+import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
+import com.jn.commons.JnTopic;
 
-import static com.jn.business.resume.download.Steps.*;
-
-class DownloadThisResume extends CcpNextStepFactory {
+class Step_GetResumeFromBucket extends CcpNextStep {
 	private final  CcpFileBucket fileBucket;
-	public DownloadThisResume(String businessName, CcpFileBucket fileBucket) {
+
+	
+
+	public Step_GetResumeFromBucket(String businessName, CcpFileBucket fileBucket) {
 		super(businessName);
 		this.fileBucket = fileBucket;
 	}
@@ -21,12 +23,8 @@ class DownloadThisResume extends CcpNextStepFactory {
 		
 		CcpMapDecorator newValues = values.put("resume", resume);
 		
-		String viewMode = values.getAsString("viewMode");
-		
-		if("TEXT".equals(viewMode)) {
-			return new CcpStepResult(newValues, IT_IS_A_TEXT_MODE_TO_VIEW_THIS_RESUME, this);
+		JnTopic.SAVE_RESUME_VIEW.sendToTopic(newValues);
 
-		}
 		return  new CcpStepResult(newValues, 200, this);
 	}
 
@@ -35,8 +33,11 @@ class DownloadThisResume extends CcpNextStepFactory {
 		String resumeHash = values.getAsString("resumeHash");
 		
 		String tenant = System.getenv("tenant");
-	
-		String resume = this.fileBucket.read(tenant, "curriculos", professional + "/" + resumeHash);
+		String viewMode = values.getAsString("viewMode");
+		
+		String pathToResume = professional + "/" + viewMode + "_" + resumeHash;
+
+		String resume = this.fileBucket.read(tenant, "resumes", pathToResume);
 		return resume;
 	}
 }

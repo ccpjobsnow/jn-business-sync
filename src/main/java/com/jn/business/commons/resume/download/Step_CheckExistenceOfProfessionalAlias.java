@@ -1,15 +1,15 @@
-package com.jn.business.resume.download;
+package com.jn.business.commons.resume.download;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.exceptions.db.CcpRecordNotFound;
-import com.ccp.process.CcpNextStepFactory;
+import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.JnBusinessEntity;
 
-class CheckExistenceOfProfessionalAlias  extends CcpNextStepFactory {
+class Step_CheckExistenceOfProfessionalAlias  extends CcpNextStep {
 
 	
-	public CheckExistenceOfProfessionalAlias(String businessName) {
+	public Step_CheckExistenceOfProfessionalAlias(String businessName) {
 		super(businessName);
 	}
 
