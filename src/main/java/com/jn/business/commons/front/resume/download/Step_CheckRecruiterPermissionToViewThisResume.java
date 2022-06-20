@@ -1,10 +1,11 @@
-package com.jn.business.commons.resume.download;
+package com.jn.business.commons.front.resume.download;
+
+import static com.jn.business.commons.front.resume.download.StepList_DownloadThisResumeToAllowedRecruiter.*;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.JnBusinessEntity;
-import static com.jn.business.commons.resume.download.StepList_DownloadThisResumeToAllowedRecruiter.*;
 
 class Step_CheckRecruiterPermissionToViewThisResume extends CcpNextStep{
 
@@ -14,9 +15,7 @@ class Step_CheckRecruiterPermissionToViewThisResume extends CcpNextStep{
 
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
-		String professional = values.getAsString("profesional");
-		String recruiter = values.getAsString("recruiter");
-		boolean exists = JnBusinessEntity.restriction_to_view_resume.exists(recruiter + "_" + professional);
+		boolean exists = JnBusinessEntity.restriction_to_view_resume.exists(values);
 		if(exists) {
 			return  new CcpStepResult(values, 403, this);
 		}

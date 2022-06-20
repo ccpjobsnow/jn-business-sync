@@ -1,10 +1,9 @@
-package com.jn.business.commons.resume.download;
+package com.jn.business.commons.front.resume.download;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.JnTopic;
 
 class Step_GetResumeFromBucket extends CcpNextStep {
 	private final  CcpFileBucket fileBucket;
@@ -23,8 +22,6 @@ class Step_GetResumeFromBucket extends CcpNextStep {
 		
 		CcpMapDecorator newValues = values.put("resume", resume);
 		
-		JnTopic.SAVE_RESUME_VIEW.sendToTopic(newValues);
-
 		return  new CcpStepResult(newValues, 200, this);
 	}
 

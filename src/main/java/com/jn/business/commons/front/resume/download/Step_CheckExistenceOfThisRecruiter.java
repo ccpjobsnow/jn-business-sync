@@ -1,6 +1,6 @@
-package com.jn.business.commons.resume.download;
+package com.jn.business.commons.front.resume.download;
 
-import static com.jn.business.commons.resume.download.StepList_DownloadThisResumeToAllowedRecruiter.*;
+import static com.jn.business.commons.front.resume.download.StepList_DownloadThisResumeToAllowedRecruiter.*;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
