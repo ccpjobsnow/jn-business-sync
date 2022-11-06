@@ -24,6 +24,12 @@
 			<artifactId>jn-commons-business</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+<!-- https://mvnrepository.com/artifact/org.mindrot/jbcrypt -->
+<dependency>
+    <groupId>org.mindrot</groupId>
+    <artifactId>jbcrypt</artifactId>
+    <version>0.4</version>
+</dependency>
 
 	</dependencies>
 
