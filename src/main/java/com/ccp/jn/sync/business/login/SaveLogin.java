@@ -1,6 +1,5 @@
 package com.ccp.jn.sync.business.login;
 
-import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
@@ -20,7 +19,7 @@ public class SaveLogin extends CcpNextStep {
 		String token = textDecorator.generateToken(8);
 		values = values.put("token", token);
 		try {
-			CcpMapDecorator userStats = JnBusinessEntity.job_user_stats.get(values, CcpConstants.returnEmpty).getSubMap("loginCount", "lastLogin");
+			CcpMapDecorator userStats = values.getInternalMap("_tables").getInternalMap(JnBusinessEntity.user_stats.name()).getSubMap("loginCount", "lastLogin");
 			CcpMapDecorator putAll = values.putAll(userStats);
 			return new CcpStepResult(putAll, 200, this);
 			
