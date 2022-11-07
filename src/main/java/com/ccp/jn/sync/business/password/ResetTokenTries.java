@@ -5,14 +5,12 @@ import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.JnBusinessEntity;
 
-public class LockToken extends CcpNextStep{
+public class ResetTokenTries extends CcpNextStep {
 
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
-
-		JnBusinessEntity.locked_token.save(values);
-		
-		return new CcpStepResult(values, 403, this);
+		JnBusinessEntity.token_tries.remove(values);
+		return new CcpStepResult(values, 200, this);
 	}
 
 }

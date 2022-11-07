@@ -7,21 +7,24 @@ import com.ccp.dependency.injection.CcpEspecification;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.jn.sync.business.login.EvaluateLoginTries;
+import com.ccp.jn.sync.business.login.LockLogin;
+import com.ccp.jn.sync.business.login.ResetLoginTries;
 import com.ccp.jn.sync.business.login.SaveLogin;
 import com.ccp.jn.sync.business.login.ValidateLogin;
-import com.ccp.jn.sync.business.login.LockLogin;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 
 public class Login{
 
 	@CcpEspecification
-	private CcpPasswordHandler bcript;
+	private CcpPasswordHandler passwordHandler;
 
 	private CcpProcess decisionTree = values ->{
 		
-		return new ValidateLogin(this.bcript)
-				.addStep(200, new SaveLogin())
+		return new ValidateLogin(this.passwordHandler)
+				.addStep(200, new ResetLoginTries()
+						.addStep(200, new SaveLogin())
+						)
 				.addStep(401, new EvaluateLoginTries()
 						.addStep(429, new LockLogin())
 				)

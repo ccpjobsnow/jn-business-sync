@@ -11,6 +11,7 @@ import com.ccp.jn.sync.business.password.EvaluatePasswordStrength;
 import com.ccp.jn.sync.business.password.EvaluateToken;
 import com.ccp.jn.sync.business.password.EvaluateTokenTries;
 import com.ccp.jn.sync.business.password.LockToken;
+import com.ccp.jn.sync.business.password.ResetTokenTries;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 
@@ -29,10 +30,11 @@ public class UpdatePassword {
 				.addStep(401, new EvaluateTokenTries()
 							.addStep(403, new LockToken())
 						)
-				.addStep(200, new EvaluatePasswordStrength()
-							.addStep(200, new SaveLogin())
+				.addStep(200, new ResetTokenTries()
+							.addStep(200, new EvaluatePasswordStrength()
+										.addStep(200, new SaveLogin())
+									)	
 						)
-				
 				.goToTheNextStep(values).data;
 		
 	};

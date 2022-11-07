@@ -20,7 +20,6 @@ public class SaveBadPassword {
 	@CcpEspecification
 	private CcpDbCrud crud;
 
-	
 	private CcpProcess decisionTree = values -> {
 		
 		return new SaveWeakPassword()
