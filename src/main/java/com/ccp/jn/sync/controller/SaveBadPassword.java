@@ -32,8 +32,10 @@ public class SaveBadPassword {
 	};
 
 	
-	public Map<String, Object> execute(CcpMapDecorator values) {
+	public Map<String, Object> execute (Map<String, Object> json){
 		
+		CcpMapDecorator values = new CcpMapDecorator(json);
+
 		this.crud.findById(values,  
 			        new CcpMapDecorator().put("table", JnBusinessEntity.user_stats)
 			       ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_token).put("status", 403)

@@ -35,7 +35,9 @@ public class Login{
 	@CcpEspecification
 	private CcpDbCrud crud;
 	
-	public Map<String, Object> execute(CcpMapDecorator values) {
+	public Map<String, Object> execute (Map<String, Object> json){
+		
+		CcpMapDecorator values = new CcpMapDecorator(json);
 
 		CcpMapDecorator findById = this.crud.findById(values, 
 				    new CcpMapDecorator().put("table", JnBusinessEntity.user_stats)

@@ -17,8 +17,10 @@ public class RequestTokenAgain {
 	@CcpEspecification
 	private CcpMensageriaSender mensageriaSender;
 
-	public Map<String, Object> execute(CcpMapDecorator values) {
+	public Map<String, Object> execute (Map<String, Object> json){
 		
+		CcpMapDecorator values = new CcpMapDecorator(json);
+
 		this.crud.findById(values,  
 			     new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_token).put("status", 403)
 			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_password).put("status", 401)

@@ -13,7 +13,7 @@ public class SaveLogin extends CcpNextStep {
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		
-		JnBusinessEntity.login.save(values.getSubMap("email", "userAgent", "macAddress", "coordinates", "ip"));
+		JnBusinessEntity.login.save(values);
 
 		CcpTextDecorator textDecorator = new CcpStringDecorator("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%*&_-+=()").text();
 		String token = textDecorator.generateToken(8);
