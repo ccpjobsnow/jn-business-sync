@@ -5,7 +5,7 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpEspecification;
 import com.ccp.especifications.db.crud.CcpDbCrud;
-import com.ccp.especifications.db.crud.ResetTable;
+import com.ccp.especifications.db.table.ResetTable;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.jn.sync.business.commons.password.ValidatePassword;
 import com.ccp.jn.sync.business.commons.tries.EvaluateTries;
