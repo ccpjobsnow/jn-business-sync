@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.business.commons.tries;
+package com.ccp.jn.sync.business.commons;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpNextStep;

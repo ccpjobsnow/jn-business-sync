@@ -8,7 +8,7 @@ import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.db.table.ResetTable;
 import com.ccp.especifications.db.table.TransferDataBetweenTables;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.jn.sync.business.commons.tries.EvaluateTries;
+import com.ccp.jn.sync.business.commons.EvaluateTries;
 import com.ccp.jn.sync.business.login.SaveLogin;
 import com.ccp.jn.sync.business.password.EvaluatePasswordStrength;
 import com.ccp.jn.sync.business.password.EvaluateToken;

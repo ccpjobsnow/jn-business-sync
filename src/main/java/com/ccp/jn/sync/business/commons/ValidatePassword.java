@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.business.commons.password;
+package com.ccp.jn.sync.business.commons;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.password.CcpPasswordHandler;
