@@ -5,7 +5,7 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpEspecification;
 import com.ccp.especifications.db.crud.CcpDbCrud;
-import com.ccp.jn.sync.business.commons.TransferData;
+import com.ccp.especifications.db.crud.TransferDataBetweenTables;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 
@@ -15,7 +15,7 @@ public class Logout {
 	private CcpDbCrud crud;
 
 	private CcpProcess decisionTree = values ->{
-		return new TransferData(JnBusinessEntity.login, JnBusinessEntity.logout)
+		return new TransferDataBetweenTables(JnBusinessEntity.login, JnBusinessEntity.logout)
 				.goToTheNextStep(values).data;
 			
 	};

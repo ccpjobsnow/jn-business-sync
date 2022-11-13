@@ -5,9 +5,9 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpEspecification;
 import com.ccp.especifications.db.crud.CcpDbCrud;
+import com.ccp.especifications.db.crud.ResetTable;
+import com.ccp.especifications.db.crud.TransferDataBetweenTables;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.jn.sync.business.commons.ResetTable;
-import com.ccp.jn.sync.business.commons.TransferData;
 import com.ccp.jn.sync.business.commons.tries.EvaluateTries;
 import com.ccp.jn.sync.business.login.SaveLogin;
 import com.ccp.jn.sync.business.password.EvaluatePasswordStrength;
@@ -33,8 +33,8 @@ public class UpdatePassword {
 							.addStep(403, new LockToken())
 						)
 				.addStep(200, new ResetTable(JnBusinessEntity.token_tries)
-						.addStep(200, new TransferData(JnBusinessEntity.login_conflict, JnBusinessEntity.login_conflict_solved)
-								.addStep(200, new TransferData(JnBusinessEntity.locked_password, JnBusinessEntity.unlocked_password)
+						.addStep(200, new TransferDataBetweenTables(JnBusinessEntity.login_conflict, JnBusinessEntity.login_conflict_solved)
+								.addStep(200, new TransferDataBetweenTables(JnBusinessEntity.locked_password, JnBusinessEntity.unlocked_password)
 										.addStep(200, new EvaluatePasswordStrength()
 												.addStep(422, new SaveWeakPassword())
 												.addStep(200, new SaveLogin())
