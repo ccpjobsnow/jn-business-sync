@@ -6,12 +6,14 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpEspecification;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.jn.sync.business.commons.EvaluateTries;
+import com.ccp.jn.sync.business.commons.ResetTable;
+import com.ccp.jn.sync.business.commons.TransferData;
+import com.ccp.jn.sync.business.commons.tries.EvaluateTries;
 import com.ccp.jn.sync.business.login.SaveLogin;
 import com.ccp.jn.sync.business.password.EvaluatePasswordStrength;
 import com.ccp.jn.sync.business.password.EvaluateToken;
 import com.ccp.jn.sync.business.password.LockToken;
-import com.ccp.jn.sync.business.password.ResetTokenTries;
+import com.ccp.jn.sync.business.password.SaveWeakPassword;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 
@@ -30,10 +32,15 @@ public class UpdatePassword {
 				.addStep(401, new EvaluateTries(JnBusinessEntity.token_tries, 401, 403)
 							.addStep(403, new LockToken())
 						)
-				.addStep(200, new ResetTokenTries()
-							.addStep(200, new EvaluatePasswordStrength()
-										.addStep(200, new SaveLogin())
-									)	
+				.addStep(200, new ResetTable(JnBusinessEntity.token_tries)
+						.addStep(200, new TransferData(JnBusinessEntity.login_conflict, JnBusinessEntity.login_conflict_solved)
+								.addStep(200, new TransferData(JnBusinessEntity.locked_password, JnBusinessEntity.unlocked_password)
+										.addStep(200, new EvaluatePasswordStrength()
+												.addStep(422, new SaveWeakPassword())
+												.addStep(200, new SaveLogin())
+												)	
+										)
+								)
 						)
 				.goToTheNextStep(values).data;
 		
@@ -43,7 +50,9 @@ public class UpdatePassword {
 	public Map<String, Object> execute (Map<String, Object> json){
 		
 		CcpMapDecorator values = new CcpMapDecorator(json);
-
+		/*
+		 * Salvar senha desbloqueada
+		 */
 		this.crud.findById(values,  
 				    new CcpMapDecorator().put("table", JnBusinessEntity.user_stats)
 				   ,new CcpMapDecorator().put("table", JnBusinessEntity.token_tries)
@@ -51,7 +60,7 @@ public class UpdatePassword {
 				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_request).put("status", 404)
 				   ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.login).put("status", 409)
 				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.pre_registration).put("status", 201)
-				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.weak_password).put("action", this.decisionTree)
+				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.password).put("action", this.decisionTree)
 				);
 		
 		

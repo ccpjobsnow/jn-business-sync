@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.business.commons;
+package com.ccp.jn.sync.business.commons.tries;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpNextStep;
@@ -24,18 +24,19 @@ public class EvaluateTries extends CcpNextStep {
 
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
-		CcpMapDecorator tries = values.getInternalMap("_tables").getInternalMap(this.table.name());
-		Integer tentativas = tries.getAsIntegerNumber("tries");
-		if(tentativas == null) {
-			tentativas = 0;
+		CcpMapDecorator tables = values.getInternalMap("_tables");
+		CcpMapDecorator tries = tables.getInternalMap(this.table.name());
+		Integer attemps = tries.getAsIntegerNumber("tries");
+		if(attemps == null) {
+			attemps = 0;
 		}
-		if(tentativas >= 3) {
-			return new CcpStepResult(values.put("tries", tentativas), this.excedeedFlow, this);
+		if(attemps >= 3) {
+			return new CcpStepResult(values.put("tries", attemps), this.excedeedFlow, this);
 		}
-		tries = tries.put("tries", tentativas + 1);
+		tries = tries.put("tries", attemps + 1);
 		this.table.save(tries);
 		
-		return new CcpStepResult(values.put("tries", tentativas + 1), this.regularFlow, this);
+		return new CcpStepResult(values.put("tries", attemps + 1), this.regularFlow, this);
 	}
 
 }

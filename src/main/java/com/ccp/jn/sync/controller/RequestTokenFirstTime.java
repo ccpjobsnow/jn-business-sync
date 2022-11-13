@@ -6,7 +6,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpEspecification;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.jn.sync.business.request.token.RequestToken;
+import com.ccp.jn.sync.business.token.request.RequestToken;
 import com.jn.commons.JnBusinessEntity;
 
 public class RequestTokenFirstTime {
@@ -25,8 +25,6 @@ public class RequestTokenFirstTime {
 		this.crud.findById(values,  
 			    new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_token).put("status", 403)
 			   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_request).put("action", new RequestToken(this.mensageriaSender))
-			   ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.login).put("status", 409)
-			   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.pre_registration).put("status", 201)
 			);
 
 		return values.content;

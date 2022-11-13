@@ -6,7 +6,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpEspecification;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.jn.sync.business.request.token.RequestToken;
+import com.ccp.jn.sync.business.token.request.RequestToken;
 import com.jn.commons.JnBusinessEntity;
 
 public class SaveLoginRequest {

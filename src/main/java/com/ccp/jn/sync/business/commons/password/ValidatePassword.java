@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.business.login;
+package com.ccp.jn.sync.business.commons.password;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.password.CcpPasswordHandler;
@@ -6,26 +6,32 @@ import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.JnBusinessEntity;
 
-public class ValidateLogin extends CcpNextStep {
+public class ValidatePassword extends CcpNextStep {
 
 	final CcpPasswordHandler passwordHandler;
+	final JnBusinessEntity entity;
 	
-	public ValidateLogin(CcpPasswordHandler passwordHandler) {
+	public ValidatePassword(CcpPasswordHandler passwordHandler, JnBusinessEntity entity) {
 		this.passwordHandler = passwordHandler;
+		this.entity = entity;
 	}
 	
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
-		CcpMapDecorator pass = values.getInternalMap("_tables").getInternalMap(JnBusinessEntity.password.name());
+		
+		CcpMapDecorator tables = values.getInternalMap("_tables");
+		CcpMapDecorator pass = tables.getInternalMap(this.entity.name());
 	
 		String password = values.getAsString("password");
 		String passwordDb = pass.getAsString("password");
 		
-		boolean senhaIncorreta = this.passwordHandler.matches(passwordDb, password) == false;
+		boolean incorrectPassword = this.passwordHandler.matches(passwordDb, password) == false;
 		
-		if(senhaIncorreta) {
+		if(incorrectPassword) {
 			return new CcpStepResult(values, 401, this);
 		}
+		
+		
 		return new CcpStepResult(values, 200, this);
 	}
 

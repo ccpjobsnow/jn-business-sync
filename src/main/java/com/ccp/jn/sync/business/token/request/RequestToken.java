@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.business.request.token;
+package com.ccp.jn.sync.business.token.request;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;

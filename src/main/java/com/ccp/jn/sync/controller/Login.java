@@ -6,11 +6,11 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpEspecification;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.password.CcpPasswordHandler;
-import com.ccp.jn.sync.business.commons.EvaluateTries;
+import com.ccp.jn.sync.business.commons.ResetTable;
+import com.ccp.jn.sync.business.commons.password.ValidatePassword;
+import com.ccp.jn.sync.business.commons.tries.EvaluateTries;
 import com.ccp.jn.sync.business.login.LockLogin;
-import com.ccp.jn.sync.business.login.ResetLoginTries;
 import com.ccp.jn.sync.business.login.SaveLogin;
-import com.ccp.jn.sync.business.login.ValidateLogin;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 
@@ -19,10 +19,11 @@ public class Login{
 	@CcpEspecification
 	private CcpPasswordHandler passwordHandler;
 
+	
 	private CcpProcess decisionTree = values ->{
 		
-		return new ValidateLogin(this.passwordHandler)
-				.addStep(200, new ResetLoginTries()
+		return new ValidatePassword(this.passwordHandler, JnBusinessEntity.password)
+				.addStep(200, new ResetTable(JnBusinessEntity.password_tries)
 						.addStep(200, new SaveLogin())
 						)
 				.addStep(401, new EvaluateTries(JnBusinessEntity.password_tries, 401, 429)
