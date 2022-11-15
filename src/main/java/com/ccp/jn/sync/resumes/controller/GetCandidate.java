@@ -3,14 +3,14 @@ package com.ccp.jn.sync.resumes.controller;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpEspecification;
+import com.ccp.dependency.injection.CcpSpecification;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.jn.sync.resumes.business.data.GetResumeData;
 import com.jn.commons.JnBusinessEntity;
 
 public class GetCandidate {
 
-	@CcpEspecification
+	@CcpSpecification
 	private CcpDbCrud crud;
 	
 	public Map<String, Object> execute (String resume){

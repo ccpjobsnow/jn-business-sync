@@ -1,7 +1,7 @@
 package com.ccp.jn.sync.login.business.password;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpEspecification;
+import com.ccp.dependency.injection.CcpSpecification;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
@@ -9,7 +9,7 @@ import com.jn.commons.JnBusinessEntity;
 
 public class SavePassword extends CcpNextStep{
 
-	@CcpEspecification
+	@CcpSpecification
 	private CcpPasswordHandler passwordHandler;
 	
 	@Override

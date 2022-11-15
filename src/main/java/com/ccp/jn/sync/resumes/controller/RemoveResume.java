@@ -3,7 +3,7 @@ package com.ccp.jn.sync.resumes.controller;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpEspecification;
+import com.ccp.dependency.injection.CcpSpecification;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.jn.commons.JnBusinessEntity;
@@ -12,25 +12,33 @@ import com.jn.commons.JnConstants;
 
 public class RemoveResume {
 	
-	@CcpEspecification
+	@CcpSpecification
 	private CcpFileBucket bucket;
 
-	@CcpEspecification
+	@CcpSpecification
 	private CcpCache cache;
 
 	
 	public Map<String, Object> execute (String resume){
 		
-		this.removeFromBucket(resume, JnConstants.SLASH_FILE);
-		this.removeFromBucket(resume, JnConstants.SLASH_TEXT);
+		this.removeFromBucket(resume, "file");
+		this.removeFromBucket(resume, "text");
 
 		this.removeFromDatabase(JnBusinessEntity.candidate_resume, resume);
 		this.removeFromDatabase(JnBusinessEntity.candidate, resume);
 		
-		this.removeFromCache(resume, JnConstants.SLASH_FILE);
-		this.removeFromCache(resume, JnConstants.SLASH_TEXT);
+		this.removeFromCache(resume, "file");
+		this.removeFromCache(resume, "text");
+		
+		this.saveResumeExclusion(resume);
 	
 		return new CcpMapDecorator().content;
+	}
+
+
+	private void saveResumeExclusion(String resume) {
+		CcpMapDecorator values = new CcpMapDecorator().put("resume", resume);
+		JnBusinessEntity.resume_exclusion.save(values);
 	}
 
 

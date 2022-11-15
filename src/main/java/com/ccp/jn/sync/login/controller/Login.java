@@ -3,7 +3,7 @@ package com.ccp.jn.sync.login.controller;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpEspecification;
+import com.ccp.dependency.injection.CcpSpecification;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.db.table.ResetTable;
 import com.ccp.especifications.password.CcpPasswordHandler;
@@ -16,7 +16,7 @@ import com.jn.commons.JnBusinessEntity;
 
 public class Login{
 
-	@CcpEspecification
+	@CcpSpecification
 	private CcpPasswordHandler passwordHandler;
 
 	
@@ -33,7 +33,7 @@ public class Login{
 		
 	};
 
-	@CcpEspecification
+	@CcpSpecification
 	private CcpDbCrud crud;
 	
 	public Map<String, Object> execute (Map<String, Object> json){
