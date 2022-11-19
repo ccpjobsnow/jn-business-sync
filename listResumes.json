@@ -1,0 +1,136 @@
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "status": "1"
+          }
+        },
+        {
+          "term": {
+            "pcd": true
+          }
+        },
+        {
+          "bool": {
+            "minimum_should_match": 1,
+            "should": [
+              {
+                "match_phrase": {
+                  "ultimaProfissao": {
+                    "query": "angular",
+                    "boost": 3.0
+                  }
+                }
+              },
+              {
+                "match_phrase": {
+                  "requisitos": {
+                    "query": "angular",
+                    "boost": 2.0
+                  }
+                }
+              },
+              {
+                "match": {
+                  "curriculo.textoProcessado": {
+                    "query": "angular",
+                    "boost": 1.0,
+                    "operator": "and"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "minimum_should_match": 1,
+            "should": [
+              {
+                "match_phrase": {
+                  "ultimaProfissao": {
+                    "query": " react",
+                    "boost": 3.0
+                  }
+                }
+              },
+              {
+                "match_phrase": {
+                  "requisitos": {
+                    "query": " react",
+                    "boost": 2.0
+                  }
+                }
+              },
+              {
+                "match": {
+                  "curriculo.textoProcessado": {
+                    "query": " react",
+                    "boost": 1.0,
+                    "operator": "and"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "minimum_should_match": 1,
+      "should": [
+        {
+          "match_phrase": {
+            "ultimaProfissao": {
+              "query": "sql",
+              "boost": 3.0
+            }
+          }
+        },
+        {
+          "match_phrase": {
+            "requisitos": {
+              "query": "sql",
+              "boost": 2.0
+            }
+          }
+        },
+        {
+          "match": {
+            "curriculo.textoProcessado": {
+              "query": "sql",
+              "boost": 1.0,
+              "operator": "and"
+            }
+          }
+        },
+        {
+          "match_phrase": {
+            "ultimaProfissao": {
+              "query": "java",
+              "boost": 3.0
+            }
+          }
+        },
+        {
+          "match_phrase": {
+            "requisitos": {
+              "query": "java",
+              "boost": 2.0
+            }
+          }
+        },
+        {
+          "match": {
+            "curriculo.textoProcessado": {
+              "query": "java",
+              "boost": 1.0,
+              "operator": "and"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
