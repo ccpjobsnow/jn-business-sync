@@ -7,9 +7,12 @@ import com.ccp.process.CcpProcess;
 
 public class AddSizeInTheQuery implements CcpProcess {
 
-	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
-		Must must = new ElasticQuery().setSize(0).startQuery().startBool().startMust();
+		Integer size = values.getAsIntegerNumber("size");
+		if(size == null) {
+			size = 0;
+		}
+		Must must = new ElasticQuery().setSize(size).startQuery().startBool().startMust();
 		return values.put("_must", must);
 	}
 
