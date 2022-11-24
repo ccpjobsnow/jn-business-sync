@@ -6,7 +6,7 @@ import com.ccp.especifications.db.query.Must;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.tables.fields.A3D_candidate;
 
-public class AddStatisCriteria implements CcpProcess {
+public class AddGroupByCriteria implements CcpProcess {
 
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
