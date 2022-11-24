@@ -17,7 +17,7 @@ import com.ccp.jn.sync.recruiters.business.resumes.GetResumesList;
 import com.ccp.jn.sync.recruiters.business.resumes.GetResumesStatis;
 import com.jn.commons.tables.fields.A3D_candidate;
 
-public class ListResumesStats {
+public class ListResumes {
 
 	@CcpSpecification
 	private CcpDbQueryExecutor requestExecutor;
