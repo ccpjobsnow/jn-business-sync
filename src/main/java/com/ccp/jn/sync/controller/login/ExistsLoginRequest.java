@@ -3,17 +3,17 @@ package com.ccp.jn.sync.controller.login;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpSpecification;
+import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.jn.commons.JnBusinessEntity;
 
 public class ExistsLoginRequest {
 
-	@CcpSpecification
+	@CcpDependencyInject
 	private CcpMensageriaSender mensageriaSender;
 	
-	@CcpSpecification
+	@CcpDependencyInject
 	private CcpDbCrud crud;
 
 	

@@ -3,13 +3,13 @@ package com.ccp.jn.sync.controller.login;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpSpecification;
+import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.jn.commons.JnBusinessEntity;
 
 public class SavePreRegistration {
 
-	@CcpSpecification
+	@CcpDependencyInject
 	private CcpDbCrud crud;
 
 	

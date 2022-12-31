@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpSpecification;
+import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.query.CcpDbQueryExecutor;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.jn.sync.business.recruiters.resumes.AddFilter;
@@ -21,11 +21,11 @@ import com.jn.commons.tables.fields.A3D_candidate;
 
 public class ListResumes {
 
-	@CcpSpecification
+	@CcpDependencyInject
 	private CcpDbQueryExecutor requestExecutor;
 
 	
-	@CcpSpecification
+	@CcpDependencyInject
 	private CcpMensageriaSender mensageriaSender;
 
 	

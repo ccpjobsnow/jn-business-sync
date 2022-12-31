@@ -3,7 +3,7 @@ package com.ccp.jn.sync.controller.resumes;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpSpecification;
+import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.jn.commons.JnBusinessEntity;
@@ -12,10 +12,10 @@ import com.jn.commons.JnConstants;
 
 public class RemoveResume {
 	
-	@CcpSpecification
+	@CcpDependencyInject
 	private CcpFileBucket bucket;
 
-	@CcpSpecification
+	@CcpDependencyInject
 	private CcpCache cache;
 
 	
