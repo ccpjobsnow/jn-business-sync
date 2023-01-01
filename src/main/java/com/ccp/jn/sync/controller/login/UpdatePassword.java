@@ -5,17 +5,17 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
-import com.ccp.especifications.db.table.ResetTable;
 import com.ccp.especifications.db.table.TransferDataBetweenTables;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.jn.sync.business.login.SaveLogin;
-import com.ccp.jn.sync.business.login.commons.EvaluateTries;
 import com.ccp.jn.sync.business.login.password.EvaluatePasswordStrength;
 import com.ccp.jn.sync.business.login.password.EvaluateToken;
 import com.ccp.jn.sync.business.login.password.LockToken;
 import com.ccp.jn.sync.business.login.password.SaveWeakPassword;
 import com.ccp.process.CcpProcess;
+import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.ResetTable;
 
 public class UpdatePassword {
 

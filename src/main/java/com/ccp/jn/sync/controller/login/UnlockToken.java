@@ -5,14 +5,14 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
-import com.ccp.especifications.db.table.ResetTable;
 import com.ccp.especifications.db.table.TransferDataBetweenTables;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.jn.sync.business.login.LockLogin;
-import com.ccp.jn.sync.business.login.commons.EvaluateTries;
 import com.ccp.jn.sync.business.login.commons.ValidatePassword;
 import com.ccp.process.CcpProcess;
+import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.ResetTable;
 
 public class UnlockToken {
 	
