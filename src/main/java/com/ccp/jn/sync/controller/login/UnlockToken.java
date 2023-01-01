@@ -44,7 +44,7 @@ public class UnlockToken {
 				 new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_request).put("status", 404)
 			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.locked_token).put("status", 422)
 			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.request_unlock_token).put("status", 420)
-			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.failed_unlock_token_today).put("status", 403)
+			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.failed_unlock_token).put("status", 403)
 			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.request_unlock_token_answered)
 			    .put("action", this.decisionTree)
 			);
