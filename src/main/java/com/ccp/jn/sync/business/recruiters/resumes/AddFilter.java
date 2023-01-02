@@ -2,7 +2,7 @@ package com.ccp.jn.sync.business.recruiters.resumes;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.query.Must;
-import com.ccp.especifications.db.table.CcpDbTableField;
+import com.ccp.especifications.db.utils.CcpDbTableField;
 import com.ccp.process.CcpProcess;
 
 public class AddFilter implements CcpProcess {

@@ -5,7 +5,7 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
-import com.ccp.especifications.db.table.TransferDataBetweenTables;
+import com.ccp.especifications.db.utils.TransferDataBetweenTables;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.jn.sync.business.login.SaveLogin;
 import com.ccp.jn.sync.business.login.password.EvaluatePasswordStrength;
