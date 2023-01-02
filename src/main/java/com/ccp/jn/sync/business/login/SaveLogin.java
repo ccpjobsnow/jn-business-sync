@@ -1,5 +1,6 @@
 package com.ccp.jn.sync.business.login;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
@@ -15,7 +16,7 @@ public class SaveLogin extends CcpNextStep {
 		
 		JnBusinessEntity.login.save(values);
 
-		CcpTextDecorator textDecorator = new CcpStringDecorator("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%*&_-+=()").text();
+		CcpTextDecorator textDecorator = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text();
 		String token = textDecorator.generateToken(8);
 		values = values.put("token", token);
 		try {
