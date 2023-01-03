@@ -1,4 +1,4 @@
-package com.ccp.jn.backend.site.controller;
+package com.ccp.jn.sync.controller;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpProcess;

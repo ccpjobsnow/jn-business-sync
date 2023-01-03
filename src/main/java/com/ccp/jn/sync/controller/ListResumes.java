@@ -1,4 +1,4 @@
-package com.ccp.jn.backend.site.controller;
+package com.ccp.jn.sync.controller;
 
 import java.util.List;
 import java.util.Map;
