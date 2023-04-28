@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.controller;
+package com.ccp.jn.sync.resumes.crud.controller;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpProcess;

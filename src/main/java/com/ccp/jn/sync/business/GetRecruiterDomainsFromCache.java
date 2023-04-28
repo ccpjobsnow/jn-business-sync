@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.controller;
+package com.ccp.jn.sync.business;
 
 import java.util.ArrayList;
 

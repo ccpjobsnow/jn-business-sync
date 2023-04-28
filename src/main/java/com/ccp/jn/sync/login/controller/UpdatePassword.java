@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.controller;
+package com.ccp.jn.sync.login.controller;
 
 import java.util.Map;
 
@@ -42,7 +42,7 @@ public class UpdatePassword {
 										)
 								)
 						)
-				.goToTheNextStep(values).data;
+				.goToTheNextStep(values).values;
 		
 	};
 

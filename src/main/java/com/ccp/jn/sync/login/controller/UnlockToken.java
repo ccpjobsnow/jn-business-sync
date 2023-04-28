@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.controller;
+package com.ccp.jn.sync.login.controller;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ public class UnlockToken {
 				.addStep(401, new EvaluateTries(JnBusinessEntity.unlock_token_tries, 401, 429)
 						.addStep(429, new LockLogin())
 				)
-				.goToTheNextStep(values).data;
+				.goToTheNextStep(values).values;
 		
 	};
 

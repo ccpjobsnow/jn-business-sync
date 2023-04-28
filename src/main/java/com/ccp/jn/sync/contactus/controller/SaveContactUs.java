@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.controller;
+package com.ccp.jn.sync.contactus.controller;
 
 import java.util.Map;
 

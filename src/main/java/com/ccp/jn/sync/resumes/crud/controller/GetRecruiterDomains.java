@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.controller;
+package com.ccp.jn.sync.resumes.crud.controller;
 
 import java.util.Map;
 
@@ -6,6 +6,7 @@ import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.cache.CcpCache;
+import com.ccp.jn.sync.business.GetRecruiterDomainsFromCache;
 import com.jn.commons.JnCacheKeys;
 import com.jn.commons.JnConstants;
 

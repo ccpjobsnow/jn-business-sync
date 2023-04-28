@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.controller;
+package com.ccp.jn.sync.login.controller;
 
 import java.util.Map;
 
@@ -17,9 +17,9 @@ public class ExistsLoginRequest {
 	private CcpDbCrud crud;
 
 	
-	public Map<String, Object> execute (Map<String, Object> json){
+	public Map<String, Object> execute (String email){
 		
-		CcpMapDecorator values = new CcpMapDecorator(json);
+		CcpMapDecorator values = new CcpMapDecorator(new CcpMapDecorator().put("email", email));
 
 		this.crud.findById(values,  
 				    new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_token).put("status", 403)

@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.controller;
+package com.ccp.jn.sync.login.controller;
 
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public class SaveBadPassword {
 						.addStep(200, new SaveLogin())
 						)
 				
-				.goToTheNextStep(values).data;
+				.goToTheNextStep(values).values;
 		
 	};
 

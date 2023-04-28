@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.controller;
+package com.ccp.jn.sync.resumes.crud.controller;
 
 import java.util.Map;
 
@@ -9,12 +9,13 @@ import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.jn.sync.business.ReadResumeFromBucket;
+import com.ccp.jn.sync.business.ValidateResumeOwnership;
 import com.jn.commons.JnBusinessEntity;
 import com.jn.commons.JnCacheKeys;
 import com.jn.commons.JnConstants;
 
 
-public class DownloadResumeToRecruiter {
+public class DownloadResumeToHisOwner {
 	
 	@CcpDependencyInject
 	private CcpFileBucket bucket;
@@ -26,16 +27,16 @@ public class DownloadResumeToRecruiter {
 	private CcpDbCrud crud;
 
 	
-	public Map<String, Object> execute (String resume, String recruiter, String viewType){
+	public Map<String, Object> execute (String resume, String email, String viewType){
 	
-		CcpMapDecorator values = new CcpMapDecorator().put("resume", resume).put("recruiter", recruiter);
+		CcpMapDecorator values = new CcpMapDecorator().put("resume", resume);
 		
 		this.crud.findById(values,  
-				new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.candidate_resume).put("status", 404)
-				,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.denied_view_to_recruiter).put("status", 403)
+				 new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.candidate_resume).put("action", new ValidateResumeOwnership(email))
+			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.candidate_resume).put("status", 404)
 			);
 
-		JnBusinessEntity.recruiter_view_resume.save(values);
+		JnBusinessEntity.candidate_view_resume.save(values);
 		
 		int cacheExpires = JnConstants.ONE_HOUR_IN_SECONDS;
 		CcpMapDecorator cacheParameters = CcpConstants.EMPTY_JSON;
