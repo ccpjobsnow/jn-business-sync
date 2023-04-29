@@ -5,7 +5,7 @@ import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.JnBusinessEntity;
 
-public class SaveWeakPassword extends CcpNextStep  {
+public class SaveWeakPasswordAction extends CcpNextStep  {
 
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {

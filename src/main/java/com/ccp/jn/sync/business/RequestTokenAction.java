@@ -6,11 +6,11 @@ import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.JnBusinessTopic;
 
-public class RequestToken extends CcpNextStep{
+public class RequestTokenAction extends CcpNextStep{
 
 	private final CcpMensageriaSender mensageriaSender;
 	
-	public RequestToken(CcpMensageriaSender mensageriaSender) {
+	public RequestTokenAction(CcpMensageriaSender mensageriaSender) {
 		this.mensageriaSender = mensageriaSender;
 	}
 

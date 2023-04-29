@@ -1,7 +1,5 @@
 package com.ccp.jn.sync.login.controller;
 
-import java.util.Map;
-
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
@@ -11,7 +9,7 @@ import com.ccp.jn.sync.business.EvaluatePasswordStrength;
 import com.ccp.jn.sync.business.EvaluateToken;
 import com.ccp.jn.sync.business.LockToken;
 import com.ccp.jn.sync.business.SaveLogin;
-import com.ccp.jn.sync.business.SaveWeakPassword;
+import com.ccp.jn.sync.business.SaveWeakPasswordAction;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnBusinessEntity;
@@ -36,7 +34,7 @@ public class UpdatePassword {
 						.addStep(200, new TransferDataBetweenTables(JnBusinessEntity.login_conflict, JnBusinessEntity.login_conflict_solved)
 								.addStep(200, new TransferDataBetweenTables(JnBusinessEntity.locked_password, JnBusinessEntity.unlocked_password)
 										.addStep(200, new EvaluatePasswordStrength()
-												.addStep(422, new SaveWeakPassword())
+												.addStep(422, new SaveWeakPasswordAction())
 												.addStep(200, new SaveLogin())
 												)	
 										)
@@ -47,9 +45,8 @@ public class UpdatePassword {
 	};
 
 	
-	public Map<String, Object> execute (Map<String, Object> json){
+	public void execute (CcpMapDecorator values){
 		
-		CcpMapDecorator values = new CcpMapDecorator(json);
 		/*
 		 * Salvar senha desbloqueada
 		 */
@@ -57,13 +54,10 @@ public class UpdatePassword {
 				    new CcpMapDecorator().put("table", JnBusinessEntity.user_stats)
 				   ,new CcpMapDecorator().put("table", JnBusinessEntity.token_tries)
     			   ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_token).put("status", 403)
-				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_request).put("status", 404)
+				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_token).put("status", 404)
 				   ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.login).put("status", 409)
 				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.pre_registration).put("status", 201)
 				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.password).put("action", this.decisionTree)
 				);
-		
-		
-		return values.content;
 	}
 }

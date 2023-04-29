@@ -10,7 +10,7 @@ public class EvaluateToken extends CcpNextStep{
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 
-		CcpMapDecorator loginRequest = values.getInternalMap("_tables").getInternalMap(JnBusinessEntity.login_request.name());
+		CcpMapDecorator loginRequest = values.getInternalMap("_tables").getInternalMap(JnBusinessEntity.login_token.name());
 		
 		String tokenDb = loginRequest.getAsString("token");
 		String token = values.getAsString("token");

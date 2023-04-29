@@ -17,12 +17,12 @@ public class RequestUnlockToken {
 	@CcpDependencyInject
 	private CcpMensageriaSender mensageriaSender;
 
-	public Map<String, Object> execute (Map<String, Object> json){
+	public Map<String, Object> execute (String email){
 		
-		CcpMapDecorator values = new CcpMapDecorator(json);
+		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
 
 		this.crud.findById(values,  
-				 new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_request).put("status", 404)
+				 new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_token).put("status", 404)
 			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.locked_token).put("status", 422)
 			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.request_unlock_token).put("status", 420)
 			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.request_unlock_token_answered).put("status", 204)

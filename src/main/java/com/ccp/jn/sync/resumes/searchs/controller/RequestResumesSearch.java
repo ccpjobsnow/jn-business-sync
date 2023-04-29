@@ -19,7 +19,7 @@ public class RequestResumesSearch {
 	private CcpMensageriaSender mensageriaSender;
 
 	
-	public Map<String, Object> execute(String recruiter, String searchType, String json){
+	public Map<String, Object> execute(String recruiter, String searchType, Map<String, Object> json){
 		
 		JnBusinessEntity entity = JnBusinessEntity.valueOf(searchType);
 		

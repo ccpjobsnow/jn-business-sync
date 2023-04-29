@@ -6,7 +6,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.jn.sync.business.RequestToken;
+import com.ccp.jn.sync.business.RequestTokenAction;
 import com.jn.commons.JnBusinessEntity;
 
 public class SaveLoginRequest {
@@ -18,14 +18,14 @@ public class SaveLoginRequest {
 	private CcpDbCrud crud;
 
 	
-	public Map<String, Object> execute (Map<String, Object> json){
+	public Map<String, Object> execute (String email){
 		
-		CcpMapDecorator values = new CcpMapDecorator(json);
+		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
 		
 		this.crud.findById(values,  
 			    new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_token).put("status", 403)
 			   ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_password).put("status", 401)
-			   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_request).put("action", new RequestToken(this.mensageriaSender))
+			   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_token).put("action", new RequestTokenAction(this.mensageriaSender))
 			   ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.login).put("status", 409)
 			   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.pre_registration).put("status", 201)
 			   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.password).put("status", 202)

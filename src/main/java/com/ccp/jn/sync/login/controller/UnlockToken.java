@@ -1,7 +1,5 @@
 package com.ccp.jn.sync.login.controller;
 
-import java.util.Map;
-
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
@@ -36,18 +34,17 @@ public class UnlockToken {
 	@CcpDependencyInject
 	private CcpDbCrud crud;
 	
-	public Map<String, Object> execute (Map<String, Object> json){
+	public void execute (String email){
 		
-		CcpMapDecorator values = new CcpMapDecorator(json);
+		CcpMapDecorator values = new CcpMapDecorator(new CcpMapDecorator().put("email", email));
 
 		this.crud.findById(values,  
-				 new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_request).put("status", 404)
+				 new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_token).put("status", 404)
 			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.locked_token).put("status", 422)
 			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.request_unlock_token).put("status", 420)
 			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.failed_unlock_token).put("status", 403)
 			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.request_unlock_token_answered)
 			    .put("action", this.decisionTree)
 			);
-		return json;
 	}
 }

@@ -7,7 +7,7 @@ import com.jn.commons.JnBusinessEntity;
 
 public class GetResumesData {
 	
-	public Map<String, Object> execute(String searchType, String json){
+	public Map<String, Object> execute(String searchType, Map<String, Object> json){
 	
 		JnBusinessEntity entity = JnBusinessEntity.valueOf(searchType.replace("search_", ""));
 		

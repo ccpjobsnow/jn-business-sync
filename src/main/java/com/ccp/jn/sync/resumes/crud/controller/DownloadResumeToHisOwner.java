@@ -8,8 +8,8 @@ import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
-import com.ccp.jn.sync.business.ReadResumeFromBucket;
 import com.ccp.jn.sync.business.ValidateResumeOwnership;
+import com.ccp.process.CcpMapTransform;
 import com.jn.commons.JnBusinessEntity;
 import com.jn.commons.JnCacheKeys;
 import com.jn.commons.JnConstants;
@@ -40,7 +40,7 @@ public class DownloadResumeToHisOwner {
 		
 		int cacheExpires = JnConstants.ONE_HOUR_IN_SECONDS;
 		CcpMapDecorator cacheParameters = CcpConstants.EMPTY_JSON;
-		ReadResumeFromBucket cacheLayer = new ReadResumeFromBucket(this.bucket, resume, viewType);
+		CcpMapTransform<String> cacheLayer = vals-> this.bucket.read(JnConstants.TENANT, JnConstants.RESUMES_BUCKET + viewType, resume);
 		String cacheKey = JnCacheKeys.RESUMES_KEY + JnConstants.DOT + resume + JnConstants.DOT + viewType;
 
 		String resumeInBase64 = this.cache.get(cacheKey, cacheParameters, cacheLayer, cacheExpires);

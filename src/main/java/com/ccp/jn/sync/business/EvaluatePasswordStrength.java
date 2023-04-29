@@ -12,7 +12,7 @@ public class EvaluatePasswordStrength extends CcpNextStep{
 		
 		String password = values.getAsString("password");
 		
-		boolean strongPassword = new CcpStringDecorator(password).password().isStrongPassword();
+		boolean strongPassword = new CcpStringDecorator(password).password().isStrong();
 		
 		if(strongPassword) {
 			return new CcpStepResult(values, 200, this);

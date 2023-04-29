@@ -1,7 +1,5 @@
 package com.ccp.jn.sync.resumes.crud.controller;
 
-import java.util.Map;
-
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.cache.CcpCache;
@@ -19,7 +17,7 @@ public class RemoveResume {
 	private CcpCache cache;
 
 	
-	public Map<String, Object> execute (String resume){
+	public void execute (String resume){
 		
 		this.removeFromBucket(resume, "file");
 		this.removeFromBucket(resume, "text");
@@ -32,7 +30,6 @@ public class RemoveResume {
 		
 		this.saveResumeExclusion(resume);
 	
-		return new CcpMapDecorator().content;
 	}
 
 
