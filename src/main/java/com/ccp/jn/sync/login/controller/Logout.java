@@ -4,6 +4,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.db.utils.TransferDataBetweenTables;
+import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 
 public class Logout {
@@ -14,12 +15,16 @@ public class Logout {
 	public void execute (String email){
 		
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
-	
-		this.crud.findById(values, 
-			    new CcpMapDecorator().put("found", true).put("table", 
-			    JnBusinessEntity.login).put("action", x -> 
-			    new TransferDataBetweenTables(JnBusinessEntity.login, JnBusinessEntity.logout)
-				.goToTheNextStep(x).values));
+		
+		CcpProcess action = x -> new TransferDataBetweenTables(JnBusinessEntity.login, JnBusinessEntity.logout).goToTheNextStep(x).values;
+		this.crud
+		.useThisId(values)
+		.toBeginProcedure()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login).thenReturnStatus(404).andSo()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.login).thenDoAnAction(action).andFinally()
+		.endThisProcedure()
+		;
+
 		
 	}
 }

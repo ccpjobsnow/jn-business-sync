@@ -50,14 +50,17 @@ public class UpdatePassword {
 		/*
 		 * Salvar senha desbloqueada
 		 */
-		this.crud.findById(values,  
-				    new CcpMapDecorator().put("table", JnBusinessEntity.user_stats)
-				   ,new CcpMapDecorator().put("table", JnBusinessEntity.token_tries)
-    			   ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_token).put("status", 403)
-				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_token).put("status", 404)
-				   ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.login).put("status", 409)
-				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.pre_registration).put("status", 201)
-				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.password).put("action", this.decisionTree)
-				);
+		this.crud
+		.useThisId(values)
+		.toBeginProcedure()
+			.loadThisIdFromTable(JnBusinessEntity.user_stats).andSo()
+			.loadThisIdFromTable(JnBusinessEntity.token_tries).andSo()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(403).andSo()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenReturnStatus(404).andSo()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.login).thenReturnStatus(409).andSo()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.pre_registration).thenReturnStatus(201).andSo()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.password).thenDoAnAction(this.decisionTree).andFinally()	
+		.endThisProcedure()
+		;
 	}
 }

@@ -6,8 +6,9 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.jn.sync.business.RequestTokenAction;
+import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnBusinessTopic;
 
 public class RequestToken {
 
@@ -21,12 +22,16 @@ public class RequestToken {
 	public Map<String, Object> execute (String email){
 		
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
-		
-		this.crud.findById(values,  
-			    new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_token).put("status", 403)
-			   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_token).put("action", new RequestTokenAction(this.mensageriaSender))
-			);
+		CcpProcess action = valores -> this.mensageriaSender.send(valores, JnBusinessTopic.sendUserToken);
+		this.crud
+		.useThisId(values)
+		.toBeginProcedure()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(403).andSo()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenDoAnAction(action).andFinally()
+		.endThisProcedure()
+		;
 
+		
 		return values.content;
 	}
 }

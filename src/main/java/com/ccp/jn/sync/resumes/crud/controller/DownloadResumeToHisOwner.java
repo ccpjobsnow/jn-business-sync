@@ -2,17 +2,13 @@ package com.ccp.jn.sync.resumes.crud.controller;
 
 import java.util.Map;
 
-import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
-import com.ccp.jn.sync.business.ValidateResumeOwnership;
-import com.ccp.process.CcpMapTransform;
+import com.ccp.jn.sync.business.DownloadThisResumeToHisOwner;
 import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.JnCacheKeys;
-import com.jn.commons.JnConstants;
 
 
 public class DownloadResumeToHisOwner {
@@ -27,24 +23,20 @@ public class DownloadResumeToHisOwner {
 	private CcpDbCrud crud;
 
 	
-	public Map<String, Object> execute (String resume, String email, String viewType){
-	
-		CcpMapDecorator values = new CcpMapDecorator().put("resume", resume);
-		
-		this.crud.findById(values,  
-				 new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.candidate_resume).put("action", new ValidateResumeOwnership(email))
-			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.candidate_resume).put("status", 404)
-			);
+	public Map<String, Object> execute (String email, String viewType){
 
-		JnBusinessEntity.candidate_view_resume.save(values);
+		CcpMapDecorator values = new CcpMapDecorator().put("email", email).put("viewType", viewType);
 		
-		int cacheExpires = JnConstants.ONE_HOUR_IN_SECONDS;
-		CcpMapDecorator cacheParameters = CcpConstants.EMPTY_JSON;
-		CcpMapTransform<String> cacheLayer = vals-> this.bucket.read(JnConstants.TENANT, JnConstants.RESUMES_BUCKET + viewType, resume);
-		String cacheKey = JnCacheKeys.RESUMES_KEY + JnConstants.DOT + resume + JnConstants.DOT + viewType;
+		DownloadThisResumeToHisOwner action = new DownloadThisResumeToHisOwner(this.bucket, this.cache);
+		
+		CcpMapDecorator put = this.crud
+		.useThisId(values)
+		.toBeginProcedure()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.candidate).thenReturnStatus(404).andSo()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.candidate).thenDoAnAction(action).andFinally()
+		.endThisProcedureRetrievingTheResultingData();
 
-		String resumeInBase64 = this.cache.get(cacheKey, cacheParameters, cacheLayer, cacheExpires);
-	
-		return new CcpMapDecorator().put("resumeInBase64", resumeInBase64).content;
+
+		return put.content;
 	}
 }

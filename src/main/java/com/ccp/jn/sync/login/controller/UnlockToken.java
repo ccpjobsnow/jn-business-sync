@@ -37,14 +37,17 @@ public class UnlockToken {
 	public void execute (String email){
 		
 		CcpMapDecorator values = new CcpMapDecorator(new CcpMapDecorator().put("email", email));
+		this.crud
+		.useThisId(values)
+		.toBeginProcedure()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenReturnStatus(404).andSo()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(422).andSo()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.request_unlock_token).thenReturnStatus(420).andSo()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.failed_unlock_token).thenReturnStatus(403).andSo()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.request_unlock_token_answered).thenDoAnAction(this.decisionTree).andFinally()
+		.endThisProcedure()
+		;
 
-		this.crud.findById(values,  
-				 new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_token).put("status", 404)
-			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.locked_token).put("status", 422)
-			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.request_unlock_token).put("status", 420)
-			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.failed_unlock_token).put("status", 403)
-			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.request_unlock_token_answered)
-			    .put("action", this.decisionTree)
-			);
+		
 	}
 }

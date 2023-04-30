@@ -14,7 +14,12 @@ public class VerifyContactUs {
 		
 		CcpMapDecorator values = new CcpMapDecorator().put("emailFrom", emailFrom).put("subjectType", subjectType);
 
-		this.crud.findById(values, new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.contact_us).put("status", 200));
-		
+		//this.crud.findById(values, new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.contact_us).put("status", 200));
+
+		this.crud
+		.useThisId(values)
+		.toBeginProcedure()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.contact_us).thenReturnStatus(200).andFinally()
+		.endThisProcedure();
 	}
 }

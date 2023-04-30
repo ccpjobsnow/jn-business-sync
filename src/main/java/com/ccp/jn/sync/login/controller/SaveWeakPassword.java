@@ -26,13 +26,17 @@ public class SaveWeakPassword {
 				.addStep(201, null)
 				.goToTheNextStep(valores).values;
 		
-			this.crud.findById(parameters,  
-			        new CcpMapDecorator().put("table", JnBusinessEntity.user_stats)
-			       ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.locked_token).put("status", 403)
-				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_token).put("status", 404)
-				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.pre_registration).put("status", 201)
-				   ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.weak_password).put("action", saveWeakPassword)
-				);
+			this.crud
+			.useThisId(parameters)
+			.toBeginProcedure()
+				.loadThisIdFromTable(JnBusinessEntity.user_stats).andSo()	
+				.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(403).andSo()
+				.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenReturnStatus(404).andSo()
+				.ifThisIdIsNotPresentInTable(JnBusinessEntity.pre_registration).thenReturnStatus(201).andSo()
+				.ifThisIdIsNotPresentInTable(JnBusinessEntity.weak_password).thenDoAnAction(saveWeakPassword).andFinally()
+			.endThisProcedure()
+			;
+
 		
 	}
 }
