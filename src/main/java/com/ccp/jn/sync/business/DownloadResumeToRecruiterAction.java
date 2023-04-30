@@ -16,16 +16,16 @@ public class DownloadResumeToRecruiterAction implements CcpProcess {
 		this.cache = cache;
 	}
 
-
-
-
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 		
 		String recruiter = values.getAsString("recruiter");
+		String viewType = values.getAsString("viewType");
 		String resume = values.getAsString("resume");
-
-		JnBusinessEntity.recruiter_view_resume.save(new CcpMapDecorator().put("resume", resume).put("recruiter", recruiter));
+		
+		JnBusinessEntity.recruiter_view_resume.save(new CcpMapDecorator().put("resume", resume)
+				.put("viewType", viewType)
+				.put("recruiter", recruiter));
 		
 		DownloadResume downloadResume = new DownloadResume(this.bucket, this.cache);
 		

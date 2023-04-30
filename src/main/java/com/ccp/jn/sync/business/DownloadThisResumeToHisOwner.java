@@ -22,9 +22,10 @@ public class DownloadThisResumeToHisOwner implements CcpProcess {
 
 		CcpMapDecorator candidate = values.getInternalMap("_tables").getInternalMap(JnBusinessEntity.candidate.name());
 		
+		String viewType = values.getAsString("viewType");
 		String resume = candidate.getAsString("resume");
-		
-		JnBusinessEntity.candidate_view_resume.save(new CcpMapDecorator().put("resume", resume));
+
+		JnBusinessEntity.candidate_view_resume.save(new CcpMapDecorator().put("resume", resume).put("viewType", viewType));
 		
 		DownloadResume downloadResume = new DownloadResume(this.bucket, this.cache);
 		
