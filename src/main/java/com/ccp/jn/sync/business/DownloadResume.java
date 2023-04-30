@@ -19,10 +19,6 @@ public class DownloadResume implements CcpProcess{
 		this.cache = cache;
 	}
 
-
-
-
-
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 

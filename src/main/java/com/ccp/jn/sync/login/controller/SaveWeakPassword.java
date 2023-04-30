@@ -6,7 +6,6 @@ import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.jn.sync.business.SaveLogin;
 import com.ccp.jn.sync.business.SavePassword;
-import com.ccp.jn.sync.business.SaveWeakPasswordAction;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 
@@ -20,7 +19,7 @@ public class SaveWeakPassword {
 
 	public void execute (CcpMapDecorator parameters){
 
-		CcpProcess saveWeakPassword = valores -> new SaveWeakPasswordAction()
+		CcpProcess saveWeakPassword = valores -> JnBusinessEntity.weak_password.getSaver(200)
 				.addStep(200, new SavePassword()
 						.addStep(200, new SaveLogin()))
 				.addStep(201, null)

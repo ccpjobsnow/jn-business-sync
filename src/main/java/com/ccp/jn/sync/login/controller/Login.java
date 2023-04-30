@@ -6,7 +6,6 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.password.CcpPasswordHandler;
-import com.ccp.jn.sync.business.LockLogin;
 import com.ccp.jn.sync.business.SaveLogin;
 import com.ccp.jn.sync.business.ValidatePassword;
 import com.ccp.process.CcpProcess;
@@ -27,7 +26,7 @@ public class Login{
 						.addStep(200, new SaveLogin())
 						)
 				.addStep(401, new EvaluateTries(JnBusinessEntity.password_tries, 401, 429)
-						.addStep(429, new LockLogin())
+						.addStep(429, JnBusinessEntity.locked_password.getSaver(429))
 				)
 				.goToTheNextStep(values).values;
 		
