@@ -38,12 +38,12 @@ public class UnlockToken {
 		CcpMapDecorator values = new CcpMapDecorator(new CcpMapDecorator().put("email", email));
 		this.crud
 		.useThisId(values)
-		.toBeginProcedure()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenReturnStatus(404).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(422).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.request_unlock_token).thenReturnStatus(420).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.failed_unlock_token).thenReturnStatus(403).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.request_unlock_token_answered).thenDoAnAction(this.decisionTree).andFinally()
+		.toBeginProcedureAnd()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.locked_token).returnStatus(422).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.request_unlock_token).returnStatus(420).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.failed_unlock_token).returnStatus(403).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.request_unlock_token_answered).executeAction(this.decisionTree).andFinally()
 		.endThisProcedure()
 		;
 

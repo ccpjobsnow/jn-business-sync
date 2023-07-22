@@ -23,13 +23,13 @@ public class ExistsLoginToken {
 
 		this.crud
 		.useThisId(values)
-		.toBeginProcedure()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(403).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_password).thenReturnStatus(401).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenReturnStatus(404).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.login).thenReturnStatus(409).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.pre_registration).thenReturnStatus(201).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.password).thenReturnStatus(202).andFinally()
+		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_password).returnStatus(401).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.login).returnStatus(409).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.pre_registration).returnStatus(201).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.password).returnStatus(202).andFinally()
 		.endThisProcedure()
 		;
 	

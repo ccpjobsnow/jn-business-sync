@@ -18,8 +18,8 @@ public class VerifyContactUs {
 
 		this.crud
 		.useThisId(values)
-		.toBeginProcedure()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.contact_us).thenReturnStatus(200).andFinally()
+		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.contact_us).returnStatus(200).andFinally()
 		.endThisProcedure();
 	}
 }

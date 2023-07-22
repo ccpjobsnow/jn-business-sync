@@ -19,9 +19,9 @@ public class Logout {
 		CcpProcess action = x -> new TransferDataBetweenTables(JnBusinessEntity.login, JnBusinessEntity.logout).goToTheNextStep(x).values;
 		this.crud
 		.useThisId(values)
-		.toBeginProcedure()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login).thenReturnStatus(404).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.login).thenDoAnAction(action).andFinally()
+		.toBeginProcedureAnd()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login).returnStatus(404).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.login).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
 

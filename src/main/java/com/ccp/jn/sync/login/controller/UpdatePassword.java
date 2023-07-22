@@ -50,14 +50,14 @@ public class UpdatePassword {
 		 */
 		this.crud
 		.useThisId(values)
-		.toBeginProcedure()
+		.toBeginProcedureAnd()
 			.loadThisIdFromTable(JnBusinessEntity.user_stats).andSo()
 			.loadThisIdFromTable(JnBusinessEntity.token_tries).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(403).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenReturnStatus(404).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.login).thenReturnStatus(409).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.pre_registration).thenReturnStatus(201).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.password).thenDoAnAction(this.decisionTree).andFinally()	
+			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.login).returnStatus(409).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.pre_registration).returnStatus(201).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.password).executeAction(this.decisionTree).andFinally()	
 		.endThisProcedure()
 		;
 	}

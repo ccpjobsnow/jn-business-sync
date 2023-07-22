@@ -30,10 +30,10 @@ public class DownloadResumeToRecruiter {
 		DownloadResumeToRecruiterAction action = new DownloadResumeToRecruiterAction(this.bucket, this.cache);
 		
 		CcpMapDecorator result = this.crud.useThisId(values)
-		.toBeginProcedure()
-		.ifThisIdIsPresentInTable(JnBusinessEntity.denied_view_to_recruiter).thenReturnStatus(403).andSo()
-		.ifThisIdIsNotPresentInTable(JnBusinessEntity.candidate_resume).thenReturnStatus(404).andSo()
-		.ifThisIdIsPresentInTable(JnBusinessEntity.candidate_resume).thenDoAnAction(action).andFinally()
+		.toBeginProcedureAnd()
+		.ifThisIdIsPresentInTable(JnBusinessEntity.denied_view_to_recruiter).returnStatus(403).and()
+		.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.candidate_resume).returnStatus(404).and()
+		.ifThisIdIsPresentInTable(JnBusinessEntity.candidate_resume).executeAction(action).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result.content;

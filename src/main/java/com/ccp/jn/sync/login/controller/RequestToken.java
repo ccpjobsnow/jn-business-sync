@@ -25,9 +25,9 @@ public class RequestToken {
 		CcpProcess action = valores -> this.mensageriaSender.send(valores, JnBusinessTopic.sendUserToken);
 		this.crud
 		.useThisId(values)
-		.toBeginProcedure()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(403).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenDoAnAction(action).andFinally()
+		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
 

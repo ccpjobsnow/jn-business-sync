@@ -19,26 +19,16 @@ public class RequestUnlockToken {
 	public void execute (String email){
 		
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
-//
-//		this.crud.findById(values,  
-//				 new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.login_token).put("status", 404)
-//			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.locked_token).put("status", 422)
-//			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.request_unlock_token).put("status", 420)
-//			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.request_unlock_token_answered).put("status", 204)
-//			    ,new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.failed_unlock_token).put("status", 403)
-//			    ,new CcpMapDecorator().put("found", false).put("table", JnBusinessEntity.request_unlock_token)
-//			    .put("action", valores -> this.mensageriaSender.send(values, JnBusinessTopic.requestUnlockToken))
-//			);
 		CcpProcess action = valores -> this.mensageriaSender.send(valores, JnBusinessTopic.requestUnlockToken);
 		this.crud
 		.useThisId(values)
-		.toBeginProcedure()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenReturnStatus(404).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(422).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.request_unlock_token).thenReturnStatus(420).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.request_unlock_token_answered).thenReturnStatus(204).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.failed_unlock_token).thenReturnStatus(403).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.request_unlock_token).thenDoAnAction(action).andFinally()
+		.toBeginProcedureAnd()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.locked_token).returnStatus(422).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.request_unlock_token).returnStatus(420).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.request_unlock_token_answered).returnStatus(204).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.failed_unlock_token).returnStatus(403).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.request_unlock_token).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
 

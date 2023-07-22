@@ -27,12 +27,12 @@ public class SaveWeakPassword {
 		
 			this.crud
 			.useThisId(parameters)
-			.toBeginProcedure()
+			.toBeginProcedureAnd()
 				.loadThisIdFromTable(JnBusinessEntity.user_stats).andSo()	
-				.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(403).andSo()
-				.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenReturnStatus(404).andSo()
-				.ifThisIdIsNotPresentInTable(JnBusinessEntity.pre_registration).thenReturnStatus(201).andSo()
-				.ifThisIdIsNotPresentInTable(JnBusinessEntity.weak_password).thenDoAnAction(saveWeakPassword).andFinally()
+				.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
+				.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
+				.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.pre_registration).returnStatus(201).and()
+				.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.weak_password).executeAction(saveWeakPassword).andFinally()
 			.endThisProcedure()
 			;
 

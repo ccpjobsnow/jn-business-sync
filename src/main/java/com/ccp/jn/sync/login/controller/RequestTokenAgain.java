@@ -24,12 +24,12 @@ public class RequestTokenAgain {
 	
 		this.crud
 		.useThisId(values)
-		.toBeginProcedure()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).thenReturnStatus(403).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).thenReturnStatus(404).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.request_token_again).thenReturnStatus(420).andSo()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.request_token_again_answered).thenReturnStatus(204).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.request_token_again).thenDoAnAction(action).andFinally()
+		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.request_token_again).returnStatus(420).and()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.request_token_again_answered).returnStatus(204).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.request_token_again).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
 		

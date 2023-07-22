@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.query.CcpDbQueryExecutor;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.jn.commons.JnBusinessEntity;
 import com.jn.commons.JnBusinessTopic;
@@ -12,12 +11,7 @@ import com.jn.commons.JnBusinessTopic;
 public class RequestResumesSearch {
 
 	@CcpDependencyInject
-	private CcpDbQueryExecutor requestExecutor;
-
-	
-	@CcpDependencyInject
 	private CcpMensageriaSender mensageriaSender;
-
 	
 	public Map<String, Object> execute(String recruiter, String searchType, Map<String, Object> json){
 		

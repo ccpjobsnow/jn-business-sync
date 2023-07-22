@@ -31,9 +31,9 @@ public class DownloadResumeToHisOwner {
 		
 		CcpMapDecorator put = this.crud
 		.useThisId(values)
-		.toBeginProcedure()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.candidate).thenReturnStatus(404).andSo()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.candidate).thenDoAnAction(action).andFinally()
+		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInTable(JnBusinessEntity.candidate).executeAction(action).and()
+			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.candidate).returnStatus(404).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 
 
