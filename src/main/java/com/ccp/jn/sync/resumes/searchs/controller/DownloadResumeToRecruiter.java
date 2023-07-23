@@ -7,7 +7,7 @@ import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
-import com.ccp.jn.sync.business.DownloadResumeToRecruiterAction;
+import com.ccp.jn.sync.common.business.DownloadResumeToRecruiterAction;
 import com.jn.commons.JnBusinessEntity;
 
 

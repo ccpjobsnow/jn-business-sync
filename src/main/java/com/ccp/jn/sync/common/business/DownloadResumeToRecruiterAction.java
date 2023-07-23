@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.business;
+package com.ccp.jn.sync.common.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.cache.CcpCache;

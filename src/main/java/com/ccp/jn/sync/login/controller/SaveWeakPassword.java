@@ -4,8 +4,8 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.jn.sync.business.SaveLogin;
-import com.ccp.jn.sync.business.SavePassword;
+import com.ccp.jn.sync.common.business.SaveLogin;
+import com.ccp.jn.sync.common.business.SavePassword;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 

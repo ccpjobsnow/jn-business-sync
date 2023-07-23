@@ -5,7 +5,7 @@ import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
 import com.ccp.especifications.db.utils.TransferDataBetweenTables;
 import com.ccp.especifications.password.CcpPasswordHandler;
-import com.ccp.jn.sync.business.ValidatePassword;
+import com.ccp.jn.sync.common.business.ValidatePassword;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnBusinessEntity;
