@@ -8,7 +8,7 @@ import com.ccp.process.CcpProcess;
 import com.jn.commons.JnBusinessEntity;
 import com.jn.commons.JnBusinessTopic;
 
-public class SaveLoginRequest {
+public class CreateLoginToken {
 
 	@CcpDependencyInject
 	private CcpMensageriaSender mensageriaSender;
