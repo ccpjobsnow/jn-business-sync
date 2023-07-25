@@ -17,9 +17,9 @@ public class CreateLoginToken {
 	private CcpDbCrud crud;
 
 	
-	public void execute (String email){
+	public void execute (String email, String language){
 		
-		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
+		CcpMapDecorator values = new CcpMapDecorator().put("email", email).put("language", language);
 		
 		CcpProcess action = valores -> this.mensageriaSender.send(valores, JnBusinessTopic.sendUserToken);
 
