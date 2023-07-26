@@ -2,6 +2,7 @@ package com.ccp.jn.sync.common.business;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.process.CcpMapTransform;
@@ -11,12 +12,10 @@ import com.jn.commons.JnConstants;
 
 public class DownloadResume implements CcpProcess{
 
-	private final CcpFileBucket bucket;
-	private final CcpCache cache;
+	private final CcpFileBucket bucket = CcpDependencyInjection.getInjected(CcpFileBucket.class);
+	private final CcpCache cache = CcpDependencyInjection.getInjected(CcpCache.class);
 
-	public DownloadResume(CcpFileBucket bucket, CcpCache cache) {
-		this.bucket = bucket;
-		this.cache = cache;
+	private DownloadResume() {
 	}
 
 	@Override

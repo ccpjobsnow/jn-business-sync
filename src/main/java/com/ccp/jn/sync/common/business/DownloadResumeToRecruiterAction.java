@@ -1,6 +1,7 @@
 package com.ccp.jn.sync.common.business;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.process.CcpProcess;
@@ -8,12 +9,9 @@ import com.jn.commons.JnBusinessEntity;
 
 public class DownloadResumeToRecruiterAction implements CcpProcess {
 
-	private final CcpFileBucket bucket;
-	private final CcpCache cache;
-	
-	public DownloadResumeToRecruiterAction(CcpFileBucket bucket, CcpCache cache) {
-		this.bucket = bucket;
-		this.cache = cache;
+	private final DownloadResume downloadResume = CcpDependencyInjection.getInjected(DownloadResume.class);
+			
+	private DownloadResumeToRecruiterAction(CcpFileBucket bucket, CcpCache cache) {
 	}
 
 	@Override
@@ -27,9 +25,8 @@ public class DownloadResumeToRecruiterAction implements CcpProcess {
 				.put("viewType", viewType)
 				.put("recruiter", recruiter));
 		
-		DownloadResume downloadResume = new DownloadResume(this.bucket, this.cache);
 		
-		CcpMapDecorator execute = downloadResume.execute(values);
+		CcpMapDecorator execute = this.downloadResume.execute(values);
 		
 		return execute;
 	}

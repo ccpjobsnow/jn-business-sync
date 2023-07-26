@@ -5,24 +5,27 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDbCrud;
+import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.especifications.password.CcpPasswordHandler;
+import com.ccp.jn.sync.common.business.ResetTable;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.ValidatePassword;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.ResetTable;
 
 public class Login{
 
 	@CcpDependencyInject
 	private CcpPasswordHandler passwordHandler;
 
+	@CcpDependencyInject
+	private CcpMensageriaSender mensageriaSender;
 	
 	private CcpProcess decisionTree = values ->{
 		
 		return new ValidatePassword(this.passwordHandler, JnBusinessEntity.password)
-				.addStep(200, new ResetTable(JnBusinessEntity.password_tries)
+				.addStep(200, new ResetTable(this.mensageriaSender,"tries", 3, JnBusinessEntity.password_tries)
 						.addStep(200, new SaveLogin())
 						)
 				.addStep(401, new EvaluateTries(JnBusinessEntity.password_tries, 401, 429)

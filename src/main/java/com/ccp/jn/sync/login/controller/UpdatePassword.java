@@ -7,11 +7,11 @@ import com.ccp.especifications.db.utils.TransferDataBetweenTables;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
 import com.ccp.jn.sync.common.business.EvaluateToken;
+import com.ccp.jn.sync.common.business.ResetTable;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.process.CcpProcess;
 import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.ResetTable;
 
 public class UpdatePassword {
 
@@ -28,7 +28,7 @@ public class UpdatePassword {
 				.addStep(401, new EvaluateTries(JnBusinessEntity.token_tries, 401, 403)
 							.addStep(403, JnBusinessEntity.locked_token.getSaver(403))
 						)
-				.addStep(200, new ResetTable(JnBusinessEntity.token_tries)
+				.addStep(200, new ResetTable(this.mensageriaSender,"tries", 3, JnBusinessEntity.token_tries)
 						.addStep(200, new TransferDataBetweenTables(JnBusinessEntity.login_conflict, JnBusinessEntity.login_conflict_solved)
 								.addStep(200, new TransferDataBetweenTables(JnBusinessEntity.locked_password, JnBusinessEntity.unlocked_password)
 										.addStep(200, new EvaluatePasswordStrength()
