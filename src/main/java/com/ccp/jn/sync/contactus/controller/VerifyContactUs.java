@@ -10,9 +10,9 @@ public class VerifyContactUs {
 	@CcpDependencyInject
 	private CcpDbCrud crud;
 
-	public void execute (String emailFrom, String subjectType){
+	public void execute(String sender, String subjectType){
 		
-		CcpMapDecorator values = new CcpMapDecorator().put("emailFrom", emailFrom).put("subjectType", subjectType);
+		CcpMapDecorator values = new CcpMapDecorator().put("sender", sender).put("subjectType", subjectType);
 
 		//this.crud.findById(values, new CcpMapDecorator().put("found", true).put("table", JnBusinessEntity.contact_us).put("status", 200));
 
