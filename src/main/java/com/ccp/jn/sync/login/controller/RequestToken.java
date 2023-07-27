@@ -4,11 +4,11 @@ import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.crud.CcpDbCrud;
+import com.ccp.especifications.db.crud.CcpDao;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnEntity;
+import com.jn.commons.JnTopic;
 
 public class RequestToken {
 
@@ -16,18 +16,18 @@ public class RequestToken {
 	private CcpMensageriaSender mensageriaSender;
 	
 	@CcpDependencyInject
-	private CcpDbCrud crud;
+	private CcpDao crud;
 
 	
 	public Map<String, Object> execute (String email){
 		
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
-		CcpProcess action = valores -> this.mensageriaSender.send(valores, JnBusinessTopic.sendUserToken);
+		CcpProcess action = valores -> this.mensageriaSender.send(valores, JnTopic.sendUserToken);
 		this.crud
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).executeAction(action).andFinally()
+			.ifThisIdIsPresentInTable(JnEntity.locked_token).returnStatus(403).and()
+			.ifThisIdIsNotPresentInTable(JnEntity.login_token).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
 

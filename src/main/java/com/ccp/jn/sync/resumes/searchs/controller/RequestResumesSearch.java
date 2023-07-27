@@ -5,8 +5,8 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnEntity;
+import com.jn.commons.JnTopic;
 
 public class RequestResumesSearch {
 
@@ -15,17 +15,17 @@ public class RequestResumesSearch {
 	
 	public Map<String, Object> execute(String recruiter, String searchType, Map<String, Object> json){
 		
-		JnBusinessEntity entity = JnBusinessEntity.valueOf(searchType);
+		JnEntity entity = JnEntity.valueOf(searchType);
 		
 		CcpMapDecorator values = new CcpMapDecorator(json).put("recruiter", recruiter);
 
-		entity.save(values);
+		entity.createOrUpdate(values);
 		
 		String searchId = entity.getId(values);
 		
 		CcpMapDecorator put = values.put("searchType", searchType).put("searchId", searchId);
 
-		this.mensageriaSender.send(put.asJson(), JnBusinessTopic.saveResumesQuery);
+		this.mensageriaSender.send(put.asJson(), JnTopic.saveResumesQuery);
 		
 		return put.content;
 		

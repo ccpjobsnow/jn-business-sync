@@ -4,14 +4,14 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 
 public class ValidatePassword extends CcpNextStep {
 
 	final CcpPasswordHandler passwordHandler;
-	final JnBusinessEntity entity;
+	final JnEntity entity;
 	
-	public ValidatePassword(CcpPasswordHandler passwordHandler, JnBusinessEntity entity) {
+	public ValidatePassword(CcpPasswordHandler passwordHandler, JnEntity entity) {
 		this.passwordHandler = passwordHandler;
 		this.entity = entity;
 	}

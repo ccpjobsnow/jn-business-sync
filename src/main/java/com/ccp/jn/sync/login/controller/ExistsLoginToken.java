@@ -4,9 +4,9 @@ import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.crud.CcpDbCrud;
+import com.ccp.especifications.db.crud.CcpDao;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 
 public class ExistsLoginToken {
 
@@ -14,7 +14,7 @@ public class ExistsLoginToken {
 	private CcpMensageriaSender mensageriaSender;
 	
 	@CcpDependencyInject
-	private CcpDbCrud crud;
+	private CcpDao crud;
 
 	
 	public Map<String, Object> execute (String email){
@@ -24,12 +24,12 @@ public class ExistsLoginToken {
 		this.crud
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_password).returnStatus(401).and()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).returnStatus(404).and()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.login).returnStatus(409).and()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.pre_registration).returnStatus(201).and()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.password).returnStatus(202).andFinally()
+			.ifThisIdIsPresentInTable(JnEntity.locked_token).returnStatus(403).and()
+			.ifThisIdIsPresentInTable(JnEntity.locked_password).returnStatus(401).and()
+			.ifThisIdIsNotPresentInTable(JnEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsPresentInTable(JnEntity.login).returnStatus(409).and()
+			.ifThisIdIsNotPresentInTable(JnEntity.pre_registration).returnStatus(201).and()
+			.ifThisIdIsNotPresentInTable(JnEntity.password).returnStatus(202).andFinally()
 		.endThisProcedure()
 		;
 	

@@ -5,7 +5,7 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnTopic;
 
 public class SaveCandidateData {
 
@@ -13,7 +13,7 @@ public class SaveCandidateData {
 	private CcpMensageriaSender mensageriaSender;
 	
 	public void execute(Map<String, Object> json){
-		this.mensageriaSender.send(new CcpMapDecorator(json), JnBusinessTopic.saveCandidateData);
+		this.mensageriaSender.send(new CcpMapDecorator(json), JnTopic.saveCandidateData);
 	}
 	
 }

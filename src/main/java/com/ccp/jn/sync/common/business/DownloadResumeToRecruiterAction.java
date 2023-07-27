@@ -5,7 +5,7 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 
 public class DownloadResumeToRecruiterAction implements CcpProcess {
 
@@ -21,7 +21,7 @@ public class DownloadResumeToRecruiterAction implements CcpProcess {
 		String viewType = values.getAsString("viewType");
 		String resume = values.getAsString("resume");
 		
-		JnBusinessEntity.recruiter_view_resume.save(new CcpMapDecorator().put("resume", resume)
+		JnEntity.recruiter_view_resume.createOrUpdate(new CcpMapDecorator().put("resume", resume)
 				.put("viewType", viewType)
 				.put("recruiter", recruiter));
 		

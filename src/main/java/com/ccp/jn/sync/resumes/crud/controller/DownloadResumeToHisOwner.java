@@ -5,9 +5,9 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.crud.CcpDbCrud;
+import com.ccp.especifications.db.crud.CcpDao;
 import com.ccp.jn.sync.common.business.DownloadThisResumeToHisOwner;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 
 
 public class DownloadResumeToHisOwner {
@@ -15,7 +15,7 @@ public class DownloadResumeToHisOwner {
 	private final DownloadThisResumeToHisOwner action = CcpDependencyInjection.getInjected(DownloadThisResumeToHisOwner.class);
 	
 	@CcpDependencyInject
-	private CcpDbCrud crud;
+	private CcpDao crud;
 
 	
 	public Map<String, Object> execute (String email, String viewType){
@@ -26,8 +26,8 @@ public class DownloadResumeToHisOwner {
 		CcpMapDecorator put = this.crud
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.candidate).executeAction(this.action).and()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.candidate).returnStatus(404).andFinally()
+			.ifThisIdIsPresentInTable(JnEntity.candidate).executeAction(this.action).and()
+			.ifThisIdIsNotPresentInTable(JnEntity.candidate).returnStatus(404).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 
 

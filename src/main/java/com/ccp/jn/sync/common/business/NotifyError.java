@@ -3,7 +3,7 @@ package com.ccp.jn.sync.common.business;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnTopic;
 
 public class NotifyError {
 
@@ -13,7 +13,7 @@ public class NotifyError {
 	
 	public void execute(Throwable e) {
 		CcpMapDecorator md = new CcpMapDecorator(e);
-		this.mensageriaSender.send(md, JnBusinessTopic.notifyError);
+		this.mensageriaSender.send(md, JnTopic.notifyError);
 	}
 	
 }

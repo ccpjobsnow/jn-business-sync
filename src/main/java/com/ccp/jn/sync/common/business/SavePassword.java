@@ -5,7 +5,7 @@ import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 
 public class SavePassword extends CcpNextStep{
 
@@ -16,7 +16,7 @@ public class SavePassword extends CcpNextStep{
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		String password = values.getAsString("password");
 		String passwordHash = this.passwordHandler.getPasswordHash(password);
-		JnBusinessEntity.password.save(values.put("password", passwordHash));
+		JnEntity.password.createOrUpdate(values.put("password", passwordHash));
 		return new CcpStepResult(values, 200, this);
 	}
 

@@ -4,7 +4,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 import com.jn.commons.JnCacheKeys;
 import com.jn.commons.JnConstants;
 
@@ -22,8 +22,8 @@ public class RemoveResume {
 		this.removeFromBucket(resume, "file");
 		this.removeFromBucket(resume, "text");
 
-		this.removeFromDatabase(JnBusinessEntity.candidate_resume, resume);
-		this.removeFromDatabase(JnBusinessEntity.candidate, resume);
+		this.removeFromDatabase(JnEntity.candidate_resume, resume);
+		this.removeFromDatabase(JnEntity.candidate, resume);
 		
 		this.removeFromCache(resume, "file");
 		this.removeFromCache(resume, "text");
@@ -35,14 +35,14 @@ public class RemoveResume {
 
 	private void saveResumeExclusion(String resume) {
 		CcpMapDecorator values = new CcpMapDecorator().put("resume", resume);
-		JnBusinessEntity.resume_exclusion.save(values);
+		JnEntity.resume_exclusion.createOrUpdate(values);
 	}
 
 
-	private void removeFromDatabase(JnBusinessEntity table, String resume) {
+	private void removeFromDatabase(JnEntity table, String resume) {
 		CcpMapDecorator values = new CcpMapDecorator().put("resume", resume);
 		
-		table.remove(values);
+		table.delete(values);
 	}
 
 

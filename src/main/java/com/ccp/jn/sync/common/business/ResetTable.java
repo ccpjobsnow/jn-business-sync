@@ -8,20 +8,20 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.JnBusinessEntity;
-import com.jn.commons.JnBusinessTopic;
+import com.jn.commons.JnEntity;
+import com.jn.commons.JnTopic;
 
 public class ResetTable extends CcpNextStep{
 
 	private final CcpMensageriaSender mensageriaSender;
 	
-	private final JnBusinessEntity[] entities;
+	private final JnEntity[] entities;
 	
 	private final String fieldName;
 	
 	private final Integer limit;
 
-	public ResetTable(CcpMensageriaSender mensageriaSender, String fieldName, Integer limit, JnBusinessEntity... entities) {
+	public ResetTable(CcpMensageriaSender mensageriaSender, String fieldName, Integer limit, JnEntity... entities) {
 		this.mensageriaSender = mensageriaSender;
 		this.fieldName = fieldName;
 		this.entities = entities;
@@ -34,7 +34,7 @@ public class ResetTable extends CcpNextStep{
 		CcpMapDecorator tables = values.getInternalMap("_tables");
 		List<String> entities = Arrays.asList(this.entities).stream().map(x -> x.name()).collect(Collectors.toList());
 		CcpMapDecorator packageToRemoveTries = values.put("fieldName", this.fieldName).put("limit", this.limit).put("entities", entities);
-		this.mensageriaSender.send(packageToRemoveTries, JnBusinessTopic.removeTries);
+		this.mensageriaSender.send(packageToRemoveTries, JnTopic.removeTries);
 		
 		CcpMapDecorator put = new CcpMapDecorator();
 		for (String entityName : entities) {

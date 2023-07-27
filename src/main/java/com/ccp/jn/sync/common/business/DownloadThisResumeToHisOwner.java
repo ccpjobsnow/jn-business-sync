@@ -5,7 +5,7 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 
 public class DownloadThisResumeToHisOwner implements CcpProcess {
 
@@ -18,12 +18,12 @@ public class DownloadThisResumeToHisOwner implements CcpProcess {
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 
-		CcpMapDecorator candidate = values.getInternalMap("_tables").getInternalMap(JnBusinessEntity.candidate.name());
+		CcpMapDecorator candidate = values.getInternalMap("_tables").getInternalMap(JnEntity.candidate.name());
 		
 		String viewType = values.getAsString("viewType");
 		String resume = candidate.getAsString("resume");
 
-		JnBusinessEntity.candidate_view_resume.save(new CcpMapDecorator().put("resume", resume).put("viewType", viewType));
+		JnEntity.candidate_view_resume.createOrUpdate(new CcpMapDecorator().put("resume", resume).put("viewType", viewType));
 		
 		CcpMapDecorator execute = this.downloadResume.execute(values);
 		

@@ -2,26 +2,26 @@ package com.ccp.jn.sync.login.controller;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.crud.CcpDbCrud;
+import com.ccp.especifications.db.crud.CcpDao;
 import com.ccp.especifications.db.utils.TransferDataBetweenTables;
 import com.ccp.process.CcpProcess;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 
 public class Logout {
 	
 	@CcpDependencyInject
-	private CcpDbCrud crud;
+	private CcpDao crud;
 	
 	public void execute (String email){
 		
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
 		
-		CcpProcess action = x -> new TransferDataBetweenTables(JnBusinessEntity.login, JnBusinessEntity.logout).goToTheNextStep(x).values;
+		CcpProcess action = x -> new TransferDataBetweenTables(JnEntity.login, JnEntity.logout).goToTheNextStep(x).values;
 		this.crud
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login).returnStatus(404).and()
-			.ifThisIdIsPresentInTable(JnBusinessEntity.login).executeAction(action).andFinally()
+			.ifThisIdIsNotPresentInTable(JnEntity.login).returnStatus(404).and()
+			.ifThisIdIsPresentInTable(JnEntity.login).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
 
