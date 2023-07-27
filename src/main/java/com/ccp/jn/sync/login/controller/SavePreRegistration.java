@@ -20,9 +20,9 @@ public class SavePreRegistration {
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_password).returnStatus(401).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).returnStatus(404).and()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.login).returnStatus(409).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.pre_registration).executeAction(action).andFinally()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.pre_registration).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
 

@@ -30,9 +30,9 @@ public class SaveWeakPassword {
 			.toBeginProcedureAnd()
 				.loadThisIdFromTable(JnBusinessEntity.user_stats).andSo()	
 				.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
-				.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
-				.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.pre_registration).returnStatus(201).and()
-				.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.weak_password).executeAction(saveWeakPassword).andFinally()
+				.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).returnStatus(404).and()
+				.ifThisIdIsNotPresentInTable(JnBusinessEntity.pre_registration).returnStatus(201).and()
+				.ifThisIdIsNotPresentInTable(JnBusinessEntity.weak_password).executeAction(saveWeakPassword).andFinally()
 			.endThisProcedure()
 			;
 

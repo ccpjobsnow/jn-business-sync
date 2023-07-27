@@ -54,10 +54,10 @@ public class UpdatePassword {
 			.loadThisIdFromTable(JnBusinessEntity.user_stats).andSo()
 			.loadThisIdFromTable(JnBusinessEntity.token_tries).andSo()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).returnStatus(404).and()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.login).returnStatus(409).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.pre_registration).returnStatus(201).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.password).executeAction(this.decisionTree).andFinally()	
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.pre_registration).returnStatus(201).and()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.password).executeAction(this.decisionTree).andFinally()	
 		.endThisProcedure()
 		;
 	}

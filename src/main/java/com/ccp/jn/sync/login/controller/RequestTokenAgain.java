@@ -26,10 +26,10 @@ public class RequestTokenAgain {
 		.useThisId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).returnStatus(404).and()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.request_token_again).returnStatus(420).and()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.request_token_again_answered).returnStatus(204).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.request_token_again).executeAction(action).andFinally()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.request_token_again).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
 		

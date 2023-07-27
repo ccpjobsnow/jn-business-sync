@@ -27,7 +27,7 @@ public class RequestToken {
 		.useThisId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.locked_token).returnStatus(403).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).executeAction(action).andFinally()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
 

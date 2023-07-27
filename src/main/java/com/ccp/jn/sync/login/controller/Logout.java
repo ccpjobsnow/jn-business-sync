@@ -20,7 +20,7 @@ public class Logout {
 		this.crud
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login).returnStatus(404).and()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login).returnStatus(404).and()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.login).executeAction(action).andFinally()
 		.endThisProcedure()
 		;

@@ -44,9 +44,9 @@ public class UnlockToken {
 		this.crud
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.login_token).returnStatus(404).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.locked_token).returnStatus(422).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.request_unlock_token).returnStatus(420).and()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.locked_token).returnStatus(422).and()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.request_unlock_token).returnStatus(420).and()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.failed_unlock_token).returnStatus(403).and()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.request_unlock_token_answered).executeAction(this.decisionTree).andFinally()
 		.endThisProcedure()

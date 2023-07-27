@@ -26,7 +26,7 @@ public class DownloadResumeToRecruiter {
 		CcpMapDecorator result = this.crud.useThisId(values)
 		.toBeginProcedureAnd()
 		.ifThisIdIsPresentInTable(JnBusinessEntity.denied_view_to_recruiter).returnStatus(403).and()
-		.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.candidate_resume).returnStatus(404).and()
+		.ifThisIdIsNotPresentInTable(JnBusinessEntity.candidate_resume).returnStatus(404).and()
 		.ifThisIdIsPresentInTable(JnBusinessEntity.candidate_resume).executeAction(this.action).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 		

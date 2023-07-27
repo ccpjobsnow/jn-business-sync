@@ -27,7 +27,7 @@ public class DownloadResumeToHisOwner {
 		.useThisId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInTable(JnBusinessEntity.candidate).executeAction(this.action).and()
-			.ifThisIdIsNotPresentInTableThen(JnBusinessEntity.candidate).returnStatus(404).andFinally()
+			.ifThisIdIsNotPresentInTable(JnBusinessEntity.candidate).returnStatus(404).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 
 
