@@ -3,7 +3,6 @@ package com.ccp.jn.sync.login.controller;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDao;
-import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.SavePassword;
 import com.ccp.process.CcpProcess;
@@ -11,9 +10,6 @@ import com.jn.commons.JnEntity;
 
 public class SaveWeakPassword {
 
-	@CcpDependencyInject
-	private CcpMensageriaSender mensageriaSender;
-	
 	@CcpDependencyInject
 	private CcpDao crud;
 
@@ -28,11 +24,11 @@ public class SaveWeakPassword {
 			this.crud
 			.useThisId(parameters)
 			.toBeginProcedureAnd()
-				.loadThisIdFromTable(JnEntity.user_stats).andSo()	
-				.ifThisIdIsPresentInTable(JnEntity.locked_token).returnStatus(403).and()
-				.ifThisIdIsNotPresentInTable(JnEntity.login_token).returnStatus(404).and()
-				.ifThisIdIsNotPresentInTable(JnEntity.pre_registration).returnStatus(201).and()
-				.ifThisIdIsNotPresentInTable(JnEntity.weak_password).executeAction(saveWeakPassword).andFinally()
+				.loadThisIdFromEntity(JnEntity.user_stats).andSo()	
+				.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(403).and()
+				.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(404).and()
+				.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(201).and()
+				.ifThisIdIsNotPresentInEntity(JnEntity.weak_password).executeAction(saveWeakPassword).andFinally()
 			.endThisProcedure()
 			;
 

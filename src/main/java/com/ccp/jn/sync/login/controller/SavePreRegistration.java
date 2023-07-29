@@ -18,11 +18,11 @@ public class SavePreRegistration {
 		this.crud
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInTable(JnEntity.locked_token).returnStatus(403).and()
-			.ifThisIdIsPresentInTable(JnEntity.locked_password).returnStatus(401).and()
-			.ifThisIdIsNotPresentInTable(JnEntity.login_token).returnStatus(404).and()
-			.ifThisIdIsPresentInTable(JnEntity.login).returnStatus(409).and()
-			.ifThisIdIsNotPresentInTable(JnEntity.pre_registration).executeAction(action).andFinally()
+			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(403).and()
+			.ifThisIdIsPresentInEntity(JnEntity.locked_password).returnStatus(401).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsPresentInEntity(JnEntity.login).returnStatus(409).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
 

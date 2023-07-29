@@ -19,7 +19,7 @@ public class SaveLogin extends CcpNextStep {
 		String token = textDecorator.generateToken(8);
 		values = values.put("token", token);
 
-		CcpMapDecorator userStats = values.getInternalMap("_tables").getInternalMap(JnEntity.user_stats.name()).getSubMap("loginCount", "lastLogin");
+		CcpMapDecorator userStats = values.getInternalMap("_entities").getInternalMap(JnEntity.user_stats.name()).getSubMap("loginCount", "lastLogin");
 		CcpMapDecorator putAll = values.putAll(userStats);
 		return new CcpStepResult(putAll, 200, this);
 	}

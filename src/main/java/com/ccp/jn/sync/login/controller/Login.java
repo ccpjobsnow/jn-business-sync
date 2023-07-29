@@ -5,9 +5,8 @@ import java.util.Map;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.crud.CcpDao;
-import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.especifications.password.CcpPasswordHandler;
-import com.ccp.jn.sync.common.business.ResetTable;
+import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.ValidatePassword;
 import com.ccp.process.CcpProcess;
@@ -19,13 +18,10 @@ public class Login{
 	@CcpDependencyInject
 	private CcpPasswordHandler passwordHandler;
 
-	@CcpDependencyInject
-	private CcpMensageriaSender mensageriaSender;
-	
 	private CcpProcess decisionTree = values ->{
 		
 		return new ValidatePassword(this.passwordHandler, JnEntity.password)
-				.addStep(200, new ResetTable(this.mensageriaSender,"tries", 3, JnEntity.password_tries)
+				.addStep(200, new ResetEntity("tries", 3, JnEntity.password_tries)
 						.addStep(200, new SaveLogin())
 						)
 				.addStep(401, new EvaluateTries(JnEntity.password_tries, 401, 429)
@@ -38,27 +34,27 @@ public class Login{
 	@CcpDependencyInject
 	private CcpDao crud;
 	
-	public Map<String, Object> execute (Map<String, Object> json){
+	public CcpMapDecorator execute (Map<String, Object> json){
 		
 		CcpMapDecorator values = new CcpMapDecorator(json);
 
 		CcpMapDecorator findById = this.crud
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.loadThisIdFromTable(JnEntity.user_stats).andSo()
-			.loadThisIdFromTable(JnEntity.password_tries).andSo()
-			.ifThisIdIsPresentInTable(JnEntity.locked_token).returnStatus(403).and()
-			.ifThisIdIsNotPresentInTable(JnEntity.login_token).returnStatus(404).and()
-			.ifThisIdIsPresentInTable(JnEntity.locked_password).returnStatus(401).and()
-			.ifThisIdIsPresentInTable(JnEntity.login).returnStatus(409).and()
-			.ifThisIdIsNotPresentInTable(JnEntity.pre_registration).returnStatus(201).and()
-			.ifThisIdIsNotPresentInTable(JnEntity.password).returnStatus(202).and()
-			.ifThisIdIsPresentInTable(JnEntity.password).executeAction(this.decisionTree).andFinally()
+			.loadThisIdFromEntity(JnEntity.user_stats).andSo()
+			.loadThisIdFromEntity(JnEntity.password_tries).andSo()
+			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(403).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(404).and()
+			.ifThisIdIsPresentInEntity(JnEntity.locked_password).returnStatus(401).and()
+			.ifThisIdIsPresentInEntity(JnEntity.login).returnStatus(409).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(201).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.password).returnStatus(202).and()
+			.ifThisIdIsPresentInEntity(JnEntity.password).executeAction(this.decisionTree).andFinally()
 		.endThisProcedureRetrievingTheResultingData()
 		;
 		
 		
-		return findById.content;
+		return findById;
 	}
 }
 

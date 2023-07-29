@@ -1,7 +1,5 @@
 package com.ccp.jn.sync.resumes.searchs.controller;
 
-import java.util.Map;
-
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
@@ -18,19 +16,19 @@ public class DownloadResumeToRecruiter {
 	private CcpDao crud;
 
 	
-	public Map<String, Object> execute (String resume, String recruiter, String viewType){
+	public CcpMapDecorator execute (String resume, String recruiter, String viewType){
 	
 		CcpMapDecorator values = new CcpMapDecorator().put("resume", resume).put("recruiter", recruiter).put("viewType", viewType);
 
 		
 		CcpMapDecorator result = this.crud.useThisId(values)
 		.toBeginProcedureAnd()
-		.ifThisIdIsPresentInTable(JnEntity.denied_view_to_recruiter).returnStatus(403).and()
-		.ifThisIdIsNotPresentInTable(JnEntity.candidate_resume).returnStatus(404).and()
-		.ifThisIdIsPresentInTable(JnEntity.candidate_resume).executeAction(this.action).andFinally()
+		.ifThisIdIsPresentInEntity(JnEntity.denied_view_to_recruiter).returnStatus(403).and()
+		.ifThisIdIsNotPresentInEntity(JnEntity.candidate_resume).returnStatus(404).and()
+		.ifThisIdIsPresentInEntity(JnEntity.candidate_resume).executeAction(this.action).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 		
-		return result.content;
+		return result;
 
 	}
 }

@@ -39,10 +39,10 @@ public class RemoveResume {
 	}
 
 
-	private void removeFromDatabase(JnEntity table, String resume) {
+	private void removeFromDatabase(JnEntity entity, String resume) {
 		CcpMapDecorator values = new CcpMapDecorator().put("resume", resume);
 		
-		table.delete(values);
+		entity.delete(values);
 	}
 
 

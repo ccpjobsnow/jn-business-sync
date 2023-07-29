@@ -7,7 +7,7 @@ import com.jn.commons.JnEntity;
 
 public class GetResumesData {
 	
-	public Map<String, Object> execute(String searchType, Map<String, Object> json){
+	public CcpMapDecorator execute(String searchType, Map<String, Object> json){
 	
 		JnEntity entity = JnEntity.valueOf(searchType.replace("search_", ""));
 		
@@ -17,7 +17,7 @@ public class GetResumesData {
 		
 		CcpMapDecorator result = entity.getOneById(query);
 		
-		return result.content;
+		return result;
 	}
 
 }

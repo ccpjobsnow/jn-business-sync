@@ -1,7 +1,5 @@
 package com.ccp.jn.sync.resumes.crud.controller;
 
-import java.util.Map;
-
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
@@ -18,7 +16,7 @@ public class DownloadResumeToHisOwner {
 	private CcpDao crud;
 
 	
-	public Map<String, Object> execute (String email, String viewType){
+	public CcpMapDecorator execute (String email, String viewType){
 
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email).put("viewType", viewType);
 		
@@ -26,11 +24,11 @@ public class DownloadResumeToHisOwner {
 		CcpMapDecorator put = this.crud
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInTable(JnEntity.candidate).executeAction(this.action).and()
-			.ifThisIdIsNotPresentInTable(JnEntity.candidate).returnStatus(404).andFinally()
+			.ifThisIdIsPresentInEntity(JnEntity.candidate).executeAction(this.action).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.candidate).returnStatus(404).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 
 
-		return put.content;
+		return put;
 	}
 }

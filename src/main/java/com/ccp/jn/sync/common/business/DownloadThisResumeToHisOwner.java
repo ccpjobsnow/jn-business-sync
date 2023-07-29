@@ -18,7 +18,7 @@ public class DownloadThisResumeToHisOwner implements CcpProcess {
 	@Override
 	public CcpMapDecorator execute(CcpMapDecorator values) {
 
-		CcpMapDecorator candidate = values.getInternalMap("_tables").getInternalMap(JnEntity.candidate.name());
+		CcpMapDecorator candidate = values.getInternalMap("_entities").getInternalMap(JnEntity.candidate.name());
 		
 		String viewType = values.getAsString("viewType");
 		String resume = candidate.getAsString("resume");
