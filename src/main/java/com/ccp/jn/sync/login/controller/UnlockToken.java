@@ -2,7 +2,7 @@ package com.ccp.jn.sync.login.controller;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.crud.CcpDao;
+import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.db.utils.TransferDataBetweenEntities;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.jn.sync.common.business.ResetEntity;
@@ -31,12 +31,12 @@ public class UnlockToken {
 	};
 
 	@CcpDependencyInject
-	private CcpDao crud;
+	private CcpDao dao;
 	
 	public CcpMapDecorator execute (String email){
 		
 		CcpMapDecorator values = new CcpMapDecorator(new CcpMapDecorator().put("email", email));
-		CcpMapDecorator result = this.crud
+		CcpMapDecorator result = this.dao
 		.useThisId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(404).and()

@@ -4,14 +4,14 @@ import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.crud.CcpDao;
+import com.ccp.especifications.db.dao.CcpDao;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 
 public class SaveContactUs {
 	
 	@CcpDependencyInject
-	private CcpDao crud;
+	private CcpDao dao;
 
 
 	public CcpMapDecorator execute (Map<String, Object> json){

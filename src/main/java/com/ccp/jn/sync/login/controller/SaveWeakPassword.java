@@ -2,7 +2,7 @@ package com.ccp.jn.sync.login.controller;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.crud.CcpDao;
+import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.SavePassword;
 import com.ccp.process.CcpProcess;
@@ -11,7 +11,7 @@ import com.jn.commons.JnEntity;
 public class SaveWeakPassword {
 
 	@CcpDependencyInject
-	private CcpDao crud;
+	private CcpDao dao;
 
 	public void execute (CcpMapDecorator parameters){
 
@@ -21,7 +21,7 @@ public class SaveWeakPassword {
 				.addStep(201, null)
 				.goToTheNextStep(valores).values;
 		
-			this.crud
+			this.dao
 			.useThisId(parameters)
 			.toBeginProcedureAnd()
 				.loadThisIdFromEntity(JnEntity.user_stats).andSo()	

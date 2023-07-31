@@ -2,7 +2,7 @@ package com.ccp.jn.sync.login.controller;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.crud.CcpDao;
+import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.db.utils.TransferDataBetweenEntities;
 import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
 import com.ccp.jn.sync.common.business.EvaluateToken;
@@ -15,7 +15,7 @@ import com.jn.commons.JnEntity;
 public class UpdatePassword {
 
 	@CcpDependencyInject
-	private CcpDao crud;
+	private CcpDao dao;
 
 	private CcpProcess decisionTree = values ->{
 		
@@ -43,7 +43,7 @@ public class UpdatePassword {
 		/*
 		 * Salvar senha desbloqueada
 		 */
-		CcpMapDecorator result = this.crud
+		CcpMapDecorator result = this.dao
 		.useThisId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntity.user_stats).andSo()

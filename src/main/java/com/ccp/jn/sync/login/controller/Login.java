@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.crud.CcpDao;
+import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SaveLogin;
@@ -32,13 +32,13 @@ public class Login{
 	};
 
 	@CcpDependencyInject
-	private CcpDao crud;
+	private CcpDao dao;
 	
 	public CcpMapDecorator execute (Map<String, Object> json){
 		
 		CcpMapDecorator values = new CcpMapDecorator(json);
 
-		CcpMapDecorator findById = this.crud
+		CcpMapDecorator findById = this.dao
 		.useThisId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntity.user_stats).andSo()
