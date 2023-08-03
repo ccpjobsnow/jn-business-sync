@@ -1,9 +1,10 @@
 package com.ccp.jn.sync.login.controller;
 
+import java.util.function.Function;
+
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.dao.CcpDao;
-import com.ccp.process.CcpProcess;
 import com.jn.commons.JnEntity;
 
 public class SavePreRegistration {
@@ -14,7 +15,7 @@ public class SavePreRegistration {
 	
 	public void execute (CcpMapDecorator values){
 		
-		CcpProcess action = valores -> JnEntity.pre_registration.createOrUpdate(valores);
+		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnEntity.pre_registration.createOrUpdate(valores);
 		this.dao
 		.useThisId(values)
 		.toBeginProcedureAnd()

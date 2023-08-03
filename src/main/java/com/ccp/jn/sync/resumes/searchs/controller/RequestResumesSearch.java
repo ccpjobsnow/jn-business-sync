@@ -8,7 +8,7 @@ import com.jn.commons.JnTopic;
 
 public class RequestResumesSearch {
 
-	public CcpMapDecorator execute(String recruiter, String searchType, Map<String, Object> json){
+	public CcpMapDecorator apply(String recruiter, String searchType, Map<String, Object> json){
 		
 		JnEntity entity = JnEntity.valueOf(searchType);
 		

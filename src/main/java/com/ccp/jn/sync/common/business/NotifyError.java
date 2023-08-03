@@ -5,7 +5,7 @@ import com.jn.commons.JnTopic;
 
 public class NotifyError {
 
-	public CcpMapDecorator execute(Throwable e) {
+	public CcpMapDecorator apply(Throwable e) {
 		CcpMapDecorator md = new CcpMapDecorator(e);
 		CcpMapDecorator send = JnTopic.notifyError.send(md);
 		return send;

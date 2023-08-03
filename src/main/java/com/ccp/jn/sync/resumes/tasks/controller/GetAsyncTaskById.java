@@ -6,7 +6,7 @@ import com.jn.commons.JnTopic;
 
 public class GetAsyncTaskById {
 
-	public CcpMapDecorator execute(String asyncTaskId) {
+	public CcpMapDecorator apply(String asyncTaskId) {
 		CcpMapDecorator asyncTask = JnEntity.async_task.getOneById(asyncTaskId);
 		String topicName = asyncTask.getAsString("topic");
 		JnTopic topic = JnTopic.valueOf(topicName);

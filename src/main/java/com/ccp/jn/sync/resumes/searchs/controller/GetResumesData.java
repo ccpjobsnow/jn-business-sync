@@ -7,7 +7,7 @@ import com.jn.commons.JnEntity;
 
 public class GetResumesData {
 	
-	public CcpMapDecorator execute(String searchType, Map<String, Object> json){
+	public CcpMapDecorator apply(String searchType, Map<String, Object> json){
 	
 		JnEntity entity = JnEntity.valueOf(searchType.replace("search_", ""));
 		

@@ -4,10 +4,10 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
-import com.ccp.process.CcpProcess;
+
 import com.jn.commons.JnEntity;
 
-public class DownloadThisResumeToHisOwner implements CcpProcess {
+public class DownloadThisResumeToHisOwner implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
 	private final DownloadResume downloadResume = CcpDependencyInjection.getInjected(DownloadResume.class);
 	
@@ -16,7 +16,7 @@ public class DownloadThisResumeToHisOwner implements CcpProcess {
 	}
 
 	@Override
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 
 		CcpMapDecorator candidate = values.getInternalMap("_entities").getInternalMap(JnEntity.candidate.name());
 		
@@ -25,7 +25,7 @@ public class DownloadThisResumeToHisOwner implements CcpProcess {
 
 		JnEntity.candidate_view_resume.createOrUpdate(new CcpMapDecorator().put("resume", resume).put("viewType", viewType));
 		
-		CcpMapDecorator execute = this.downloadResume.execute(values);
+		CcpMapDecorator execute = this.downloadResume.apply(values);
 		
 		return execute;
 	}

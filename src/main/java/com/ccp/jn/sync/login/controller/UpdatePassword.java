@@ -1,5 +1,7 @@
 package com.ccp.jn.sync.login.controller;
 
+import java.util.function.Function;
+
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.dao.CcpDao;
@@ -8,7 +10,6 @@ import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
 import com.ccp.jn.sync.common.business.EvaluateToken;
 import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SaveLogin;
-import com.ccp.process.CcpProcess;
 import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnEntity;
 
@@ -17,7 +18,7 @@ public class UpdatePassword {
 	@CcpDependencyInject
 	private CcpDao dao;
 
-	private CcpProcess decisionTree = values ->{
+	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
 		return new EvaluateToken()
 				.addStep(401, new EvaluateTries(JnEntity.token_tries, 401, 403)

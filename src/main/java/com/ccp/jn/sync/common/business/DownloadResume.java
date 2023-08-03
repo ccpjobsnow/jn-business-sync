@@ -6,11 +6,11 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.process.CcpMapTransform;
-import com.ccp.process.CcpProcess;
+
 import com.jn.commons.JnCacheKeys;
 import com.jn.commons.JnConstants;
 
-public class DownloadResume implements CcpProcess{
+public class DownloadResume implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 	private final CcpFileBucket bucket = CcpDependencyInjection.getInjected(CcpFileBucket.class);
 	private final CcpCache cache = CcpDependencyInjection.getInjected(CcpCache.class);
@@ -19,7 +19,7 @@ public class DownloadResume implements CcpProcess{
 	}
 
 	@Override
-	public CcpMapDecorator execute(CcpMapDecorator values) {
+	public CcpMapDecorator apply(CcpMapDecorator values) {
 
 		String viewType = values.getAsString("viewType");
 		String resume = values.getAsString("resume");

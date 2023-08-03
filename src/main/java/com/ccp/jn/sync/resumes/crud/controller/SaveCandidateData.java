@@ -8,7 +8,7 @@ import com.jn.commons.JnTopic;
 public class SaveCandidateData {
 
 	
-	public CcpMapDecorator execute(Map<String, Object> json){
+	public CcpMapDecorator apply(Map<String, Object> json){
 		CcpMapDecorator send = JnTopic.saveCandidateData.send(new CcpMapDecorator(json));
 		return send;
 	}

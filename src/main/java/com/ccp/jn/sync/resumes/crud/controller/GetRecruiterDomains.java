@@ -17,7 +17,7 @@ public class GetRecruiterDomains {
 	private CcpCache cache;
 
 	
-	public CcpMapDecorator execute(String firstLetters){
+	public CcpMapDecorator apply(String firstLetters){
 		int cacheExpires = JnConstants.ONE_HOUR_IN_SECONDS;
 		String cacheKey = JnCacheKeys.RECRUITERS_DOMAINS_KEY + JnConstants.DOT + firstLetters;
 		CcpMapTransform<CcpMapDecorator> cacheLayer = valores -> JnEntity.recruiter_domains.getOneById(new CcpMapDecorator().put("prefix", firstLetters), values -> values.put("domains", new ArrayList<>()));

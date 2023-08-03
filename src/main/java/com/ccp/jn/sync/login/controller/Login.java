@@ -1,6 +1,7 @@
 package com.ccp.jn.sync.login.controller;
 
 import java.util.Map;
+import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
@@ -9,7 +10,6 @@ import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.ValidatePassword;
-import com.ccp.process.CcpProcess;
 import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnEntity;
 
@@ -18,7 +18,7 @@ public class Login{
 	@CcpDependencyInject
 	private CcpPasswordHandler passwordHandler;
 
-	private CcpProcess decisionTree = values ->{
+	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
 		return new ValidatePassword(this.passwordHandler, JnEntity.password)
 				.addStep(200, new ResetEntity("tries", 3, JnEntity.password_tries)
