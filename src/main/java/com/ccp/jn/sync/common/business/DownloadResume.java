@@ -2,23 +2,20 @@ package com.ccp.jn.sync.common.business;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.process.CcpMapTransform;
-
 import com.jn.commons.JnCacheKeys;
 import com.jn.commons.JnConstants;
 
 public class DownloadResume implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
-	private final CcpFileBucket bucket = CcpDependencyInjection.getInjected(CcpFileBucket.class);
-	private final CcpCache cache = CcpDependencyInjection.getInjected(CcpCache.class);
+	@CcpDependencyInject
+	private CcpFileBucket bucket;
+	@CcpDependencyInject
+	private CcpCache cache;
 
-	private DownloadResume() {
-	}
-
-	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 
 		String viewType = values.getAsString("viewType");
