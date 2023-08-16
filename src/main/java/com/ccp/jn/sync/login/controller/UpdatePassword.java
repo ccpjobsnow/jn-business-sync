@@ -48,7 +48,6 @@ public class UpdatePassword {
 		.useThisId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntity.user_stats).andSo()
-			.loadThisIdFromEntity(JnEntity.token_tries).andSo()
 			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(403).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(404).and()
 			.ifThisIdIsPresentInEntity(JnEntity.login).returnStatus(409).and()
