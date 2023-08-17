@@ -5,6 +5,7 @@ import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.jn.sync.common.business.DownloadThisResumeToHisOwner;
+import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.jn.commons.JnEntity;
 
 
@@ -25,7 +26,7 @@ public class DownloadResumeToHisOwner {
 		.useThisId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(JnEntity.candidate).executeAction(this.action).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.candidate).returnStatus(404).andFinally()
+			.ifThisIdIsNotPresentInEntity(JnEntity.candidate).returnStatus(JnProcessStatus.candidateNotFound).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 
 

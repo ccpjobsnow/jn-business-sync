@@ -3,6 +3,7 @@ package com.ccp.jn.sync.contactus.controller;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.dao.CcpDao;
+import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.jn.commons.JnEntity;
 
 public class VerifyContactUs {
@@ -17,7 +18,7 @@ public class VerifyContactUs {
 		this.dao
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntity.contact_us).returnStatus(200).andFinally()
+			.ifThisIdIsPresentInEntity(JnEntity.contact_us).returnStatus(JnProcessStatus.nextStep).andFinally()
 		.endThisProcedure();
 	}
 }

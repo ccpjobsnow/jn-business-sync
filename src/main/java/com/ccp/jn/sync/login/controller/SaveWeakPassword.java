@@ -5,6 +5,7 @@ import java.util.function.Function;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.dao.CcpDao;
+import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.SavePassword;
 import com.ccp.process.CcpProcessStatus;
@@ -27,9 +28,9 @@ public class SaveWeakPassword {
 			.useThisId(parameters)
 			.toBeginProcedureAnd()
 				.loadThisIdFromEntity(JnEntity.user_stats).andSo()	
-				.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(403).and()
-				.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(404).and()
-				.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(201).and()
+				.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+				.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+				.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
 				.ifThisIdIsNotPresentInEntity(JnEntity.weak_password).executeAction(saveWeakPassword).andFinally()
 			.endThisProcedure()
 			;

@@ -8,6 +8,7 @@ import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.db.utils.TransferDataBetweenEntities;
 import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
 import com.ccp.jn.sync.common.business.EvaluateToken;
+import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.SavePassword;
@@ -58,16 +59,15 @@ public class UpdatePassword {
 	public CcpMapDecorator execute (CcpMapDecorator values){
 		
 		/*
-		 * Salvar senha desbloqueada
+		 *TODO Salvar senha desbloqueada
 		 */
 		CcpMapDecorator result = this.dao
 		.useThisId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntity.user_stats).andSo()
-			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(403).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(404).and()
-			.ifThisIdIsPresentInEntity(JnEntity.login).returnStatus(409).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(201).and()
+			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.password).executeAction(this.decisionTree).andFinally()	
 		.endThisProcedureRetrievingTheResultingData();
 		

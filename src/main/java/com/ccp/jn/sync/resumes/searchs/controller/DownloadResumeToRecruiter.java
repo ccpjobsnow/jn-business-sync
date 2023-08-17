@@ -5,6 +5,7 @@ import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.jn.sync.common.business.DownloadResumeToRecruiterAction;
+import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.jn.commons.JnEntity;
 
 
@@ -23,8 +24,8 @@ public class DownloadResumeToRecruiter {
 		
 		CcpMapDecorator result = this.dao.useThisId(values)
 		.toBeginProcedureAnd()
-		.ifThisIdIsPresentInEntity(JnEntity.denied_view_to_recruiter).returnStatus(403).and()
-		.ifThisIdIsNotPresentInEntity(JnEntity.candidate_resume).returnStatus(404).and()
+		.ifThisIdIsPresentInEntity(JnEntity.denied_view_to_recruiter).returnStatus(JnProcessStatus.resumeHasBeenDeniedToRecruiter).and()
+		.ifThisIdIsNotPresentInEntity(JnEntity.candidate_resume).returnStatus(JnProcessStatus.resumeNotFound).and()
 		.ifThisIdIsPresentInEntity(JnEntity.candidate_resume).executeAction(this.action).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 		

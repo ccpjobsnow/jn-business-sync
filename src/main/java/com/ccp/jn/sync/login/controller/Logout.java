@@ -6,6 +6,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.db.utils.TransferDataBetweenEntities;
+import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.jn.commons.JnEntity;
 
 public class Logout {
@@ -21,7 +22,7 @@ public class Logout {
 		this.dao
 		.useThisId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsNotPresentInEntity(JnEntity.login).returnStatus(404).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.login).returnStatus(JnProcessStatus.unableToExecuteLogout).and()
 			.ifThisIdIsPresentInEntity(JnEntity.login).executeAction(action).andFinally()
 		.endThisProcedure()
 		;
