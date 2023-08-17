@@ -7,20 +7,20 @@ import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.SavePassword;
-
+import com.ccp.process.CcpProcessStatus;
 import com.jn.commons.JnEntity;
 
 public class SaveWeakPassword {
+
 
 	@CcpDependencyInject
 	private CcpDao dao;
 
 	public void execute (CcpMapDecorator parameters){
-
-		Function<CcpMapDecorator, CcpMapDecorator> saveWeakPassword = valores -> JnEntity.weak_password.getSaver(200)
-				.addStep(200, new SavePassword()
-						.addStep(200, new SaveLogin()))
-				.addStep(201, null)
+		//TODO ESSE CARA VAI PRECISAR RETORNAR O 201???
+		Function<CcpMapDecorator, CcpMapDecorator> saveWeakPassword = valores -> JnEntity.weak_password.getSaver(CcpProcessStatus.nextStep)
+				.addStep(CcpProcessStatus.nextStep, new SavePassword()
+						.addStep(CcpProcessStatus.nextStep, new SaveLogin()))
 				.goToTheNextStep(valores).values;
 		
 			this.dao

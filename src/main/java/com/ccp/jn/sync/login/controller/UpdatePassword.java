@@ -10,31 +10,47 @@ import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
 import com.ccp.jn.sync.common.business.EvaluateToken;
 import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SaveLogin;
+import com.ccp.jn.sync.common.business.SavePassword;
+import com.ccp.process.CcpNextStep;
+import com.ccp.process.CcpStepResult;
+import com.ccp.process.CcpProcessStatus;
 import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnEntity;
-
 public class UpdatePassword {
+	private static enum Status implements CcpProcessStatus{
+		wrongToken(401),
+		correctToken(200),
+		exceededTries(403),
+		weakPassword(422)
+		
+		;
+		int status;
+		private Status(int status) {
+			this.status = status;
+		}
+		@Override
+		public int status() {
+			return this.status;
+		}
+		
+	}
 
 	@CcpDependencyInject
 	private CcpDao dao;
 
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
-		return new EvaluateToken()
-				.addStep(401, new EvaluateTries(JnEntity.token_tries, 401, 403)
-							.addStep(403, JnEntity.locked_token.getSaver(403))
-						)
-				.addStep(200, new ResetEntity("tries", 3, JnEntity.token_tries)
-						.addStep(200, new TransferDataBetweenEntities(JnEntity.login_conflict, JnEntity.login_conflict_solved)
-								.addStep(200, new TransferDataBetweenEntities(JnEntity.locked_password, JnEntity.unlocked_password)
-										.addStep(200, new EvaluatePasswordStrength()
-												.addStep(422, JnEntity.weak_password.getSaver(200))
-												.addStep(200, new SaveLogin())
-												)	
-										)
-								)
-						)
-				.goToTheNextStep(values).values;
+		CcpNextStep savePassword = new SavePassword().addStep(Status.nextStep, new SaveLogin());
+		CcpNextStep saveWeakPassword = JnEntity.weak_password.getSaver(Status.nextStep).addStep(Status.nextStep, new SaveLogin());
+		CcpNextStep evaluatePasswordStrength = new EvaluatePasswordStrength().addStep(Status.weakPassword, saveWeakPassword).addStep(Status.nextStep, savePassword);
+		CcpNextStep unLockPassword = new TransferDataBetweenEntities(JnEntity.locked_password, JnEntity.unlocked_password).addStep(Status.nextStep, evaluatePasswordStrength);
+		CcpNextStep solveLoginConflict = new TransferDataBetweenEntities(JnEntity.login_conflict, JnEntity.login_conflict_solved).addStep(Status.nextStep, unLockPassword);
+		CcpNextStep removeTokenTries = new ResetEntity("tries", 3, JnEntity.token_tries).addStep(Status.nextStep, solveLoginConflict);
+		CcpNextStep evaluateTokenTries = new EvaluateTries(JnEntity.token_tries, Status.wrongToken, Status.exceededTries).addStep(Status.exceededTries, JnEntity.locked_token.getSaver(Status.exceededTries));
+		CcpNextStep evaluateToken = new EvaluateToken().addStep(Status.wrongToken, evaluateTokenTries).addStep(Status.correctToken, removeTokenTries);
+		
+		CcpStepResult goToTheNextStep = evaluateToken.goToTheNextStep(values);
+		return goToTheNextStep.values;
 		
 	};
 

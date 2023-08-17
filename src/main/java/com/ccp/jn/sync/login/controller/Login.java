@@ -10,22 +10,39 @@ import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.ValidatePassword;
+import com.ccp.process.CcpProcessStatus;
 import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnEntity;
 
 public class Login{
+	
+	private static enum Status implements CcpProcessStatus{
+		wrongPassword(401),
+		exceededTries(429)
+		;
+		int status;
 
+		private Status(int status) {
+			this.status = status;
+		}
+
+		public int status() {
+			return this.status;
+		}
+	}
+	
+	
 	@CcpDependencyInject
 	private CcpPasswordHandler passwordHandler;
 
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
 		return new ValidatePassword(this.passwordHandler, JnEntity.password)
-				.addStep(200, new ResetEntity("tries", 3, JnEntity.password_tries)
-						.addStep(200, new SaveLogin())
+				.addStep(Status.nextStep, new ResetEntity("tries", 3, JnEntity.password_tries)
+						.addStep(Status.nextStep, new SaveLogin())
 						)
-				.addStep(401, new EvaluateTries(JnEntity.password_tries, 401, 429)
-						.addStep(429, JnEntity.locked_password.getSaver(429))
+				.addStep(Status.wrongPassword, new EvaluateTries(JnEntity.password_tries, Status.wrongPassword, Status.exceededTries)
+						.addStep(Status.exceededTries, JnEntity.locked_password.getSaver(Status.exceededTries))
 				)
 				.goToTheNextStep(values).values;
 		
