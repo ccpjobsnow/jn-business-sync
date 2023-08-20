@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.SaveLogin;
@@ -16,12 +17,13 @@ public class SaveWeakPassword {
 
 	@CcpDependencyInject
 	private CcpDao dao;
+	private final SavePassword passwordHandler = CcpDependencyInjection.getInjected(SavePassword.class);
 
 	public void execute (CcpMapDecorator parameters){
+
 		//TODO ESSE CARA VAI PRECISAR RETORNAR O 201???
 		Function<CcpMapDecorator, CcpMapDecorator> saveWeakPassword = valores -> JnEntity.weak_password.getSaver(CcpProcessStatus.nextStep)
-				.addStep(CcpProcessStatus.nextStep, new SavePassword()
-						.addStep(CcpProcessStatus.nextStep, new SaveLogin()))
+				.addStep(CcpProcessStatus.nextStep, this.passwordHandler.addStep(CcpProcessStatus.nextStep, new SaveLogin()))
 				.goToTheNextStep(valores).values;
 		
 			this.dao

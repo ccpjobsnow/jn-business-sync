@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.dao.CcpDao;
 import com.ccp.especifications.db.utils.TransferDataBetweenEntities;
 import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
@@ -13,8 +14,8 @@ import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.SavePassword;
 import com.ccp.process.CcpNextStep;
-import com.ccp.process.CcpStepResult;
 import com.ccp.process.CcpProcessStatus;
+import com.ccp.process.CcpStepResult;
 import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnEntity;
 public class UpdatePassword {
@@ -39,10 +40,12 @@ public class UpdatePassword {
 	@CcpDependencyInject
 	private CcpDao dao;
 
+	private final SavePassword passwordHandler = CcpDependencyInjection.getInjected(SavePassword.class);
+	
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
-		CcpNextStep savePassword = new SavePassword().addStep(Status.nextStep, new SaveLogin());
-		CcpNextStep saveWeakPassword = JnEntity.weak_password.getSaver(Status.nextStep).addStep(Status.nextStep, new SaveLogin());
+		CcpNextStep savePassword = this.passwordHandler.addStep(Status.nextStep, new SaveLogin());
+		CcpNextStep saveWeakPassword = JnEntity.weak_password.getSaver(Status.nextStep).addStep(Status.nextStep, savePassword);
 		CcpNextStep evaluatePasswordStrength = new EvaluatePasswordStrength().addStep(Status.weakPassword, saveWeakPassword).addStep(Status.nextStep, savePassword);
 		CcpNextStep unLockPassword = new TransferDataBetweenEntities(JnEntity.locked_password, JnEntity.unlocked_password).addStep(Status.nextStep, evaluatePasswordStrength);
 		CcpNextStep solveLoginConflict = new TransferDataBetweenEntities(JnEntity.login_conflict, JnEntity.login_conflict_solved).addStep(Status.nextStep, unLockPassword);

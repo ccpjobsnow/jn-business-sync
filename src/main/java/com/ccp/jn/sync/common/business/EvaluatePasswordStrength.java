@@ -1,6 +1,7 @@
 package com.ccp.jn.sync.common.business;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpPasswordDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
@@ -12,9 +13,12 @@ public class EvaluatePasswordStrength extends CcpNextStep{
 		
 		String password = values.getAsString("password");
 		
-		boolean strongPassword = new CcpStringDecorator(password).password().isStrong();
+		CcpStringDecorator ccpStringDecorator = new CcpStringDecorator(password);
+		CcpPasswordDecorator pwd = ccpStringDecorator.password();
 		
-		if(strongPassword) {
+		boolean strongPassword = pwd.isStrong();
+		
+		if(strongPassword) {         
 			return new CcpStepResult(values, 200, this);
 		}
 		
