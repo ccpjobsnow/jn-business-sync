@@ -13,11 +13,11 @@ public class SaveLogin extends CcpNextStep {
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		
-		JnEntity.login.createOrUpdate(values);
-
 		CcpTextDecorator textDecorator = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text();
 		String token = textDecorator.generateToken(8);
 		values = values.put("token", token);
+		JnEntity.login.createOrUpdate(values);
+
 
 		CcpMapDecorator userStats = values.getInternalMap("_entities").getInternalMap(JnEntity.user_stats.name()).getSubMap("loginCount", "lastLogin");
 		CcpMapDecorator putAll = values.putAll(userStats);
