@@ -3,10 +3,8 @@ package com.ccp.jn.sync.login.controller;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.dao.CcpDao;
+import com.ccp.especifications.db.dao.UseThisId;
 import com.ccp.especifications.db.utils.TransferDataBetweenEntities;
-import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.ValidatePassword;
@@ -30,12 +28,10 @@ public class UnlockToken {
 		}
 	}
 
-	@CcpDependencyInject
-	private CcpPasswordHandler passwordHandler;
 
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
-		return new ValidatePassword(this.passwordHandler, JnEntity.request_unlock_token_answered)
+		return new ValidatePassword(JnEntity.request_unlock_token_answered)
 				.addStep(Status.nextStep, new ResetEntity("tries", 3, JnEntity.unlock_token_tries)
 						.addStep(Status.nextStep, new TransferDataBetweenEntities(JnEntity.locked_token, JnEntity.unlocked_token)
 							)
@@ -47,14 +43,10 @@ public class UnlockToken {
 		
 	};
 
-	@CcpDependencyInject
-	private CcpDao dao;
-	
 	public CcpMapDecorator execute (String email){
 		
 		CcpMapDecorator values = new CcpMapDecorator(new CcpMapDecorator().put("email", email));
-		CcpMapDecorator result = this.dao
-		.useThisId(values)
+		CcpMapDecorator result = new UseThisId(values, new CcpMapDecorator())
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.unableToUnlockToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.tokenIsNotLocked).and()

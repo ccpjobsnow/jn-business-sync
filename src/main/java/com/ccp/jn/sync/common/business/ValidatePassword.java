@@ -1,6 +1,7 @@
 package com.ccp.jn.sync.common.business;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.dependency.injection.CcpInstanceInjection;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
@@ -8,11 +9,10 @@ import com.jn.commons.JnEntity;
 
 public class ValidatePassword extends CcpNextStep {
 
-	final CcpPasswordHandler passwordHandler;
+	final CcpPasswordHandler passwordHandler = CcpInstanceInjection.getInstance(CcpPasswordHandler.class);
 	final JnEntity entity;
 	
-	public ValidatePassword(CcpPasswordHandler passwordHandler, JnEntity entity) {
-		this.passwordHandler = passwordHandler;
+	public ValidatePassword(JnEntity entity) {
 		this.entity = entity;
 	}
 	

@@ -3,9 +3,7 @@ package com.ccp.jn.sync.login.controller;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.dao.CcpDao;
+import com.ccp.especifications.db.dao.UseThisId;
 import com.ccp.especifications.db.utils.TransferDataBetweenEntities;
 import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
 import com.ccp.jn.sync.common.business.EvaluateToken;
@@ -37,10 +35,8 @@ public class UpdatePassword {
 		
 	}
 
-	@CcpDependencyInject
-	private CcpDao dao;
 
-	private final SavePassword passwordHandler = CcpDependencyInjection.getInjected(SavePassword.class);
+	private final SavePassword passwordHandler = new SavePassword();
 	
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
@@ -64,8 +60,7 @@ public class UpdatePassword {
 		/*
 		 *TODO Salvar senha desbloqueada
 		 */
-		CcpMapDecorator result = this.dao
-		.useThisId(values)
+		CcpMapDecorator result =  new UseThisId(values, new CcpMapDecorator())
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntity.user_stats).andSo()
 			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()

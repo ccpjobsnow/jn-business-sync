@@ -3,9 +3,7 @@ package com.ccp.jn.sync.login.controller;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.dao.CcpDao;
+import com.ccp.especifications.db.dao.UseThisId;
 import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.SaveLogin;
 import com.ccp.jn.sync.common.business.SavePassword;
@@ -14,10 +12,7 @@ import com.jn.commons.JnEntity;
 
 public class SaveWeakPassword {
 
-
-	@CcpDependencyInject
-	private CcpDao dao;
-	private final SavePassword passwordHandler = CcpDependencyInjection.getInjected(SavePassword.class);
+	private final SavePassword passwordHandler = new SavePassword();
 
 	public void execute (CcpMapDecorator parameters){
 
@@ -26,8 +21,7 @@ public class SaveWeakPassword {
 				.addStep(CcpProcessStatus.nextStep, this.passwordHandler.addStep(CcpProcessStatus.nextStep, new SaveLogin()))
 				.goToTheNextStep(valores).values;
 		
-			this.dao
-			.useThisId(parameters)
+		 new UseThisId(parameters, new CcpMapDecorator())
 			.toBeginProcedureAnd()
 				.loadThisIdFromEntity(JnEntity.user_stats).andSo()	
 				.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()

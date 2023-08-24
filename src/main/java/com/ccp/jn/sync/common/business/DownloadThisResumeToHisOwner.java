@@ -1,12 +1,11 @@
 package com.ccp.jn.sync.common.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.jn.commons.JnEntity;
 
 public class DownloadThisResumeToHisOwner implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
-	private final DownloadResume downloadResume = CcpDependencyInjection.getInjected(DownloadResume.class);
+	private final DownloadResume downloadResume = new DownloadResume();
 
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {

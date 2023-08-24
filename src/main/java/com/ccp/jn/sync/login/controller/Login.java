@@ -4,9 +4,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.dao.CcpDao;
-import com.ccp.especifications.password.CcpPasswordHandler;
+import com.ccp.especifications.db.dao.UseThisId;
 import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SaveLogin;
@@ -32,13 +30,9 @@ public class Login{
 		}
 	}
 	
-	
-	@CcpDependencyInject
-	private CcpPasswordHandler passwordHandler;
-
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
-		return new ValidatePassword(this.passwordHandler, JnEntity.password)
+		return new ValidatePassword(JnEntity.password)
 				.addStep(Status.nextStep, new ResetEntity("tries", 3, JnEntity.password_tries)
 						.addStep(Status.nextStep, new SaveLogin())
 						)
@@ -49,15 +43,12 @@ public class Login{
 		
 	};
 
-	@CcpDependencyInject
-	private CcpDao dao;
 	
 	public CcpMapDecorator execute (Map<String, Object> json){
 		
 		CcpMapDecorator values = new CcpMapDecorator(json);
 
-		CcpMapDecorator findById = this.dao
-		.useThisId(values)
+		CcpMapDecorator findById =  new UseThisId(values, new CcpMapDecorator())
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntity.user_stats).andSo()
 			.loadThisIdFromEntity(JnEntity.password_tries).andSo()
