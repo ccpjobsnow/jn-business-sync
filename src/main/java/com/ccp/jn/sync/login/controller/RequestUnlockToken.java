@@ -3,23 +3,18 @@ package com.ccp.jn.sync.login.controller;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.db.dao.CcpDao;
+import com.ccp.especifications.db.dao.UseThisId;
 import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
 
 public class RequestUnlockToken {
 	
-	@CcpDependencyInject
-	private CcpDao dao;
-	
 	public CcpMapDecorator execute (String email){
 		
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
 		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnTopic.requestUnlockToken.send(valores);
-		CcpMapDecorator result = this.dao
-		.useThisId(values)
+		CcpMapDecorator result =  new UseThisId(values, new CcpMapDecorator())
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.unableToRequestUnLockToken).and()

@@ -2,7 +2,7 @@ package com.ccp.jn.sync.common.business;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
+import com.ccp.dependency.injection.CcpInstanceInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.process.CcpMapTransform;
@@ -11,10 +11,9 @@ import com.jn.commons.JnConstants;
 
 public class DownloadResume implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
-	@CcpDependencyInject
-	private CcpFileBucket bucket;
-	@CcpDependencyInject
-	private CcpCache cache;
+	private CcpFileBucket bucket = CcpInstanceInjection.getInstance(CcpFileBucket.class);
+
+	private CcpCache cache = CcpInstanceInjection.getInstance(CcpCache.class);
 
 	public CcpMapDecorator apply(CcpMapDecorator values) {
 
