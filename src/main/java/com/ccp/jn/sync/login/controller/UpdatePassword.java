@@ -41,7 +41,7 @@ public class UpdatePassword {
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
 		CcpNextStep savePassword = this.passwordHandler.addStep(Status.nextStep, new SaveLogin());
-		CcpNextStep saveWeakPassword = JnEntity.weak_password.getSaver(Status.nextStep).addStep(Status.nextStep, savePassword);
+		CcpNextStep saveWeakPassword = JnEntity.weak_password.getSaver(Status.weakPassword).addEmptyStep();
 		CcpNextStep evaluatePasswordStrength = new EvaluatePasswordStrength().addStep(Status.weakPassword, saveWeakPassword).addStep(Status.nextStep, savePassword);
 		CcpNextStep unLockPassword = new TransferDataBetweenEntities(JnEntity.locked_password, JnEntity.unlocked_password).addStep(Status.nextStep, evaluatePasswordStrength);
 		CcpNextStep solveLoginConflict = new TransferDataBetweenEntities(JnEntity.login_conflict, JnEntity.login_conflict_solved).addStep(Status.nextStep, unLockPassword);
