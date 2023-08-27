@@ -1,7 +1,7 @@
 package com.ccp.jn.sync.resumes.crud.controller;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.jn.commons.JnCacheKeys;
@@ -10,9 +10,9 @@ import com.jn.commons.JnEntity;
 
 public class RemoveResume {
 	
-	private CcpFileBucket bucket = CcpInstanceInjection.getInstance(CcpFileBucket.class);
+	private CcpFileBucket bucket = CcpDependencyInjection.getDependency(CcpFileBucket.class);
 
-	private CcpCache cache = CcpInstanceInjection.getInstance(CcpCache.class);
+	private CcpCache cache = CcpDependencyInjection.getDependency(CcpCache.class);
 
 	public void execute (String resume){
 		

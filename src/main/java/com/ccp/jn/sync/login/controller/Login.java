@@ -33,8 +33,8 @@ public class Login{
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
 		return new ValidatePassword(JnEntity.password)
-				.addStep(Status.nextStep, new ResetEntity("tries", 3, JnEntity.password_tries)
-						.addStep(Status.nextStep, new SaveLogin())
+				.addNextStep(new ResetEntity("tries", 3, JnEntity.password_tries)
+						.addNextStep(new SaveLogin())
 						)
 				.addStep(Status.wrongPassword, new EvaluateTries(JnEntity.password_tries, Status.wrongPassword, Status.exceededTries)
 						.addStep(Status.exceededTries, JnEntity.locked_password.getSaver(Status.exceededTries))

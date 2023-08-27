@@ -32,8 +32,8 @@ public class UnlockToken {
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
 		return new ValidatePassword(JnEntity.request_unlock_token_answered)
-				.addStep(Status.nextStep, new ResetEntity("tries", 3, JnEntity.unlock_token_tries)
-						.addStep(Status.nextStep, new TransferDataBetweenEntities(JnEntity.locked_token, JnEntity.unlocked_token)
+				.addNextStep(new ResetEntity("tries", 3, JnEntity.unlock_token_tries)
+						.addNextStep(new TransferDataBetweenEntities(JnEntity.locked_token, JnEntity.unlocked_token)
 							)
 						)
 				.addStep(Status.wrongPassword, new EvaluateTries(JnEntity.unlock_token_tries, Status.wrongPassword, Status.exceededTries)

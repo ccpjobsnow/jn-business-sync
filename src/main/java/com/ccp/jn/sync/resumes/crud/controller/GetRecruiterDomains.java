@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.process.CcpMapTransform;
 import com.jn.commons.JnCacheKeys;
@@ -13,7 +13,7 @@ import com.jn.commons.JnEntity;
 
 public class GetRecruiterDomains {
 
-	private CcpCache cache = CcpInstanceInjection.getInstance(CcpCache.class);
+	private CcpCache cache = CcpDependencyInjection.getDependency(CcpCache.class);
 
 	
 	public CcpMapDecorator apply(String firstLetters){
