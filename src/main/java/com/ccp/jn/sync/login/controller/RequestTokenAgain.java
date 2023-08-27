@@ -3,7 +3,7 @@ package com.ccp.jn.sync.login.controller;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.dao.UseThisId;
+import com.ccp.especifications.db.dao.CalculateId;
 import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
@@ -16,7 +16,7 @@ public class RequestTokenAgain {
 
 		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnTopic.requestTokenAgain.send(valores);
 	
-		CcpMapDecorator result =  new UseThisId(values, new CcpMapDecorator())
+		CcpMapDecorator result =  new CalculateId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()

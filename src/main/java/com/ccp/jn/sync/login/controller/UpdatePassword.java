@@ -3,7 +3,7 @@ package com.ccp.jn.sync.login.controller;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.dao.UseThisId;
+import com.ccp.especifications.db.dao.CalculateId;
 import com.ccp.especifications.db.utils.TransferDataBetweenEntities;
 import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
 import com.ccp.jn.sync.common.business.EvaluateToken;
@@ -60,7 +60,7 @@ public class UpdatePassword {
 		/*
 		 *TODO Salvar senha desbloqueada
 		 */
-		CcpMapDecorator result =  new UseThisId(values, new CcpMapDecorator())
+		CcpMapDecorator result =  new CalculateId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntity.user_stats).andSo()
 			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()

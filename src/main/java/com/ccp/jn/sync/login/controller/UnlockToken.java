@@ -3,7 +3,7 @@ package com.ccp.jn.sync.login.controller;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.dao.UseThisId;
+import com.ccp.especifications.db.dao.CalculateId;
 import com.ccp.especifications.db.utils.TransferDataBetweenEntities;
 import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.ResetEntity;
@@ -46,7 +46,7 @@ public class UnlockToken {
 	public CcpMapDecorator execute (String email){
 		
 		CcpMapDecorator values = new CcpMapDecorator(new CcpMapDecorator().put("email", email));
-		CcpMapDecorator result = new UseThisId(values, new CcpMapDecorator())
+		CcpMapDecorator result = new CalculateId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.unableToUnlockToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.tokenIsNotLocked).and()

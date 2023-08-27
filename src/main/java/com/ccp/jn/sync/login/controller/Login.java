@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.dao.UseThisId;
+import com.ccp.especifications.db.dao.CalculateId;
 import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SaveLogin;
@@ -48,7 +48,7 @@ public class Login{
 		
 		CcpMapDecorator values = new CcpMapDecorator(json);
 
-		CcpMapDecorator findById =  new UseThisId(values, new CcpMapDecorator())
+		CcpMapDecorator findById =  new CalculateId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntity.user_stats).andSo()
 			.loadThisIdFromEntity(JnEntity.password_tries).andSo()
