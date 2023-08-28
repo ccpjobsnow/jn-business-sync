@@ -5,7 +5,7 @@ import com.ccp.process.CcpProcessStatus;
 public enum JnProcessStatus implements CcpProcessStatus {
 	loginTokenIsLocked(403),
 	passwordIsLocked(401),
-	alreadyLogged(409),
+	loginInUse(409),
 	preRegistrationIsMissing(201),
 	passwordIsMissing(202),
 	loginTokenIsMissing(404),

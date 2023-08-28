@@ -4,8 +4,9 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.dao.CalculateId;
+import com.ccp.jn.sync.common.business.CreateLogin;
 import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
-import com.ccp.jn.sync.common.business.SaveLogin;
+import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.SavePassword;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpProcessStatus;
@@ -33,20 +34,29 @@ public class SaveWeakPassword {
 	public CcpMapDecorator execute (CcpMapDecorator parameters){
 		
 		 Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values -> {
-			 SaveLogin saveLogin = new SaveLogin();
-			 CcpNextStep savePasswordAndExecuteLogin = this.passwordHandler.addNextStep(saveLogin);
-			 CcpNextStep saveWeakPassword = JnEntity.weak_password.getSaver().addNextStep(savePasswordAndExecuteLogin);
-			 CcpNextStep addStep = new EvaluatePasswordStrength().addStep(Status.weakPassword, saveWeakPassword);
-			 CcpStepResult goToTheNextStep = addStep.goToTheNextStep(values);
+			 
+			 CreateLogin saveLogin = new CreateLogin();
+			 CcpNextStep createPasswordAndExecuteLogin = this.passwordHandler.addMostExpectedStep(saveLogin);
+			 CcpNextStep createWeakPassword = JnEntity.weak_password.getSaver().addMostExpectedStep(createPasswordAndExecuteLogin);
+			 CcpNextStep deleteWeakPasswordIfExists = JnEntity.weak_password.getDeleter().addMostExpectedStep(createPasswordAndExecuteLogin);
+			 CcpNextStep evaluatePasswordStrength = new EvaluatePasswordStrength().addMostExpectedStep(deleteWeakPasswordIfExists).addAlternativeStep(Status.weakPassword, createWeakPassword);
+			 CcpStepResult goToTheNextStep = evaluatePasswordStrength.goToTheNextStep(values);
+			 
 			 return goToTheNextStep.values;
 		 };
 		 
 		CcpMapDecorator values = new CalculateId(parameters)
 			.toBeginProcedureAnd()
-				.loadThisIdFromEntity(JnEntity.user_stats).andSo()	
-				.ifThisIdIsNotPresentInEntity(JnEntity.password).executeAction(decisionTree).andFinally()
+				.loadThisIdFromEntity(JnEntity.user_stats)
+				.andSo()	
+					.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+					.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+					.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
+					.executeAction(decisionTree)
+				.andFinally()
 			.endThisProcedureRetrievingTheResultingData();
-		 return values;
+		 
+		return values;
 		
 	}
 }

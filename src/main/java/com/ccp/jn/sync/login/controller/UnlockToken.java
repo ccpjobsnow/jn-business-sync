@@ -32,12 +32,12 @@ public class UnlockToken {
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
 		return new ValidatePassword(JnEntity.request_unlock_token_answered)
-				.addNextStep(new ResetEntity("tries", 3, JnEntity.unlock_token_tries)
-						.addNextStep(new TransferDataBetweenEntities(JnEntity.locked_token, JnEntity.unlocked_token)
+				.addMostExpectedStep(new ResetEntity("tries", 3, JnEntity.unlock_token_tries)
+						.addMostExpectedStep(new TransferDataBetweenEntities(JnEntity.locked_token, JnEntity.unlocked_token)
 							)
 						)
-				.addStep(Status.wrongPassword, new EvaluateTries(JnEntity.unlock_token_tries, Status.wrongPassword, Status.exceededTries)
-						.addStep(Status.exceededTries, JnEntity.locked_password.getSaver(Status.exceededTries))
+				.addAlternativeStep(Status.wrongPassword, new EvaluateTries(JnEntity.unlock_token_tries, Status.wrongPassword, Status.exceededTries)
+						.addAlternativeStep(Status.exceededTries, JnEntity.locked_password.getSaver(Status.exceededTries))
 				)
 				.goToTheNextStep(values).values;
 		

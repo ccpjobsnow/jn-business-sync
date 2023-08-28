@@ -22,7 +22,7 @@ public class CreateLoginToken {
 			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsPresentInEntity(JnEntity.locked_password).returnStatus(JnProcessStatus.passwordIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).executeAction(action).and()
-			.ifThisIdIsPresentInEntity(JnEntity.login).returnStatus(JnProcessStatus.alreadyLogged).and()
+			.ifThisIdIsPresentInEntity(JnEntity.login).returnStatus(JnProcessStatus.loginInUse).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.password).returnStatus(JnProcessStatus.passwordIsMissing).andFinally()
 		.endThisProcedureRetrievingTheResultingData();

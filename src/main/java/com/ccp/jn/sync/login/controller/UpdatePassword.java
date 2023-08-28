@@ -9,7 +9,7 @@ import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
 import com.ccp.jn.sync.common.business.EvaluateToken;
 import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.ResetEntity;
-import com.ccp.jn.sync.common.business.SaveLogin;
+import com.ccp.jn.sync.common.business.CreateLogin;
 import com.ccp.jn.sync.common.business.SavePassword;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpProcessStatus;
@@ -39,13 +39,13 @@ public class UpdatePassword {
 	
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 		
-		CcpNextStep savePassword = this.passwordHandler.addNextStep(new SaveLogin());
-		CcpNextStep evaluatePasswordStrength = new EvaluatePasswordStrength().addNextStep(savePassword);
-		CcpNextStep unLockPassword = new TransferDataBetweenEntities(JnEntity.locked_password, JnEntity.unlocked_password).addNextStep(evaluatePasswordStrength);
-		CcpNextStep solveLoginConflict = new TransferDataBetweenEntities(JnEntity.login_conflict, JnEntity.login_conflict_solved).addNextStep(unLockPassword);
-		CcpNextStep removeTokenTries = new ResetEntity("tries", 3, JnEntity.token_tries).addNextStep(solveLoginConflict);
-		CcpNextStep evaluateTokenTries = new EvaluateTries(JnEntity.token_tries, Status.wrongToken, Status.exceededTries).addStep(Status.exceededTries, JnEntity.locked_token.getSaver(Status.exceededTries));
-		CcpNextStep evaluateToken = new EvaluateToken().addStep(Status.wrongToken, evaluateTokenTries).addStep(Status.correctToken, removeTokenTries);
+		CcpNextStep savePassword = this.passwordHandler.addMostExpectedStep(new CreateLogin());
+		CcpNextStep evaluatePasswordStrength = new EvaluatePasswordStrength().addMostExpectedStep(savePassword);
+		CcpNextStep unLockPassword = new TransferDataBetweenEntities(JnEntity.locked_password, JnEntity.unlocked_password).addMostExpectedStep(evaluatePasswordStrength);
+		CcpNextStep solveLoginConflict = new TransferDataBetweenEntities(JnEntity.login_conflict, JnEntity.login_conflict_solved).addMostExpectedStep(unLockPassword);
+		CcpNextStep removeTokenTries = new ResetEntity("tries", 3, JnEntity.token_tries).addMostExpectedStep(solveLoginConflict);
+		CcpNextStep evaluateTokenTries = new EvaluateTries(JnEntity.token_tries, Status.wrongToken, Status.exceededTries).addAlternativeStep(Status.exceededTries, JnEntity.locked_token.getSaver(Status.exceededTries));
+		CcpNextStep evaluateToken = new EvaluateToken().addAlternativeStep(Status.wrongToken, evaluateTokenTries).addAlternativeStep(Status.correctToken, removeTokenTries);
 		
 		CcpStepResult goToTheNextStep = evaluateToken.goToTheNextStep(values);
 		return goToTheNextStep.values;
@@ -64,7 +64,7 @@ public class UpdatePassword {
 			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.password).executeAction(this.decisionTree).andFinally()	
+			.executeAction(this.decisionTree).andFinally()	
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;
