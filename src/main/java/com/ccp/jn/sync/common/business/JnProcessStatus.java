@@ -18,7 +18,7 @@ public enum JnProcessStatus implements CcpProcessStatus {
 	unableToRequestUnLockToken(422),
 	unlockTokenAlreadyRequested(420),
 	unlockTokenAlreadyAnswered(204),
-	unlockTokenHasFailed(403),
+	unlockTokenHasFailed(421),
 	unableToUnlockToken(404),
 	tokenIsNotLocked(422),
 	unlockTokenHasNotBeenRequested(420)
