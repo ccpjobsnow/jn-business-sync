@@ -43,10 +43,9 @@ public class UnlockToken {
 		
 	};
 
-	public CcpMapDecorator execute (String email){
+	public CcpMapDecorator execute (CcpMapDecorator parameters){
 		
-		CcpMapDecorator values = new CcpMapDecorator(new CcpMapDecorator().put("email", email));
-		CcpMapDecorator result = new CalculateId(values)
+		CcpMapDecorator result = new CalculateId(parameters)
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.unableToUnlockToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.tokenIsNotLocked).and()
