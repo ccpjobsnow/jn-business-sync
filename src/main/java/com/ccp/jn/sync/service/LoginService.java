@@ -89,8 +89,8 @@ public class LoginService{
 			.ifThisIdIsPresentInEntity(JnEntity.locked_password).returnStatus(JnProcessStatus.passwordIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).executeAction(action).and()
 			.ifThisIdIsPresentInEntity(JnEntity.login).returnStatus(JnProcessStatus.loginInUse).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.password).returnStatus(JnProcessStatus.passwordIsMissing).andFinally()
+			.ifThisIdIsNotPresentInEntity(JnEntity.password).returnStatus(JnProcessStatus.passwordIsMissing).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 
 		return result;
@@ -106,8 +106,8 @@ public class LoginService{
 			.ifThisIdIsPresentInEntity(JnEntity.locked_password).returnStatus(JnProcessStatus.passwordIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsPresentInEntity(JnEntity.login).returnStatus(JnProcessStatus.loginInUse).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.password).returnStatus(JnProcessStatus.passwordIsMissing).andFinally()
+			.ifThisIdIsNotPresentInEntity(JnEntity.password).returnStatus(JnProcessStatus.passwordIsMissing).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinally()
 		.endThisProcedure()
 		;
 	}
@@ -168,7 +168,8 @@ public class LoginService{
 			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsPresentInEntity(JnEntity.locked_password).returnStatus(JnProcessStatus.passwordIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).executeAction(action).andFinally()
+			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).executeAction(action).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.password).returnStatus(JnProcessStatus.passwordIsMissing).andFinally()
 		.endThisProcedure()
 		;
 	}
@@ -258,8 +259,8 @@ public class LoginService{
 			.loadThisIdFromEntity(JnEntity.user_stats).andSo()
 			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
-			.executeAction(decisionTree).andFinally()	
+			.executeAction(decisionTree).and()	
+			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;
