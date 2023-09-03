@@ -21,6 +21,10 @@ public enum JnProcessStatus implements CcpProcessStatus {
 	unlockTokenHasFailed(421),
 	unableToUnlockToken(404),
 	tokenIsNotLocked(422),
+	wrongToken(401),
+	weakPassword(422),
+	exceededTries(429),
+	wrongPassword(401),
 	unlockTokenHasNotBeenRequested(420)
 	
 	;

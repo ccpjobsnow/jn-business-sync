@@ -14,8 +14,8 @@ import com.ccp.jn.sync.common.business.ResetEntity;
 import com.ccp.jn.sync.common.business.SavePassword;
 import com.ccp.jn.sync.common.business.ValidatePassword;
 import com.ccp.process.CcpNextStep;
-import com.ccp.process.CcpProcessStatus;
 import com.ccp.process.CcpStepResult;
+import com.ccp.process.SuccessStatus;
 import com.jn.commons.EvaluateTries;
 import com.jn.commons.JnEntity;
 import com.jn.commons.JnTopic;
@@ -23,34 +23,17 @@ import com.jn.commons.SaveEntity;
 
 public class LoginService{
 	
-	private static enum Status implements CcpProcessStatus{
-		wrongPassword(401),
-		exceededTries(429),
-		weakPassword(422),
-		correctToken(200),
-		wrongToken(401),
-		;
-		int status;
-
-		private Status(int status) {
-			this.status = status;
-		}
-
-		public int status() {
-			return this.status;
-		}
-	}
-	
+		
 	private Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values -> {
 		
-		SaveEntity lockPassword = JnEntity.locked_password.getSaver(Status.exceededTries);
+		SaveEntity lockPassword = JnEntity.locked_password.getSaver(JnProcessStatus.exceededTries);
 		CcpNextStep executeLogin = new ResetEntity("tries", 3, JnEntity.password_tries).addMostExpectedStep(new CreateLogin());
 
-		CcpNextStep evaluateTries = new EvaluateTries(JnEntity.password_tries, Status.wrongPassword, Status.exceededTries)
-				.addAlternativeStep(Status.exceededTries, lockPassword);
+		CcpNextStep evaluateTries = new EvaluateTries(JnEntity.password_tries, JnProcessStatus.wrongPassword, JnProcessStatus.exceededTries)
+				.addAlternativeStep(JnProcessStatus.exceededTries, lockPassword);
 		
 		CcpNextStep validatePassword = new ValidatePassword(JnEntity.password)
-				.addAlternativeStep(Status.wrongPassword, evaluateTries)
+				.addAlternativeStep(JnProcessStatus.wrongPassword, evaluateTries)
 				.addMostExpectedStep(executeLogin);
 		
 		return validatePassword.goToTheNextStep(values).values;
@@ -183,7 +166,7 @@ public class LoginService{
 			 CcpNextStep createPasswordAndExecuteLogin = passwordHandler.addMostExpectedStep(saveLogin);
 			 CcpNextStep createWeakPassword = JnEntity.weak_password.getSaver().addMostExpectedStep(createPasswordAndExecuteLogin);
 			 CcpNextStep deleteWeakPasswordIfExists = JnEntity.weak_password.getDeleter().addMostExpectedStep(createPasswordAndExecuteLogin);
-			 CcpNextStep evaluatePasswordStrength = new EvaluatePasswordStrength().addMostExpectedStep(deleteWeakPasswordIfExists).addAlternativeStep(Status.weakPassword, createWeakPassword);
+			 CcpNextStep evaluatePasswordStrength = new EvaluatePasswordStrength().addMostExpectedStep(deleteWeakPasswordIfExists).addAlternativeStep(JnProcessStatus.weakPassword, createWeakPassword);
 			 CcpStepResult goToTheNextStep = evaluatePasswordStrength.goToTheNextStep(values);
 			 
 			 return goToTheNextStep.values;
@@ -213,8 +196,8 @@ public class LoginService{
 							.addMostExpectedStep(new TransferDataBetweenEntities(JnEntity.locked_token, JnEntity.unlocked_token)
 									)
 							)
-					.addAlternativeStep(Status.wrongPassword, new EvaluateTries(JnEntity.unlock_token_tries, Status.wrongPassword, Status.exceededTries)
-							.addAlternativeStep(Status.exceededTries, JnEntity.locked_password.getSaver(Status.exceededTries))
+					.addAlternativeStep(JnProcessStatus.wrongPassword, new EvaluateTries(JnEntity.unlock_token_tries, JnProcessStatus.wrongPassword, JnProcessStatus.exceededTries)
+							.addAlternativeStep(JnProcessStatus.exceededTries, JnEntity.locked_password.getSaver(JnProcessStatus.exceededTries))
 							)
 					.goToTheNextStep(values).values;
 			
@@ -222,7 +205,7 @@ public class LoginService{
 		
 		CcpMapDecorator result = new CalculateId(parameters)
 		.toBeginProcedureAnd()
-			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.unableToUnlockToken).and()
+			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.tokenIsNotLocked).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.request_unlock_token).returnStatus(JnProcessStatus.unlockTokenHasNotBeenRequested).and()
 			.ifThisIdIsPresentInEntity(JnEntity.failed_unlock_token).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
@@ -244,8 +227,8 @@ public class LoginService{
 			CcpNextStep unLockPassword = new TransferDataBetweenEntities(JnEntity.locked_password, JnEntity.unlocked_password).addMostExpectedStep(evaluatePasswordStrength);
 			CcpNextStep solveLoginConflict = new TransferDataBetweenEntities(JnEntity.login_conflict, JnEntity.login_conflict_solved).addMostExpectedStep(unLockPassword);
 			CcpNextStep removeTokenTries = new ResetEntity("tries", 3, JnEntity.token_tries).addMostExpectedStep(solveLoginConflict);
-			CcpNextStep evaluateTokenTries = new EvaluateTries(JnEntity.token_tries, Status.wrongToken, Status.exceededTries).addAlternativeStep(Status.exceededTries, JnEntity.locked_token.getSaver(Status.exceededTries));
-			CcpNextStep evaluateToken = new EvaluateToken().addAlternativeStep(Status.wrongToken, evaluateTokenTries).addAlternativeStep(Status.correctToken, removeTokenTries);
+			CcpNextStep evaluateTokenTries = new EvaluateTries(JnEntity.token_tries, JnProcessStatus.wrongToken, JnProcessStatus.exceededTries).addAlternativeStep(JnProcessStatus.exceededTries, JnEntity.locked_token.getSaver(JnProcessStatus.exceededTries));
+			CcpNextStep evaluateToken = new EvaluateToken().addAlternativeStep(JnProcessStatus.wrongToken, evaluateTokenTries).addAlternativeStep(new SuccessStatus(), removeTokenTries);
 			
 			CcpStepResult goToTheNextStep = evaluateToken.goToTheNextStep(valores);
 			return goToTheNextStep.values;
