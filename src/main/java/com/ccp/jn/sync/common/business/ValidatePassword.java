@@ -28,7 +28,7 @@ public class ValidatePassword extends CcpNextStep {
 		boolean incorrectPassword = this.passwordHandler.matches(password, passwordDb) == false;
 		
 		if(incorrectPassword) {
-			return new CcpStepResult(values, 401, this);
+			return new CcpStepResult(values, JnProcessStatus.wrongPassword.status, this);
 		}
 		
 		

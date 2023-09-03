@@ -8,6 +8,7 @@ import com.ccp.especifications.db.dao.CalculateId;
 import com.ccp.especifications.db.utils.TransferDataBetweenEntities;
 import com.ccp.jn.sync.common.business.CreateLogin;
 import com.ccp.jn.sync.common.business.EvaluatePasswordStrength;
+import com.ccp.jn.sync.common.business.EvaluatePreRegistration;
 import com.ccp.jn.sync.common.business.EvaluateToken;
 import com.ccp.jn.sync.common.business.JnProcessStatus;
 import com.ccp.jn.sync.common.business.ResetEntity;
@@ -135,7 +136,7 @@ public class LoginService{
 			.ifThisIdIsNotPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.unableToRequestUnLockToken).and()
 			.ifThisIdIsPresentInEntity(JnEntity.request_unlock_token).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
 			.ifThisIdIsPresentInEntity(JnEntity.request_unlock_token_answered).returnStatus(JnProcessStatus.unlockTokenAlreadyAnswered).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.failed_unlock_token).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+			.ifThisIdIsPresentInEntity(JnEntity.failed_unlock_token).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.request_unlock_token).executeAction(action).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 		
@@ -220,9 +221,9 @@ public class LoginService{
 	public CcpMapDecorator updatePassword (CcpMapDecorator values){
 		Function<CcpMapDecorator, CcpMapDecorator> decisionTree = valores ->{
 			SavePassword passwordHandler = new SavePassword();
-			
-			CcpNextStep savePassword = passwordHandler.addMostExpectedStep(new CreateLogin());
-			CcpNextStep evaluatePasswordStrength = new EvaluatePasswordStrength().addMostExpectedStep(savePassword);
+			CcpNextStep evaluatePreRegistration = new EvaluatePreRegistration(new CreateLogin());
+			CcpNextStep savePassword = passwordHandler.addMostExpectedStep(evaluatePreRegistration);
+			CcpNextStep evaluatePasswordStrength = new EvaluatePasswordStrength().addMostExpectedStep(savePassword);//TODO todo mundo passar o most expected por construtor
 			CcpNextStep unLockPassword = new TransferDataBetweenEntities(JnEntity.locked_password, JnEntity.unlocked_password).addMostExpectedStep(evaluatePasswordStrength);
 			CcpNextStep solveLoginConflict = new TransferDataBetweenEntities(JnEntity.login_conflict, JnEntity.login_conflict_solved).addMostExpectedStep(unLockPassword);
 			CcpNextStep removeTokenTries = new ResetEntity("tries", 3, JnEntity.token_tries).addMostExpectedStep(solveLoginConflict);
@@ -242,8 +243,7 @@ public class LoginService{
 			.loadThisIdFromEntity(JnEntity.user_stats).andSo()
 			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.executeAction(decisionTree).and()	
-			.ifThisIdIsNotPresentInEntity(JnEntity.pre_registration).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinally()
+			.executeAction(decisionTree).andFinally()	
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;
