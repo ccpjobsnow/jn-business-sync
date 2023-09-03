@@ -112,7 +112,12 @@ public class LoginService{
 		
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
 
-		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnTopic.requestTokenAgain.send(valores);
+		
+		
+		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> {
+			JnEntity.request_token_again.create(valores);
+			return JnTopic.requestTokenAgain.send(valores);
+		};
 	
 		CcpMapDecorator result =  new CalculateId(values)
 		.toBeginProcedureAnd()
@@ -148,6 +153,7 @@ public class LoginService{
 		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnEntity.pre_registration.createOrUpdate(valores);
 		 new CalculateId(values)
 		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInEntity(JnEntity.login).returnStatus(JnProcessStatus.loginInUse).and()
 			.ifThisIdIsPresentInEntity(JnEntity.locked_token).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsPresentInEntity(JnEntity.locked_password).returnStatus(JnProcessStatus.passwordIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(JnEntity.login_token).returnStatus(JnProcessStatus.loginTokenIsMissing).and()

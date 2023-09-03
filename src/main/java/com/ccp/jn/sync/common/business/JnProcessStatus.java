@@ -12,7 +12,7 @@ public enum JnProcessStatus implements CcpProcessStatus {
 	candidateNotFound(404),
 	resumeNotFound(404),
 	resumeHasBeenDeniedToRecruiter(403),
-	tokenAlreadyRequested(420),
+	tokenAlreadyRequested(409),
 	tokenAlreadySent(204),
 	unableToExecuteLogout(404),
 	unableToRequestUnLockToken(422),
