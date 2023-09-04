@@ -108,12 +108,10 @@ public class LoginService{
 		;
 	}
 
-	public CcpMapDecorator requestTokenAgain (String email){
+	public CcpMapDecorator requestTokenAgain (String email, String language){
 		
-		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
+		CcpMapDecorator values = new CcpMapDecorator().put("email", email).put("language", language);
 
-		
-		
 		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> {
 			JnEntity.request_token_again.create(valores);
 			return JnTopic.requestTokenAgain.send(valores);
@@ -131,9 +129,9 @@ public class LoginService{
 		return result;
 	}
 	
-	public CcpMapDecorator requestUnlockToken (String email){
+	public CcpMapDecorator requestUnlockToken (String email, String language){
 		
-		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
+		CcpMapDecorator values = new CcpMapDecorator().put("email", email).put("language", language);
 		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnTopic.requestUnlockToken.send(valores);
 		CcpMapDecorator result =  new CalculateId(values)
 		.toBeginProcedureAnd()
