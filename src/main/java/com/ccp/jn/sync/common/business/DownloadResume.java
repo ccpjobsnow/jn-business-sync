@@ -11,11 +11,11 @@ import com.jn.commons.JnConstants;
 
 public class DownloadResume implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
-	private CcpFileBucket bucket = CcpDependencyInjection.getDependency(CcpFileBucket.class);
-
-	private CcpCache cache = CcpDependencyInjection.getDependency(CcpCache.class);
 
 	public CcpMapDecorator apply(CcpMapDecorator values) {
+		CcpFileBucket bucket = CcpDependencyInjection.getDependency(CcpFileBucket.class);
+		
+		CcpCache cache = CcpDependencyInjection.getDependency(CcpCache.class);
 
 		String viewType = values.getAsString("viewType");
 		String resume = values.getAsString("resume");
@@ -23,10 +23,10 @@ public class DownloadResume implements  java.util.function.Function<CcpMapDecora
 		
 		int cacheExpires = JnConstants.ONE_HOUR_IN_SECONDS;
 		CcpMapDecorator cacheParameters = CcpConstants.EMPTY_JSON;
-		CcpMapTransform<String> cacheLayer = vals-> this.bucket.read(JnConstants.TENANT, JnConstants.RESUMES_BUCKET + viewType, resume);
+		CcpMapTransform<String> cacheLayer = vals-> bucket.read(JnConstants.TENANT, JnConstants.RESUMES_BUCKET + viewType, resume);
 		String cacheKey = JnCacheKeys.RESUMES_KEY + JnConstants.DOT + resume + JnConstants.DOT + viewType;
 
-		String resumeInBase64 = this.cache.get(cacheKey, cacheParameters, cacheLayer, cacheExpires);
+		String resumeInBase64 = cache.get(cacheKey, cacheParameters, cacheLayer, cacheExpires);
 	
 		CcpMapDecorator put = new CcpMapDecorator().put("resumeInBase64", resumeInBase64);
 

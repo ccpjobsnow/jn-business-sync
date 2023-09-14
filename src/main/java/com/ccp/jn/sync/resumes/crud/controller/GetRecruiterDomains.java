@@ -13,16 +13,16 @@ import com.jn.commons.JnEntity;
 
 public class GetRecruiterDomains {
 
-	private CcpCache cache = CcpDependencyInjection.getDependency(CcpCache.class);
 
 	
 	public CcpMapDecorator apply(String firstLetters){
+		CcpCache cache = CcpDependencyInjection.getDependency(CcpCache.class);
 		int cacheExpires = JnConstants.ONE_HOUR_IN_SECONDS;
 		String cacheKey = JnCacheKeys.RECRUITERS_DOMAINS_KEY + JnConstants.DOT + firstLetters;
 		CcpMapTransform<CcpMapDecorator> cacheLayer = valores -> JnEntity.recruiter_domains.getOneById(new CcpMapDecorator().put("prefix", firstLetters), values -> values.put("domains", new ArrayList<>()));
 		CcpMapDecorator cacheParameters = CcpConstants.EMPTY_JSON;
 		
-		CcpMapDecorator rhList = this.cache.get(cacheKey, cacheParameters, cacheLayer, cacheExpires);
+		CcpMapDecorator rhList = cache.get(cacheKey, cacheParameters, cacheLayer, cacheExpires);
 		return rhList;
 	}
 	

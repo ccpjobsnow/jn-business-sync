@@ -5,10 +5,10 @@ import com.jn.commons.JnEntity;
 
 public class DownloadResumeToRecruiterAction implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
-	private final DownloadResume downloadResume = new DownloadResume();
 			
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
+		DownloadResume downloadResume = new DownloadResume();
 		
 		String recruiter = values.getAsString("recruiter");
 		String viewType = values.getAsString("viewType");
@@ -19,7 +19,7 @@ public class DownloadResumeToRecruiterAction implements  java.util.function.Func
 				.put("recruiter", recruiter));
 		
 		
-		CcpMapDecorator execute = this.downloadResume.apply(values);
+		CcpMapDecorator execute = downloadResume.apply(values);
 		
 		return execute;
 	}
