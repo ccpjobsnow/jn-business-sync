@@ -1,9 +1,9 @@
-package com.ccp.jn.sync.common.business;
+package com.ccp.jn.sync.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.jn.commons.JnTopic;
+import com.jn.commons.utils.JnTopic;
 
-public class NotifyError {
+public class JnSyncBusinessNotifyError {
 
 	public CcpMapDecorator apply(Throwable e) {
 		CcpMapDecorator md = new CcpMapDecorator(e);

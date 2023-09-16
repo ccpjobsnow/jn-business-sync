@@ -1,14 +1,14 @@
-package com.ccp.jn.sync.common.business;
+package com.ccp.jn.sync.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.jn.commons.JnEntity;
+import com.jn.commons.entities.JnEntity;
 
-public class DownloadResumeToRecruiterAction implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
+public class JnSyncBusinessDownloadResumeToRecruiterAction implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
 			
 	@Override
 	public CcpMapDecorator apply(CcpMapDecorator values) {
-		DownloadResume downloadResume = new DownloadResume();
+		JnSyncBusinessDownloadResume downloadResume = new JnSyncBusinessDownloadResume();
 		
 		String recruiter = values.getAsString("recruiter");
 		String viewType = values.getAsString("viewType");

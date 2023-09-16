@@ -1,11 +1,11 @@
-package com.ccp.jn.sync.common.business;
+package com.ccp.jn.sync.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.JnEntity;
+import com.jn.commons.entities.JnEntity;
 
-public class EvaluateToken extends CcpNextStep{
+public class JnSyncBusinessEvaluateToken extends CcpNextStep{
 
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {

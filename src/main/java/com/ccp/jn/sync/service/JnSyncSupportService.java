@@ -1,31 +1,31 @@
 package com.ccp.jn.sync.service;
 
 import static com.ccp.constantes.CcpConstants.DO_NOTHING;
-import static com.ccp.jn.sync.common.business.JnProcessStatus.requestAlreadyAnswered;
-import static com.ccp.jn.sync.common.business.JnProcessStatus.requestDoesNotExist;
-import static com.ccp.jn.sync.common.business.JnProcessStatus.unauthorizedResponsible;
-import static com.ccp.jn.sync.common.business.JnProcessStatus.loginTokenIsMissing;
-import static com.jn.commons.JnConstants.PUT_EMAIL_TOKEN;
-import static com.jn.commons.JnEntity.email_parameters_to_send;
-import static com.jn.commons.JnEntity.email_template_message;
-import static com.jn.commons.JnEntity.login_token;
-import static com.jn.commons.JnEntity.request_token_again_answered;
-import static com.jn.commons.JnEntity.request_unlock_token;
-import static com.jn.commons.JnEntity.request_unlock_token_answered;
-import static com.jn.commons.JnEntity.request_unlock_token_responsible;
-import static com.jn.commons.JnTopic.requestTokenAgain;
-import static com.jn.commons.JnTopic.requestUnlockToken;
+import static com.ccp.jn.sync.business.JnProcessStatus.loginTokenIsMissing;
+import static com.ccp.jn.sync.business.JnProcessStatus.requestAlreadyAnswered;
+import static com.ccp.jn.sync.business.JnProcessStatus.requestDoesNotExist;
+import static com.ccp.jn.sync.business.JnProcessStatus.unauthorizedResponsible;
+import static com.jn.commons.entities.JnEntity.email_parameters_to_send;
+import static com.jn.commons.entities.JnEntity.email_template_message;
+import static com.jn.commons.entities.JnEntity.login_token;
+import static com.jn.commons.entities.JnEntity.request_token_again_answered;
+import static com.jn.commons.entities.JnEntity.request_unlock_token;
+import static com.jn.commons.entities.JnEntity.request_unlock_token_answered;
+import static com.jn.commons.entities.JnEntity.request_unlock_token_responsible;
+import static com.jn.commons.utils.JnConstants.PUT_EMAIL_TOKEN;
+import static com.jn.commons.utils.JnTopic.requestTokenAgain;
+import static com.jn.commons.utils.JnTopic.requestUnlockToken;
 
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.dao.CalculateId;
-import com.jn.commons.GetMessage;
-import com.jn.commons.JnEntity;
-import com.jn.commons.JnTopic;
+import com.ccp.especifications.db.dao.CcpDaoCalculateId;
+import com.jn.commons.business.JnCommonsBusinessGetMessage;
+import com.jn.commons.entities.JnEntity;
+import com.jn.commons.utils.JnTopic;
 
 
-public enum JnSupportService {
+public enum JnSyncSupportService {
 	unlockToken {
 		@Override
 		public CcpMapDecorator execute(Long chatId, String email) {
@@ -76,7 +76,7 @@ public enum JnSupportService {
 		Function<CcpMapDecorator, CcpMapDecorator> action = values -> {
 			CcpMapDecorator entities = values.getInternalMap("_entities");
 			String language = entities.getInternalMap(requestEntity.name()).getAsString("language");
-			GetMessage gm = new GetMessage();
+			JnCommonsBusinessGetMessage gm = new JnCommonsBusinessGetMessage();
 			gm
 			.addFlow(DO_NOTHING, email_parameters_to_send, email_template_message)
 			.execute(topic, answerEntity, transformed, language);
@@ -85,7 +85,7 @@ public enum JnSupportService {
 			
 		};
 		
-		CcpMapDecorator result = new CalculateId(valores)
+		CcpMapDecorator result = new CcpDaoCalculateId(valores)
 			.toBeginProcedureAnd()
 				.ifThisIdIsNotPresentInEntity(login_token).returnStatus(loginTokenIsMissing).and()
 				.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(unauthorizedResponsible).and()

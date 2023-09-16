@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.common.business;
+package com.ccp.jn.sync.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpPasswordDecorator;
@@ -6,7 +6,7 @@ import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 
-public class EvaluatePasswordStrength extends CcpNextStep{
+public class JnSyncBusinessEvaluatePasswordStrength extends CcpNextStep{
 
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {

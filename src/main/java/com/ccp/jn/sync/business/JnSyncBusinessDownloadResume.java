@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.common.business;
+package com.ccp.jn.sync.business;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpMapDecorator;
@@ -6,10 +6,10 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.especifications.file.bucket.CcpFileBucket;
 import com.ccp.process.CcpMapTransform;
-import com.jn.commons.JnCacheKeys;
-import com.jn.commons.JnConstants;
+import com.jn.commons.utils.JnCacheKeys;
+import com.jn.commons.utils.JnConstants;
 
-public class DownloadResume implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
+public class JnSyncBusinessDownloadResume implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator>{
 
 
 	public CcpMapDecorator apply(CcpMapDecorator values) {

@@ -3,8 +3,8 @@ package com.ccp.jn.sync.resumes.searchs.controller;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.jn.commons.JnEntity;
-import com.jn.commons.JnTopic;
+import com.jn.commons.entities.JnEntity;
+import com.jn.commons.utils.JnTopic;
 
 public class RequestResumesSearch {
 

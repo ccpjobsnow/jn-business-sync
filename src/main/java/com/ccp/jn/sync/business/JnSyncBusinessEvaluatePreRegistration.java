@@ -1,14 +1,14 @@
-package com.ccp.jn.sync.common.business;
+package com.ccp.jn.sync.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.ccp.process.SuccessStatus;
-import com.jn.commons.JnEntity;
+import com.ccp.process.CcpSuccessStatus;
+import com.jn.commons.entities.JnEntity;
 
-public class EvaluatePreRegistration extends CcpNextStep{
+public class JnSyncBusinessEvaluatePreRegistration extends CcpNextStep{
 
-	public EvaluatePreRegistration(CcpNextStep nextProcess) {
+	public JnSyncBusinessEvaluatePreRegistration(CcpNextStep nextProcess) {
 		this.addMostExpectedStep(nextProcess);
 	}
 	
@@ -19,7 +19,7 @@ public class EvaluatePreRegistration extends CcpNextStep{
 			return new CcpStepResult(values, JnProcessStatus.preRegistrationIsMissing.status, this);
 		}
 		
-		return new CcpStepResult(values, new SuccessStatus().status(), this);
+		return new CcpStepResult(values, new CcpSuccessStatus().status(), this);
 	}
 
 }

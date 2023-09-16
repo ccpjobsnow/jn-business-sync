@@ -7,9 +7,9 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.cache.CcpCache;
 import com.ccp.process.CcpMapTransform;
-import com.jn.commons.JnCacheKeys;
-import com.jn.commons.JnConstants;
-import com.jn.commons.JnEntity;
+import com.jn.commons.entities.JnEntity;
+import com.jn.commons.utils.JnCacheKeys;
+import com.jn.commons.utils.JnConstants;
 
 public class GetRecruiterDomains {
 

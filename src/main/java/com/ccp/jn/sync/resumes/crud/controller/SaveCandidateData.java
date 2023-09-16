@@ -3,7 +3,7 @@ package com.ccp.jn.sync.resumes.crud.controller;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.jn.commons.JnTopic;
+import com.jn.commons.utils.JnTopic;
 
 public class SaveCandidateData {
 

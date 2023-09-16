@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.common.business;
+package com.ccp.jn.sync.business;
 
 import com.ccp.process.CcpProcessStatus;
 

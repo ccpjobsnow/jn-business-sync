@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.common.business;
+package com.ccp.jn.sync.business;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.JnEntity;
-import com.jn.commons.JnTopic;
+import com.jn.commons.entities.JnEntity;
+import com.jn.commons.utils.JnTopic;
 
-public class ResetEntity extends CcpNextStep{
+public class JnSyncBusinessResetEntity extends CcpNextStep{
 
 	
 	private final JnEntity[] entities;
@@ -19,7 +19,7 @@ public class ResetEntity extends CcpNextStep{
 	
 	private final Integer limit;
 
-	public ResetEntity(String fieldName, Integer limit, JnEntity... entities) {
+	public JnSyncBusinessResetEntity(String fieldName, Integer limit, JnEntity... entities) {
 		this.fieldName = fieldName;
 		this.entities = entities;
 		this.limit = limit;
