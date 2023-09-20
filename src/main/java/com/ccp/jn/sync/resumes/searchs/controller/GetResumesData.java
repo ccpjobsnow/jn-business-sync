@@ -4,13 +4,13 @@ import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.utils.CcpEntity;
+import com.jn.commons.entities.JnBaseEntity;
 
 public class GetResumesData {
 	
 	public CcpMapDecorator apply(String searchType, Map<String, Object> json){
 	
-//		JnEntity entity = JnEntity.valueOf(searchType.replace("search_", ""));
-		CcpEntity entity = null;//TODO
+		CcpEntity entity = JnBaseEntity.valueOf(searchType);
 
 		CcpMapDecorator query = new CcpMapDecorator(json);
 
