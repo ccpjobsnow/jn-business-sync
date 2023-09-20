@@ -5,21 +5,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.entities.JnEntity;
 import com.jn.commons.utils.JnTopic;
 
 public class JnSyncBusinessResetEntity extends CcpNextStep{
 
 	
-	private final JnEntity[] entities;
+	private final CcpEntity[] entities;
 	
 	private final String fieldName;
 	
 	private final Integer limit;
 
-	public JnSyncBusinessResetEntity(String fieldName, Integer limit, JnEntity... entities) {
+	public JnSyncBusinessResetEntity(String fieldName, Integer limit, CcpEntity... entities) {
 		this.fieldName = fieldName;
 		this.entities = entities;
 		this.limit = limit;

@@ -2,9 +2,10 @@ package com.ccp.jn.sync.resumes.searchs.controller;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.dao.CcpDaoCalculateId;
-import com.ccp.jn.sync.business.JnSyncBusinessDownloadResumeToRecruiterAction;
 import com.ccp.jn.sync.business.JnProcessStatus;
-import com.jn.commons.entities.JnEntity;
+import com.ccp.jn.sync.business.JnSyncBusinessDownloadResumeToRecruiterAction;
+import com.jn.commons.entities.JnEntityCandidateResume;
+import com.jn.commons.entities.JnEntityDeniedViewToRecruiter;
 
 
 public class DownloadResumeToRecruiter {
@@ -16,11 +17,12 @@ public class DownloadResumeToRecruiter {
 		CcpMapDecorator values = new CcpMapDecorator().put("resume", resume).put("recruiter", recruiter).put("viewType", viewType);
 
 		
+		JnEntityCandidateResume entity = new JnEntityCandidateResume();
 		CcpMapDecorator result =  new CcpDaoCalculateId(values)
 		.toBeginProcedureAnd()
-		.ifThisIdIsPresentInEntity(JnEntity.denied_view_to_recruiter).returnStatus(JnProcessStatus.resumeHasBeenDeniedToRecruiter).and()
-		.ifThisIdIsNotPresentInEntity(JnEntity.candidate_resume).returnStatus(JnProcessStatus.resumeNotFound).and()
-		.ifThisIdIsPresentInEntity(JnEntity.candidate_resume).executeAction(this.action).andFinally()
+		.ifThisIdIsPresentInEntity(new JnEntityDeniedViewToRecruiter()).returnStatus(JnProcessStatus.resumeHasBeenDeniedToRecruiter).and()
+		.ifThisIdIsNotPresentInEntity(entity).returnStatus(JnProcessStatus.resumeNotFound).and()
+		.ifThisIdIsPresentInEntity(entity).executeAction(this.action).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;

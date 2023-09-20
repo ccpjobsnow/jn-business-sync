@@ -6,7 +6,8 @@ import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.decorators.CcpTextDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.entities.JnEntity;
+import com.jn.commons.entities.JnEntityLogin;
+import com.jn.commons.entities.JnEntityUserStatis;
 
 public class JnSyncBusinessCreateLogin extends CcpNextStep {
 
@@ -16,10 +17,10 @@ public class JnSyncBusinessCreateLogin extends CcpNextStep {
 		CcpTextDecorator textDecorator = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text();
 		String token = textDecorator.generateToken(8);
 		CcpMapDecorator tokenChanged = values.put("token", token);
-		JnEntity.login.createOrUpdate(tokenChanged);
+		new JnEntityLogin().createOrUpdate(tokenChanged);
 
 
-		CcpMapDecorator userStats = tokenChanged.getInternalMap("_entities").getInternalMap(JnEntity.user_stats.name()).getSubMap("loginCount", "lastLogin");
+		CcpMapDecorator userStats = tokenChanged.getInternalMap("_entities").getInternalMap(new JnEntityUserStatis().name()).getSubMap("loginCount", "lastLogin");
 		CcpMapDecorator putAll = tokenChanged.putAll(userStats);
 		return new CcpStepResult(putAll, 200, this);
 	}

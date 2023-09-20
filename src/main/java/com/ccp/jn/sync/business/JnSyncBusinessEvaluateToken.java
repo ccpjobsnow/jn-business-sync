@@ -3,14 +3,14 @@ package com.ccp.jn.sync.business;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.entities.JnEntity;
+import com.jn.commons.entities.JnEntityLoginToken;
 
 public class JnSyncBusinessEvaluateToken extends CcpNextStep{
 
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 
-		CcpMapDecorator loginRequest = values.getInternalMap("_entities").getInternalMap(JnEntity.login_token.name());
+		CcpMapDecorator loginRequest = values.getInternalMap("_entities").getInternalMap(new JnEntityLoginToken().name());
 		
 		String tokenDb = loginRequest.getAsString("token");
 		String token = values.getAsString("token");

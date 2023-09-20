@@ -2,17 +2,17 @@ package com.ccp.jn.sync.business;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.entities.JnEntity;
 
 public class JnSyncBusinessValidatePassword extends CcpNextStep {
 
 	final CcpPasswordHandler passwordHandler = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
-	final JnEntity entity;
+	final CcpEntity entity;
 	
-	public JnSyncBusinessValidatePassword(JnEntity entity) {
+	public JnSyncBusinessValidatePassword(CcpEntity entity) {
 		this.entity = entity;
 	}
 	

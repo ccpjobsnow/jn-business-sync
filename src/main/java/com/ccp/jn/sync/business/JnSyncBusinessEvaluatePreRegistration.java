@@ -4,7 +4,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.ccp.process.CcpSuccessStatus;
-import com.jn.commons.entities.JnEntity;
+import com.jn.commons.entities.JnEntityPreRegistration;
 
 public class JnSyncBusinessEvaluatePreRegistration extends CcpNextStep{
 
@@ -15,7 +15,7 @@ public class JnSyncBusinessEvaluatePreRegistration extends CcpNextStep{
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		
-		if(JnEntity.pre_registration.exists(values) == false) {
+		if(new JnEntityPreRegistration().exists(values) == false) {
 			return new CcpStepResult(values, JnProcessStatus.preRegistrationIsMissing.status, this);
 		}
 		

@@ -2,9 +2,9 @@ package com.ccp.jn.sync.resumes.crud.controller;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.especifications.db.dao.CcpDaoCalculateId;
-import com.ccp.jn.sync.business.JnSyncBusinessDownloadThisResumeToHisOwner;
 import com.ccp.jn.sync.business.JnProcessStatus;
-import com.jn.commons.entities.JnEntity;
+import com.ccp.jn.sync.business.JnSyncBusinessDownloadThisResumeToHisOwner;
+import com.jn.commons.entities.JnEntityCandidate;
 
 
 public class DownloadResumeToHisOwner {
@@ -16,10 +16,11 @@ public class DownloadResumeToHisOwner {
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email).put("viewType", viewType);
 		
 		
+		JnEntityCandidate entity = new JnEntityCandidate();
 		CcpMapDecorator put =  new CcpDaoCalculateId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntity.candidate).executeAction(this.action).and()
-			.ifThisIdIsNotPresentInEntity(JnEntity.candidate).returnStatus(JnProcessStatus.candidateNotFound).andFinally()
+			.ifThisIdIsPresentInEntity(entity).executeAction(this.action).and()
+			.ifThisIdIsNotPresentInEntity(entity).returnStatus(JnProcessStatus.candidateNotFound).andFinally()
 		.endThisProcedureRetrievingTheResultingData();
 
 

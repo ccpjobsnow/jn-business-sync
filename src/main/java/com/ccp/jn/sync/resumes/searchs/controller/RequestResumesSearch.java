@@ -3,14 +3,16 @@ package com.ccp.jn.sync.resumes.searchs.controller;
 import java.util.Map;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.jn.commons.entities.JnEntity;
+import com.ccp.especifications.db.utils.CcpEntity;
 import com.jn.commons.utils.JnTopic;
 
 public class RequestResumesSearch {
 
 	public CcpMapDecorator apply(String recruiter, String searchType, Map<String, Object> json){
 		
-		JnEntity entity = JnEntity.valueOf(searchType);
+//		JnEntity entity = JnEntity.valueOf(searchType);
+		CcpEntity entity = null;//TODO
+		
 		
 		CcpMapDecorator values = new CcpMapDecorator(json).put("recruiter", recruiter);
 

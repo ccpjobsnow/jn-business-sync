@@ -1,7 +1,7 @@
 package com.ccp.jn.sync.business;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.jn.commons.entities.JnEntity;
+import com.jn.commons.entities.JnEntityRecruiterViewResumes;
 
 public class JnSyncBusinessDownloadResumeToRecruiterAction implements  java.util.function.Function<CcpMapDecorator, CcpMapDecorator> {
 
@@ -14,7 +14,7 @@ public class JnSyncBusinessDownloadResumeToRecruiterAction implements  java.util
 		String viewType = values.getAsString("viewType");
 		String resume = values.getAsString("resume");
 		
-		JnEntity.recruiter_view_resume.createOrUpdate(new CcpMapDecorator().put("resume", resume)
+		new JnEntityRecruiterViewResumes().createOrUpdate(new CcpMapDecorator().put("resume", resume)
 				.put("viewType", viewType)
 				.put("recruiter", recruiter));
 		
