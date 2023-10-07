@@ -38,7 +38,7 @@ import com.jn.commons.entities.JnEntityTokenTries;
 import com.jn.commons.entities.JnEntityUnlockTokenTries;
 import com.jn.commons.entities.JnEntityUnlockedPassword;
 import com.jn.commons.entities.JnEntityUnlockedToken;
-import com.jn.commons.entities.JnEntityUserStatis;
+import com.jn.commons.entities.JnEntityUserStats;
 import com.jn.commons.entities.JnEntityWeakPassword;
 import com.jn.commons.utils.JnTopic;
 
@@ -65,7 +65,7 @@ public class JnSyncLoginService{
 
 		CcpMapDecorator findById =  new CcpDaoCalculateId(values)
 		.toBeginProcedureAnd()
-			.loadThisIdFromEntity(new JnEntityUserStatis()).andSo()
+			.loadThisIdFromEntity(new JnEntityUserStats()).andSo()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedPassword()).returnStatus(JnProcessStatus.passwordIsLocked).and()
@@ -198,7 +198,7 @@ public class JnSyncLoginService{
 		 
 		CcpMapDecorator values = new CcpDaoCalculateId(parameters)
 			.toBeginProcedureAnd()
-				.loadThisIdFromEntity(new JnEntityUserStatis())
+				.loadThisIdFromEntity(new JnEntityUserStats())
 				.andSo()	
 					.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 					.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
@@ -265,7 +265,7 @@ public class JnSyncLoginService{
 		 */
 		CcpMapDecorator result =  new CcpDaoCalculateId(values)
 		.toBeginProcedureAnd()
-			.loadThisIdFromEntity(new JnEntityUserStatis()).andSo()
+			.loadThisIdFromEntity(new JnEntityUserStats()).andSo()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.executeAction(decisionTree).andFinally()	

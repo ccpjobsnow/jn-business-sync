@@ -27,7 +27,7 @@ public class JnSyncBusinessResetEntity extends CcpNextStep{
 
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
 		CcpMapDecorator entities = values.getInternalMap("_entities");
-		List<String> entidades = Arrays.asList(this.entities).stream().map(x -> x.name()).collect(Collectors.toList());
+		List<String> entidades = Arrays.asList(this.entities).stream().map(x -> x.getClass().getSimpleName()).collect(Collectors.toList());
 		CcpMapDecorator packageToRemoveTries = values.put("fieldName", this.fieldName).put("limit", this.limit).put("entities", entidades);
 		JnTopic.removeTries.send(packageToRemoveTries);
 		

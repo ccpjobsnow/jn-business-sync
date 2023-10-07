@@ -7,7 +7,7 @@ import com.ccp.decorators.CcpTextDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.entities.JnEntityLogin;
-import com.jn.commons.entities.JnEntityUserStatis;
+import com.jn.commons.entities.JnEntityUserStats;
 
 public class JnSyncBusinessCreateLogin extends CcpNextStep {
 
@@ -20,7 +20,7 @@ public class JnSyncBusinessCreateLogin extends CcpNextStep {
 		new JnEntityLogin().createOrUpdate(tokenChanged);
 
 
-		CcpMapDecorator userStats = tokenChanged.getInternalMap("_entities").getInternalMap(new JnEntityUserStatis().name()).getSubMap("loginCount", "lastLogin");
+		CcpMapDecorator userStats = tokenChanged.getInternalMap("_entities").getInternalMap(new JnEntityUserStats().name()).getSubMap("loginCount", "lastLogin");
 		CcpMapDecorator putAll = tokenChanged.putAll(userStats);
 		return new CcpStepResult(putAll, 200, this);
 	}
