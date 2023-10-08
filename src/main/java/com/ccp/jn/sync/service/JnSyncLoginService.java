@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.dao.CcpDaoCalculateId;
+import com.ccp.especifications.db.dao.CcpGetEntityId;
 import com.ccp.especifications.db.utils.CcpEntityTransferData;
 import com.ccp.jn.sync.business.JnSyncBusinessCreateLogin;
 import com.ccp.jn.sync.business.JnSyncBusinessEvaluatePasswordStrength;
@@ -63,7 +63,7 @@ public class JnSyncLoginService{
 
 		CcpMapDecorator values = new CcpMapDecorator(json);
 
-		CcpMapDecorator findById =  new CcpDaoCalculateId(values)
+		CcpMapDecorator findById =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(new JnEntityUserStats()).andSo()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
@@ -86,7 +86,7 @@ public class JnSyncLoginService{
 		
 		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnTopic.sendUserToken.send(valores);
 
-		CcpMapDecorator result = new CcpDaoCalculateId(values)
+		CcpMapDecorator result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedPassword()).returnStatus(JnProcessStatus.passwordIsLocked).and()
@@ -103,7 +103,7 @@ public class JnSyncLoginService{
 		
 		CcpMapDecorator values = new CcpMapDecorator(new CcpMapDecorator().put("email", email));
 
-		 new CcpDaoCalculateId(values)
+		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedPassword()).returnStatus(JnProcessStatus.passwordIsLocked).and()
@@ -120,7 +120,7 @@ public class JnSyncLoginService{
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
 		
 		Function<CcpMapDecorator, CcpMapDecorator> action = x -> new CcpEntityTransferData(new JnEntityLogin(), new JnEntityLogout()).goToTheNextStep(x).values;
-		 new CcpDaoCalculateId(values)
+		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.unableToExecuteLogout).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLogin()).executeAction(action).andFinally()
@@ -137,7 +137,7 @@ public class JnSyncLoginService{
 			return JnTopic.requestTokenAgain.send(valores);
 		};
 	
-		CcpMapDecorator result =  new CcpDaoCalculateId(values)
+		CcpMapDecorator result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
@@ -153,7 +153,7 @@ public class JnSyncLoginService{
 		
 		CcpMapDecorator values = new CcpMapDecorator().put("email", email).put("language", language);
 		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnTopic.requestUnlockToken.send(valores);
-		CcpMapDecorator result =  new CcpDaoCalculateId(values)
+		CcpMapDecorator result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.unableToRequestUnLockToken).and()
@@ -169,7 +169,7 @@ public class JnSyncLoginService{
 	public void savePreRegistration (CcpMapDecorator values){
 		
 		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> new JnEntityPreRegistration().createOrUpdate(valores);
-		 new CcpDaoCalculateId(values)
+		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.loginInUse).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
@@ -196,7 +196,7 @@ public class JnSyncLoginService{
 			 return goToTheNextStep.values;
 		 };
 		 
-		CcpMapDecorator values = new CcpDaoCalculateId(parameters)
+		CcpMapDecorator values = new CcpGetEntityId(parameters)
 			.toBeginProcedureAnd()
 				.loadThisIdFromEntity(new JnEntityUserStats())
 				.andSo()	
@@ -221,13 +221,13 @@ public class JnSyncLoginService{
 									)
 							)
 					.addAlternativeStep(JnProcessStatus.wrongPassword, new JnCommonsBusinessEvaluateTries(new JnEntityUnlockTokenTries(), JnProcessStatus.wrongPassword, JnProcessStatus.exceededTries)
-							.addAlternativeStep(JnProcessStatus.exceededTries, new JnEntityLockedPassword().getSaver(JnProcessStatus.exceededTries))
+							.addAlternativeStep(JnProcessStatus.exceededTries, new JnEntityFailedUnlockToken().getSaver(JnProcessStatus.exceededTries))
 							)
 					.goToTheNextStep(values).values;
 			
 		};
 		
-		CcpMapDecorator result = new CcpDaoCalculateId(parameters)
+		CcpMapDecorator result = new CcpGetEntityId(parameters)
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.tokenIsNotLocked).and()
@@ -263,7 +263,7 @@ public class JnSyncLoginService{
 		/*
 		 *TODO Salvar senha desbloqueada???
 		 */
-		CcpMapDecorator result =  new CcpDaoCalculateId(values)
+		CcpMapDecorator result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(new JnEntityUserStats()).andSo()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()

@@ -1,7 +1,7 @@
 package com.ccp.jn.sync.resumes.searchs.controller;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.dao.CcpDaoCalculateId;
+import com.ccp.especifications.db.dao.CcpGetEntityId;
 import com.ccp.jn.sync.business.JnProcessStatus;
 import com.ccp.jn.sync.business.JnSyncBusinessDownloadResumeToRecruiterAction;
 import com.jn.commons.entities.JnEntityCandidateResume;
@@ -18,7 +18,7 @@ public class DownloadResumeToRecruiter {
 
 		
 		JnEntityCandidateResume entity = new JnEntityCandidateResume();
-		CcpMapDecorator result =  new CcpDaoCalculateId(values)
+		CcpMapDecorator result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 		.ifThisIdIsPresentInEntity(new JnEntityDeniedViewToRecruiter()).returnStatus(JnProcessStatus.resumeHasBeenDeniedToRecruiter).and()
 		.ifThisIdIsNotPresentInEntity(entity).returnStatus(JnProcessStatus.resumeNotFound).and()

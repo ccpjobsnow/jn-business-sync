@@ -12,7 +12,7 @@ import static com.jn.commons.utils.JnTopic.requestUnlockToken;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.especifications.db.dao.CcpDaoCalculateId;
+import com.ccp.especifications.db.dao.CcpGetEntityId;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.jn.commons.business.JnCommonsBusinessGetMessage;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
@@ -31,8 +31,12 @@ public enum JnSyncSupportService {
 	unlockToken {
 		@Override
 		public CcpMapDecorator execute(Long chatId, String email) {
-			CcpMapDecorator result = this.answerSupport(chatId, email, PUT_EMAIL_TOKEN, new JnEntityRequestUnlockTokenResponsible(), new JnEntityRequestUnlockTokenAnswered(),
-					new JnEntityRequestUnlockToken(), requestUnlockToken);
+			
+			JnEntityRequestUnlockTokenResponsible responsibleEntity = new JnEntityRequestUnlockTokenResponsible();
+			JnEntityRequestUnlockTokenAnswered answerEntity = new JnEntityRequestUnlockTokenAnswered();
+			JnEntityRequestUnlockToken requestEntity = new JnEntityRequestUnlockToken();
+			
+			CcpMapDecorator result = this.answerSupport(chatId, email, PUT_EMAIL_TOKEN, responsibleEntity, answerEntity, requestEntity, requestUnlockToken);
 			
 			return result;
 		}
@@ -40,8 +44,12 @@ public enum JnSyncSupportService {
 	resendToken {
 		@Override
 		public CcpMapDecorator execute(Long chatId, String email) {
-			CcpMapDecorator result = this.answerSupport(chatId, email, DO_NOTHING, new JnEntityRequestTokenAgainResponsible(), new JnEntityRequestTokenAgainAnswered(),
-					new JnEntityRequestTokenAgain(), requestTokenAgain);
+			
+			JnEntityRequestTokenAgainResponsible responsibleEntity = new JnEntityRequestTokenAgainResponsible();
+			JnEntityRequestTokenAgainAnswered answerEntity = new JnEntityRequestTokenAgainAnswered();
+			JnEntityRequestTokenAgain requestEntity = new JnEntityRequestTokenAgain();
+			
+			CcpMapDecorator result = this.answerSupport(chatId, email, DO_NOTHING, responsibleEntity, answerEntity, requestEntity, requestTokenAgain);
 			
 			return result;
 		}
@@ -79,21 +87,22 @@ public enum JnSyncSupportService {
 			CcpMapDecorator entities = values.getInternalMap("_entities");
 			String language = entities.getInternalMap(requestEntity.name()).getAsString("language");
 			JnCommonsBusinessGetMessage gm = new JnCommonsBusinessGetMessage();
+			JnEntityEmailTemplateMessage messageEntity = new JnEntityEmailTemplateMessage();
+			JnEntityEmailParametersToSend parameterEntity = new JnEntityEmailParametersToSend();
 			gm
-			.addFlow(DO_NOTHING, new JnEntityEmailParametersToSend(), new JnEntityEmailTemplateMessage())
+			.addFlow(DO_NOTHING, parameterEntity, messageEntity)
 			.execute(topic, answerEntity, transformed, language);
 			requestEntity.delete(valores);
 			return values;
 			
 		};
 		
-		CcpMapDecorator result = new CcpDaoCalculateId(valores)
+		CcpMapDecorator result = new CcpGetEntityId(valores)
 			.toBeginProcedureAnd()
 				.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(loginTokenIsMissing).and()
 				.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(unauthorizedResponsible).and()
 				.ifThisIdIsNotPresentInEntity(requestEntity).returnStatus(requestDoesNotExist).and()
 				.ifThisIdIsPresentInEntity(answerEntity).returnStatus(requestAlreadyAnswered).and()
-				
 				.executeAction(action).andFinally()
 			.endThisProcedureRetrievingTheResultingData();
 		return result;
