@@ -4,7 +4,7 @@ import static com.ccp.constantes.CcpConstants.DO_NOTHING;
 import static com.ccp.jn.sync.business.JnProcessStatus.loginTokenIsMissing;
 import static com.ccp.jn.sync.business.JnProcessStatus.requestAlreadyAnswered;
 import static com.ccp.jn.sync.business.JnProcessStatus.requestDoesNotExist;
-import static com.ccp.jn.sync.business.JnProcessStatus.unauthorizedResponsible;
+import static com.ccp.jn.sync.business.JnProcessStatus.thisUserIsNotAllowedToDoSupport;
 import static com.jn.commons.utils.JnConstants.PUT_EMAIL_TOKEN;
 import static com.jn.commons.utils.JnTopic.requestTokenAgain;
 import static com.jn.commons.utils.JnTopic.requestUnlockToken;
@@ -99,8 +99,8 @@ public enum JnSyncSupportService {
 		
 		CcpMapDecorator result = new CcpGetEntityId(valores)
 			.toBeginProcedureAnd()
+				.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(thisUserIsNotAllowedToDoSupport).and()
 				.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(loginTokenIsMissing).and()
-				.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(unauthorizedResponsible).and()
 				.ifThisIdIsNotPresentInEntity(requestEntity).returnStatus(requestDoesNotExist).and()
 				.ifThisIdIsPresentInEntity(answerEntity).returnStatus(requestAlreadyAnswered).and()
 				.executeAction(action).andFinally()
