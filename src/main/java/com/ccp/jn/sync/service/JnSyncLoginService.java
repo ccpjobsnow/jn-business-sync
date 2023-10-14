@@ -65,6 +65,7 @@ public class JnSyncLoginService{
 
 		CcpMapDecorator findById =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
 			.loadThisIdFromEntity(new JnEntityUserStats()).andSo()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
@@ -89,6 +90,7 @@ public class JnSyncLoginService{
 
 		CcpMapDecorator result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedPassword()).returnStatus(JnProcessStatus.passwordIsLocked).and()
@@ -107,6 +109,7 @@ public class JnSyncLoginService{
 
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedPassword()).returnStatus(JnProcessStatus.passwordIsLocked).and()
@@ -142,6 +145,7 @@ public class JnSyncLoginService{
 	
 		CcpMapDecorator result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestTokenAgain()).returnStatus(JnProcessStatus.tokenAlreadyRequested).and()
@@ -158,6 +162,7 @@ public class JnSyncLoginService{
 		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnTopic.requestUnlockToken.send(valores);
 		CcpMapDecorator result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.unableToRequestUnLockToken).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
@@ -174,6 +179,7 @@ public class JnSyncLoginService{
 		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> new JnEntityPreRegistration().createOrUpdate(valores);
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
+			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.loginInUse).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
@@ -204,6 +210,7 @@ public class JnSyncLoginService{
 			.toBeginProcedureAnd()
 				.loadThisIdFromEntity(new JnEntityUserStats())
 				.andSo()	
+					.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 					.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
 					.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 					.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
@@ -225,8 +232,8 @@ public class JnSyncLoginService{
 							.addMostExpectedStep(new CcpEntityTransferData(new JnEntityLockedToken(), new JnEntityUnlockedToken())
 									)
 							)
-					.addAlternativeStep(JnProcessStatus.invalidPasswordToUnlockToken, new JnCommonsBusinessEvaluateTries(new JnEntityUnlockTokenTries(), JnProcessStatus.invalidPasswordToUnlockToken, JnProcessStatus.exceededTries)
-							.addAlternativeStep(JnProcessStatus.exceededTries, new JnEntityFailedUnlockToken().getSaver(JnProcessStatus.exceededTries))
+					.addAlternativeStep(JnProcessStatus.invalidPasswordToUnlockToken, new JnCommonsBusinessEvaluateTries(new JnEntityUnlockTokenTries(), JnProcessStatus.invalidPasswordToUnlockToken, JnProcessStatus.unlockTokenHasFailed)
+							.addAlternativeStep(JnProcessStatus.unlockTokenHasFailed, new JnEntityFailedUnlockToken().getSaver(JnProcessStatus.unlockTokenHasFailed))
 							)
 					.goToTheNextStep(values).values;
 			
@@ -271,6 +278,7 @@ public class JnSyncLoginService{
 		CcpMapDecorator result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(new JnEntityUserStats()).andSo()
+			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
