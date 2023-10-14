@@ -220,12 +220,12 @@ public class JnSyncLoginService{
 	public CcpMapDecorator unlockToken (CcpMapDecorator parameters){
 		Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
 			
-			return new JnSyncBusinessValidatePassword(new JnEntityRequestUnlockTokenAnswered())
+			return new JnSyncBusinessValidatePassword(new JnEntityRequestUnlockTokenAnswered(), JnProcessStatus.invalidPasswordToUnlockToken, "password")
 					.addMostExpectedStep(new JnSyncBusinessResetEntity("tries", 3, new JnEntityUnlockTokenTries())
 							.addMostExpectedStep(new CcpEntityTransferData(new JnEntityLockedToken(), new JnEntityUnlockedToken())
 									)
 							)
-					.addAlternativeStep(JnProcessStatus.wrongPassword, new JnCommonsBusinessEvaluateTries(new JnEntityUnlockTokenTries(), JnProcessStatus.wrongPassword, JnProcessStatus.exceededTries)
+					.addAlternativeStep(JnProcessStatus.invalidPasswordToUnlockToken, new JnCommonsBusinessEvaluateTries(new JnEntityUnlockTokenTries(), JnProcessStatus.invalidPasswordToUnlockToken, JnProcessStatus.exceededTries)
 							.addAlternativeStep(JnProcessStatus.exceededTries, new JnEntityFailedUnlockToken().getSaver(JnProcessStatus.exceededTries))
 							)
 					.goToTheNextStep(values).values;

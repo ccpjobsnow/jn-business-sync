@@ -25,6 +25,7 @@ public enum JnProcessStatus implements CcpProcessStatus {
 	weakPassword(422),
 	exceededTries(429),
 	wrongPassword(422),
+	invalidPasswordToUnlockToken(401),
 	requestToUnlockDoesNotExist(422), 
 	thisUserIsNotAllowedToDoSupport(401), 
 	requestAlreadyAnswered(409),
