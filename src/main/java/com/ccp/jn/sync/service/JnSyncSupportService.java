@@ -3,7 +3,7 @@ package com.ccp.jn.sync.service;
 import static com.ccp.constantes.CcpConstants.DO_NOTHING;
 import static com.ccp.jn.sync.business.JnProcessStatus.loginTokenIsMissing;
 import static com.ccp.jn.sync.business.JnProcessStatus.requestAlreadyAnswered;
-import static com.ccp.jn.sync.business.JnProcessStatus.requestDoesNotExist;
+import static com.ccp.jn.sync.business.JnProcessStatus.requestToUnlockDoesNotExist;
 import static com.ccp.jn.sync.business.JnProcessStatus.thisUserIsNotAllowedToDoSupport;
 import static com.jn.commons.utils.JnConstants.PUT_EMAIL_TOKEN;
 import static com.jn.commons.utils.JnTopic.requestTokenAgain;
@@ -101,8 +101,8 @@ public enum JnSyncSupportService {
 			.toBeginProcedureAnd()
 				.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(thisUserIsNotAllowedToDoSupport).and()
 				.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(loginTokenIsMissing).and()
-				.ifThisIdIsNotPresentInEntity(requestEntity).returnStatus(requestDoesNotExist).and()
 				.ifThisIdIsPresentInEntity(answerEntity).returnStatus(requestAlreadyAnswered).and()
+				.ifThisIdIsNotPresentInEntity(requestEntity).returnStatus(requestToUnlockDoesNotExist).and()
 				.executeAction(action).andFinally()
 			.endThisProcedureRetrievingTheResultingData();
 		return result;
