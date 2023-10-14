@@ -1,5 +1,5 @@
 package com.ccp.jn.sync.business;
-
+ 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
@@ -11,10 +11,17 @@ public class JnSyncBusinessValidatePassword extends CcpNextStep {
 
 	final CcpPasswordHandler passwordHandler = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
 	final CcpEntity entity;
+	final String fieldName;
 	
-	public JnSyncBusinessValidatePassword(CcpEntity entity) {
+	public JnSyncBusinessValidatePassword(CcpEntity entity, String fieldName) {
+		this.fieldName = fieldName;
 		this.entity = entity;
 	}
+	
+	public JnSyncBusinessValidatePassword(CcpEntity entity) {
+		this(entity, "password");
+	}
+	
 	
 	@Override
 	public CcpStepResult executeThisStep(CcpMapDecorator values) {
@@ -23,7 +30,7 @@ public class JnSyncBusinessValidatePassword extends CcpNextStep {
 		CcpMapDecorator pass = entities.getInternalMap(this.entity.name());
 	
 		String password = values.getAsString("password");
-		String passwordDb = pass.getAsString("password");
+		String passwordDb = pass.getAsString(this.fieldName);
 		
 		boolean incorrectPassword = this.passwordHandler.matches(password, passwordDb) == false;
 		

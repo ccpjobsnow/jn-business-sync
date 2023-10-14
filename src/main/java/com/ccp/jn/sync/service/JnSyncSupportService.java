@@ -5,7 +5,7 @@ import static com.ccp.jn.sync.business.JnProcessStatus.loginTokenIsMissing;
 import static com.ccp.jn.sync.business.JnProcessStatus.requestAlreadyAnswered;
 import static com.ccp.jn.sync.business.JnProcessStatus.requestToUnlockDoesNotExist;
 import static com.ccp.jn.sync.business.JnProcessStatus.thisUserIsNotAllowedToDoSupport;
-import static com.jn.commons.utils.JnConstants.PUT_EMAIL_TOKEN;
+import static com.jn.commons.utils.JnConstants.PUT_PASSWORD;
 import static com.jn.commons.utils.JnTopic.requestTokenAgain;
 import static com.jn.commons.utils.JnTopic.requestUnlockToken;
 
@@ -27,6 +27,8 @@ import com.jn.commons.entities.JnEntityRequestUnlockTokenResponsible;
 import com.jn.commons.utils.JnTopic;
 
 
+
+
 public enum JnSyncSupportService {
 	unlockToken {
 		@Override
@@ -36,7 +38,7 @@ public enum JnSyncSupportService {
 			JnEntityRequestUnlockTokenAnswered answerEntity = new JnEntityRequestUnlockTokenAnswered();
 			JnEntityRequestUnlockToken requestEntity = new JnEntityRequestUnlockToken();
 			
-			CcpMapDecorator result = this.answerSupport(chatId, email, PUT_EMAIL_TOKEN, responsibleEntity, answerEntity, requestEntity, requestUnlockToken);
+			CcpMapDecorator result = this.answerSupport(chatId, email, PUT_PASSWORD, responsibleEntity, answerEntity, requestEntity, requestUnlockToken);
 			
 			return result;
 		}
@@ -58,15 +60,6 @@ public enum JnSyncSupportService {
 	
 	public abstract CcpMapDecorator execute(Long chatId, String email);
 	
-	public CcpMapDecorator getUnlockTokenMessage(Long chatId, String email) {
-		
-		
-		CcpMapDecorator result = this.answerSupport(chatId, email, PUT_EMAIL_TOKEN, new JnEntityRequestUnlockTokenResponsible(), new JnEntityRequestUnlockTokenAnswered(),
-				new JnEntityRequestUnlockToken(), requestUnlockToken);
-		
-		return result;
-	}
-
 	public CcpMapDecorator getRequestTokenAgainMessage(Long chatId, String email) {
 		
 		
