@@ -12,11 +12,15 @@ import static com.jn.commons.utils.JnTopic.requestUnlockToken;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.especifications.db.dao.CcpDaoProcedure;
 import com.ccp.especifications.db.dao.CcpGetEntityId;
 import com.ccp.especifications.db.utils.CcpEntity;
+import com.ccp.jn.sync.business.JnProcessStatus;
 import com.jn.commons.business.JnCommonsBusinessGetMessage;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
+import com.jn.commons.entities.JnEntityFailedUnlockToken;
+import com.jn.commons.entities.JnEntityLockedToken;
 import com.jn.commons.entities.JnEntityLoginToken;
 import com.jn.commons.entities.JnEntityRequestTokenAgain;
 import com.jn.commons.entities.JnEntityRequestTokenAgainAnswered;
@@ -25,9 +29,6 @@ import com.jn.commons.entities.JnEntityRequestUnlockToken;
 import com.jn.commons.entities.JnEntityRequestUnlockTokenAnswered;
 import com.jn.commons.entities.JnEntityRequestUnlockTokenResponsible;
 import com.jn.commons.utils.JnTopic;
-
-
-
 
 public enum JnSyncSupportService {
 	unlockToken {
@@ -42,6 +43,18 @@ public enum JnSyncSupportService {
 			
 			return result;
 		}
+
+		@Override
+		public CcpDaoProcedure getValidations(CcpMapDecorator valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity) {
+			CcpDaoProcedure rules = new CcpGetEntityId(valores)
+					.toBeginProcedureAnd()
+						.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+						.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(thisUserIsNotAllowedToDoSupport).and()
+						.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(loginTokenIsMissing).and()
+						.ifThisIdIsPresentInEntity(answerEntity).returnStatus(requestAlreadyAnswered).and()
+						.ifThisIdIsNotPresentInEntity(requestEntity).returnStatus(requestToUnlockDoesNotExist).and();
+			return rules;
+		}
 	},
 	resendToken {
 		@Override
@@ -55,22 +68,28 @@ public enum JnSyncSupportService {
 			
 			return result;
 		}
+
+		@Override
+		public CcpDaoProcedure getValidations(CcpMapDecorator valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity) {
+			CcpDaoProcedure validations = new CcpGetEntityId(valores)
+					.toBeginProcedureAnd()
+						.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+						.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+						.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+						.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(thisUserIsNotAllowedToDoSupport).and()
+						.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(loginTokenIsMissing).and()
+						.ifThisIdIsPresentInEntity(answerEntity).returnStatus(requestAlreadyAnswered).and()
+						.ifThisIdIsNotPresentInEntity(requestEntity).returnStatus(requestToUnlockDoesNotExist).and();
+			return validations;
+		}
 	}
 	;
 	
 	public abstract CcpMapDecorator execute(Long chatId, String email);
 	
-	public CcpMapDecorator getRequestTokenAgainMessage(Long chatId, String email) {
-		
-		
-		CcpMapDecorator result = this.answerSupport(chatId, email, DO_NOTHING, new JnEntityRequestTokenAgainResponsible(), new JnEntityRequestTokenAgainAnswered(),
-				new JnEntityRequestTokenAgain(), requestTokenAgain);
-		
-		return result;
-	}
-
-	protected CcpMapDecorator answerSupport(
-			Long chatId, String email, Function<CcpMapDecorator, CcpMapDecorator> transform, CcpEntity responsibleEntity,
+	public abstract CcpDaoProcedure getValidations(CcpMapDecorator valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity);
+	
+	protected CcpMapDecorator answerSupport(Long chatId, String email, Function<CcpMapDecorator, CcpMapDecorator> transform, CcpEntity responsibleEntity,
 			CcpEntity answerEntity, CcpEntity requestEntity, JnTopic topic) {
 		
 		CcpMapDecorator valores = new CcpMapDecorator().put("email", email).put("chatId", chatId);
@@ -90,12 +109,9 @@ public enum JnSyncSupportService {
 			
 		};
 		
-		CcpMapDecorator result = new CcpGetEntityId(valores)
-			.toBeginProcedureAnd()
-				.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(thisUserIsNotAllowedToDoSupport).and()
-				.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(loginTokenIsMissing).and()
-				.ifThisIdIsPresentInEntity(answerEntity).returnStatus(requestAlreadyAnswered).and()
-				.ifThisIdIsNotPresentInEntity(requestEntity).returnStatus(requestToUnlockDoesNotExist).and()
+		CcpDaoProcedure validations = this.getValidations(valores, responsibleEntity, answerEntity, requestEntity);
+		
+		CcpMapDecorator result = validations
 				.executeAction(action).andFinally()
 			.endThisProcedureRetrievingTheResultingData();
 		return result;
