@@ -73,9 +73,9 @@ public enum JnSyncSupportService {
 		public CcpDaoProcedure getValidations(CcpMapDecorator valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity) {
 			CcpDaoProcedure validations = new CcpGetEntityId(valores)
 					.toBeginProcedureAnd()
-						.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-						.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
 						.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+						.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+						.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 						.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(thisUserIsNotAllowedToDoSupport).and()
 						.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(loginTokenIsMissing).and()
 						.ifThisIdIsPresentInEntity(answerEntity).returnStatus(requestAlreadyAnswered).and()
