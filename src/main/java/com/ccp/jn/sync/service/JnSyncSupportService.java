@@ -102,8 +102,8 @@ public enum JnSyncSupportService {
 			JnEntityEmailTemplateMessage messageEntity = new JnEntityEmailTemplateMessage();
 			JnEntityEmailParametersToSend parameterEntity = new JnEntityEmailParametersToSend();
 			gm
-			.addFlow(DO_NOTHING, parameterEntity, messageEntity)
-			.execute(topic, answerEntity, transformed, language);
+			.addOneStep(DO_NOTHING, parameterEntity, messageEntity)
+			.executeAllSteps(topic, answerEntity, transformed, language);
 			requestEntity.delete(valores);
 			return values;
 			
