@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
@@ -25,15 +26,15 @@ public class JnSyncBusinessResetEntity extends CcpNextStep{
 		this.limit = limit;
 	}
 
-	public CcpStepResult executeThisStep(CcpMapDecorator values) {
-		CcpMapDecorator entities = values.getInternalMap("_entities");
+	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {
+		CcpJsonRepresentation entities = values.getInnerJson("_entities");
 		List<String> entidades = Arrays.asList(this.entities).stream().map(x -> x.getClass().getSimpleName()).collect(Collectors.toList());
-		CcpMapDecorator packageToRemoveTries = values.put("fieldName", this.fieldName).put("limit", this.limit).put("entities", entidades);
+		CcpJsonRepresentation packageToRemoveTries = values.put("fieldName", this.fieldName).put("limit", this.limit).put("entities", entidades);
 		JnTopic.removeTries.send(packageToRemoveTries);
 		
-		CcpMapDecorator put = new CcpMapDecorator();
+		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON;
 		for (String entityName : entidades) {
-			CcpMapDecorator removeKey = entities.removeKey(entityName);
+			CcpJsonRepresentation removeKey = entities.removeKey(entityName);
 			put = values.put("_entities", removeKey);
 		}
 		return new CcpStepResult(put, 200, this);

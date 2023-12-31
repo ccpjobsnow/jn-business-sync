@@ -1,6 +1,6 @@
 package com.ccp.jn.sync.business;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.process.CcpNextStep;
@@ -12,7 +12,7 @@ public class JnSyncBusinessSavePassword extends CcpNextStep{
 	private CcpPasswordHandler passwordHandler = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
 	
 	@Override
-	public CcpStepResult executeThisStep(CcpMapDecorator values) {
+	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {
 		String password = values.getAsString("password");
 		String passwordHash = this.passwordHandler.getPasswordHash(password);
 		new JnEntityPassword().createOrUpdate(values.put("password", passwordHash));

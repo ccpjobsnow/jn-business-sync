@@ -4,14 +4,15 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.dao.CcpGetEntityId;
 import com.ccp.especifications.db.utils.CcpEntityTransferData;
+import com.ccp.jn.sync.business.JnProcessStatus;
 import com.ccp.jn.sync.business.JnSyncBusinessCreateLogin;
 import com.ccp.jn.sync.business.JnSyncBusinessEvaluatePasswordStrength;
 import com.ccp.jn.sync.business.JnSyncBusinessEvaluatePreRegistration;
 import com.ccp.jn.sync.business.JnSyncBusinessEvaluateToken;
-import com.ccp.jn.sync.business.JnProcessStatus;
 import com.ccp.jn.sync.business.JnSyncBusinessResetEntity;
 import com.ccp.jn.sync.business.JnSyncBusinessSavePassword;
 import com.ccp.jn.sync.business.JnSyncBusinessValidatePassword;
@@ -45,9 +46,9 @@ import com.jn.commons.utils.JnTopic;
 
 public class JnSyncLoginService{
 	
-	public CcpMapDecorator executeLogin(Map<String, Object> json){
+	public CcpJsonRepresentation executeLogin(Map<String, Object> json){
 		
-		 Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values -> {
+		 Function<CcpJsonRepresentation, CcpJsonRepresentation> decisionTree = values -> {
 			
 			JnCommonsBusinessSaveEntity lockPassword = new JnEntityLockedPassword().getSaver(JnProcessStatus.exceededTries);
 			CcpNextStep executeLogin = new JnSyncBusinessResetEntity("tries", 3, new JnEntityPasswordTries()).addMostExpectedStep(new JnSyncBusinessCreateLogin());
@@ -59,12 +60,12 @@ public class JnSyncLoginService{
 					.addAlternativeStep(JnProcessStatus.wrongPassword, evaluateTries)
 					.addMostExpectedStep(executeLogin);
 			
-			return validatePassword.goToTheNextStep(values).values.put("sessionToken", "{valorDoToken}").put("words", Arrays.asList(new CcpMapDecorator().put("word", "java").put("type", "IT")));
+			return validatePassword.goToTheNextStep(values).values.put("sessionToken", "{valorDoToken}").put("words", Arrays.asList(CcpConstants.EMPTY_JSON.put("word", "java").put("type", "IT")));
 		};
 
-		CcpMapDecorator values = new CcpMapDecorator(json);
+		CcpJsonRepresentation values = new CcpJsonRepresentation(json);
 
-		CcpMapDecorator findById =  new CcpGetEntityId(values)
+		CcpJsonRepresentation findById =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
@@ -75,7 +76,7 @@ public class JnSyncLoginService{
 			.ifThisIdIsPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.loginInUse).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityPassword()).returnStatus(JnProcessStatus.passwordIsMissing).and()
-			.ifThisIdIsPresentInEntity(new JnEntityPassword()).executeAction(decisionTree).andFinally()
+			.ifThisIdIsPresentInEntity(new JnEntityPassword()).executeAction(decisionTree).andFinallyReturningThisFields("words", "wordsToken", "sessionToken")
 		.endThisProcedureRetrievingTheResultingData()
 		;
 		
@@ -83,13 +84,13 @@ public class JnSyncLoginService{
 		return findById;
 	}
 	
-	public CcpMapDecorator createLoginToken (String email, String language){
+	public CcpJsonRepresentation createLoginToken (String email, String language){
 		
-		CcpMapDecorator values = new CcpMapDecorator().put("email", email).put("language", language);
+		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email).put("language", language);
 		
-		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnTopic.sendUserToken.send(valores);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnTopic.sendUserToken.send(valores);
 
-		CcpMapDecorator result = new CcpGetEntityId(values)
+		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
@@ -98,7 +99,7 @@ public class JnSyncLoginService{
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).executeAction(action).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.loginInUse).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityPassword()).returnStatus(JnProcessStatus.passwordIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinally()
+			.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinallyReturningThisFields("asyncTaskId")
 		.endThisProcedureRetrievingTheResultingData();
 
 		return result;
@@ -106,7 +107,7 @@ public class JnSyncLoginService{
 	
 	public void existsLoginToken (String email){
 		
-		CcpMapDecorator values = new CcpMapDecorator(new CcpMapDecorator().put("email", email));
+		CcpJsonRepresentation values = new CcpJsonRepresentation(CcpConstants.EMPTY_JSON.put("email", email));
 
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
@@ -117,34 +118,34 @@ public class JnSyncLoginService{
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.loginInUse).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityPassword()).returnStatus(JnProcessStatus.passwordIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinally()
+			.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinallyReturningThisFields()
 		.endThisProcedure()
 		;
 	}
 	
 	public void executeLogout (String email){
 		
-		CcpMapDecorator values = new CcpMapDecorator().put("email", email);
+		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email);
 		
-		Function<CcpMapDecorator, CcpMapDecorator> action = x -> new CcpEntityTransferData(new JnEntityLogin(), new JnEntityLogout()).goToTheNextStep(x).values;
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = x -> new CcpEntityTransferData(new JnEntityLogin(), new JnEntityLogout()).goToTheNextStep(x).values;
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.unableToExecuteLogout).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLogin()).executeAction(action).andFinally()
+			.ifThisIdIsPresentInEntity(new JnEntityLogin()).executeAction(action).andFinallyReturningThisFields()
 		.endThisProcedure()
 		;
 	}
 
-	public CcpMapDecorator requestTokenAgain (String email, String language){
+	public CcpJsonRepresentation requestTokenAgain (String email, String language){
 		
-		CcpMapDecorator values = new CcpMapDecorator().put("email", email).put("language", language);
+		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email).put("language", language);
 
-		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> {
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> {
 			new JnEntityRequestTokenAgain().create(valores);
 			return JnTopic.requestTokenAgain.send(valores);
 		};
 	
-		CcpMapDecorator result =  new CcpGetEntityId(values)
+		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
@@ -152,17 +153,17 @@ public class JnSyncLoginService{
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestTokenAgain()).returnStatus(JnProcessStatus.tokenAlreadyRequested).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestTokenAgainAnswered()).returnStatus(JnProcessStatus.tokenAlreadySent).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityRequestTokenAgain()).executeAction(action).andFinally()
+			.ifThisIdIsNotPresentInEntity(new JnEntityRequestTokenAgain()).executeAction(action).andFinallyReturningThisFields("asyncTaskId")
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;
 	}
 	
-	public CcpMapDecorator requestUnlockToken (String email, String language){
+	public CcpJsonRepresentation requestUnlockToken (String email, String language){
 		
-		CcpMapDecorator values = new CcpMapDecorator().put("email", email).put("language", language);
-		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> JnTopic.requestUnlockToken.send(valores);
-		CcpMapDecorator result =  new CcpGetEntityId(values)
+		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email).put("language", language);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnTopic.requestUnlockToken.send(valores);
+		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
@@ -170,15 +171,15 @@ public class JnSyncLoginService{
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockTokenAnswered()).returnStatus(JnProcessStatus.unlockTokenAlreadyAnswered).and()
 			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityRequestUnlockToken()).executeAction(action).andFinally()
+			.ifThisIdIsNotPresentInEntity(new JnEntityRequestUnlockToken()).executeAction(action).andFinallyReturningThisFields("asyncTaskId")
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;
 	}
 	
-	public void savePreRegistration (CcpMapDecorator values){
+	public void savePreRegistration (CcpJsonRepresentation values){
 		
-		Function<CcpMapDecorator, CcpMapDecorator> action = valores -> new JnEntityPreRegistration().createOrUpdate(valores);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> new JnEntityPreRegistration().createOrUpdate(valores);
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
@@ -188,15 +189,15 @@ public class JnSyncLoginService{
 			.ifThisIdIsPresentInEntity(new JnEntityLockedPassword()).returnStatus(JnProcessStatus.passwordIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).executeAction(action).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPassword()).returnStatus(JnProcessStatus.passwordIsMissing).andFinally()
+			.ifThisIdIsNotPresentInEntity(new JnEntityPassword()).returnStatus(JnProcessStatus.passwordIsMissing).andFinallyReturningThisFields()
 		.endThisProcedure()
 		;
 	}
 
-	public CcpMapDecorator saveWeakPassword (CcpMapDecorator parameters){
+	public CcpJsonRepresentation saveWeakPassword (CcpJsonRepresentation parameters){
 		JnSyncBusinessSavePassword passwordHandler = new JnSyncBusinessSavePassword();
 		
-		 Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values -> {
+		 Function<CcpJsonRepresentation, CcpJsonRepresentation> decisionTree = values -> {
 			 
 			 JnSyncBusinessCreateLogin saveLogin = new JnSyncBusinessCreateLogin();
 			 CcpNextStep createPasswordAndExecuteLogin = passwordHandler.addMostExpectedStep(saveLogin);
@@ -208,7 +209,7 @@ public class JnSyncLoginService{
 			 return goToTheNextStep.values;
 		 };
 		 
-		CcpMapDecorator values = new CcpGetEntityId(parameters)
+		CcpJsonRepresentation values = new CcpGetEntityId(parameters)
 			.toBeginProcedureAnd()
 				.loadThisIdFromEntity(new JnEntityUserStats())
 				.andSo()	
@@ -218,7 +219,7 @@ public class JnSyncLoginService{
 					.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 					.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
 					.executeAction(decisionTree)
-				.andFinally()
+				.andFinallyReturningThisFields()
 			.endThisProcedureRetrievingTheResultingData();
 		 
 		return values;
@@ -226,8 +227,8 @@ public class JnSyncLoginService{
 	}
 
 	
-	public CcpMapDecorator unlockToken (CcpMapDecorator parameters){
-		Function<CcpMapDecorator, CcpMapDecorator> decisionTree = values ->{
+	public CcpJsonRepresentation unlockToken (CcpJsonRepresentation parameters){
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> decisionTree = values ->{
 			
 			return new JnSyncBusinessValidatePassword(new JnEntityRequestUnlockTokenAnswered(), JnProcessStatus.invalidPasswordToUnlockToken, "password")
 					.addMostExpectedStep(new JnSyncBusinessResetEntity("tries", 3, new JnEntityUnlockTokenTries())
@@ -241,13 +242,13 @@ public class JnSyncLoginService{
 			
 		};
 		
-		CcpMapDecorator result = new CcpGetEntityId(parameters)
+		CcpJsonRepresentation result = new CcpGetEntityId(parameters)
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.tokenIsNotLocked).and()
 			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityRequestUnlockTokenAnswered()).returnStatus(JnProcessStatus.waitingForSupport).and()
-			.executeAction(decisionTree).andFinally()
+			.executeAction(decisionTree).andFinallyReturningThisFields()
 		.endThisProcedureRetrievingTheResultingData();
 
 		return result;
@@ -256,8 +257,8 @@ public class JnSyncLoginService{
 
 
 	
-	public CcpMapDecorator updatePassword (CcpMapDecorator values){
-		Function<CcpMapDecorator, CcpMapDecorator> decisionTree = valores ->{
+	public CcpJsonRepresentation updatePassword (CcpJsonRepresentation values){
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> decisionTree = valores ->{
 			JnSyncBusinessSavePassword passwordHandler = new JnSyncBusinessSavePassword();
 			CcpNextStep evaluatePreRegistration = new JnSyncBusinessEvaluatePreRegistration(new JnSyncBusinessCreateLogin());
 			CcpNextStep savePassword = passwordHandler.addMostExpectedStep(evaluatePreRegistration);
@@ -271,20 +272,20 @@ public class JnSyncLoginService{
 			CcpNextStep evaluateToken = new JnSyncBusinessEvaluateToken().addAlternativeStep(JnProcessStatus.wrongToken, evaluateTokenTries).addAlternativeStep(new CcpSuccessStatus(), removeTokenTries);
 			
 			CcpStepResult goToTheNextStep = evaluateToken.goToTheNextStep(valores);
-			return goToTheNextStep.values.put("sessionToken", "{valorDoToken}").put("words", Arrays.asList(new CcpMapDecorator().put("word", "java").put("type", "IT")));
+			return goToTheNextStep.values.put("sessionToken", "{valorDoToken}").put("words", Arrays.asList(CcpConstants.EMPTY_JSON.put("word", "java").put("type", "IT")));
 			
 		};
 		/*
 		 *TODO Salvar senha desbloqueada???
 		 */
-		CcpMapDecorator result =  new CcpGetEntityId(values)
+		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(new JnEntityUserStats()).andSo()
 			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
 			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.executeAction(decisionTree).andFinally()	
+			.executeAction(decisionTree).andFinallyReturningThisFields("words", "wordsToken", "sessionToken")	
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;

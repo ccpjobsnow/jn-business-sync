@@ -11,7 +11,8 @@ import static com.jn.commons.utils.JnTopic.requestUnlockToken;
 
 import java.util.function.Function;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.dao.CcpDaoProcedure;
 import com.ccp.especifications.db.dao.CcpGetEntityId;
 import com.ccp.especifications.db.utils.CcpEntity;
@@ -33,19 +34,19 @@ import com.jn.commons.utils.JnTopic;
 public enum JnSyncSupportService {
 	unlockToken {
 		@Override
-		public CcpMapDecorator execute(Long chatId, String email) {
+		public CcpJsonRepresentation execute(Long chatId, String email) {
 			
 			JnEntityRequestUnlockTokenResponsible responsibleEntity = new JnEntityRequestUnlockTokenResponsible();
 			JnEntityRequestUnlockTokenAnswered answerEntity = new JnEntityRequestUnlockTokenAnswered();
 			JnEntityRequestUnlockToken requestEntity = new JnEntityRequestUnlockToken();
 			
-			CcpMapDecorator result = this.answerSupport(chatId, email, PUT_PASSWORD, responsibleEntity, answerEntity, requestEntity, requestUnlockToken);
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, responsibleEntity, answerEntity, requestEntity, requestUnlockToken);
 			
 			return result;
 		}
 
 		@Override
-		public CcpDaoProcedure getValidations(CcpMapDecorator valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity) {
+		public CcpDaoProcedure getValidations(CcpJsonRepresentation valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity) {
 			CcpDaoProcedure rules = new CcpGetEntityId(valores)
 					.toBeginProcedureAnd()
 						.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
@@ -58,19 +59,19 @@ public enum JnSyncSupportService {
 	},
 	resendToken {
 		@Override
-		public CcpMapDecorator execute(Long chatId, String email) {
+		public CcpJsonRepresentation execute(Long chatId, String email) {
 			
 			JnEntityRequestTokenAgainResponsible responsibleEntity = new JnEntityRequestTokenAgainResponsible();
 			JnEntityRequestTokenAgainAnswered answerEntity = new JnEntityRequestTokenAgainAnswered();
 			JnEntityRequestTokenAgain requestEntity = new JnEntityRequestTokenAgain();
 			
-			CcpMapDecorator result = this.answerSupport(chatId, email, DO_NOTHING, responsibleEntity, answerEntity, requestEntity, requestTokenAgain);
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_NOTHING, responsibleEntity, answerEntity, requestEntity, requestTokenAgain);
 			
 			return result;
 		}
 
 		@Override
-		public CcpDaoProcedure getValidations(CcpMapDecorator valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity) {
+		public CcpDaoProcedure getValidations(CcpJsonRepresentation valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity) {
 			CcpDaoProcedure validations = new CcpGetEntityId(valores)
 					.toBeginProcedureAnd()
 						.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
@@ -85,19 +86,19 @@ public enum JnSyncSupportService {
 	}
 	;
 	
-	public abstract CcpMapDecorator execute(Long chatId, String email);
+	public abstract CcpJsonRepresentation execute(Long chatId, String email);
 	
-	public abstract CcpDaoProcedure getValidations(CcpMapDecorator valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity);
+	public abstract CcpDaoProcedure getValidations(CcpJsonRepresentation valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity);
 	
-	protected CcpMapDecorator answerSupport(Long chatId, String email, Function<CcpMapDecorator, CcpMapDecorator> transform, CcpEntity responsibleEntity,
+	protected CcpJsonRepresentation answerSupport(Long chatId, String email, Function<CcpJsonRepresentation, CcpJsonRepresentation> transform, CcpEntity responsibleEntity,
 			CcpEntity answerEntity, CcpEntity requestEntity, JnTopic topic) {
 		
-		CcpMapDecorator valores = new CcpMapDecorator().put("email", email).put("chatId", chatId);
-		CcpMapDecorator transformed = valores.getTransformed(transform);
+		CcpJsonRepresentation valores = CcpConstants.EMPTY_JSON.put("email", email).put("chatId", chatId);
+		CcpJsonRepresentation transformed = valores.getTransformed(transform);
 		
-		Function<CcpMapDecorator, CcpMapDecorator> action = values -> {
-			CcpMapDecorator entities = values.getInternalMap("_entities");
-			String language = entities.getInternalMap(requestEntity.name()).getAsString("language");
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = values -> {
+			CcpJsonRepresentation entities = values.getInnerJson("_entities");
+			String language = entities.getInnerJson(requestEntity.name()).getAsString("language");
 			JnCommonsBusinessGetMessage gm = new JnCommonsBusinessGetMessage();
 			JnEntityEmailTemplateMessage messageEntity = new JnEntityEmailTemplateMessage();
 			JnEntityEmailParametersToSend parameterEntity = new JnEntityEmailParametersToSend();
@@ -111,8 +112,8 @@ public enum JnSyncSupportService {
 		
 		CcpDaoProcedure validations = this.getValidations(valores, responsibleEntity, answerEntity, requestEntity);
 		
-		CcpMapDecorator result = validations
-				.executeAction(action).andFinally()
+		CcpJsonRepresentation result = validations
+				.executeAction(action).andFinallyReturningThisFields()
 			.endThisProcedureRetrievingTheResultingData();
 		return result;
 	}

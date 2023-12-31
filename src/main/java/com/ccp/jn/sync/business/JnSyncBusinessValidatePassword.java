@@ -1,6 +1,6 @@
 package com.ccp.jn.sync.business;
  
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.password.CcpPasswordHandler;
@@ -26,10 +26,10 @@ public class JnSyncBusinessValidatePassword extends CcpNextStep {
 	
 	
 	@Override
-	public CcpStepResult executeThisStep(CcpMapDecorator values) {
+	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {
 		
-		CcpMapDecorator entities = values.getInternalMap("_entities");
-		CcpMapDecorator pass = entities.getInternalMap(this.entity.name());
+		CcpJsonRepresentation entities = values.getInnerJson("_entities");
+		CcpJsonRepresentation pass = entities.getInnerJson(this.entity.name());
 	
 		String password = values.getAsString("password");
 		String passwordDb = pass.getAsString(this.fieldName);

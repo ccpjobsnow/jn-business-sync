@@ -1,6 +1,6 @@
 package com.ccp.jn.sync.business;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.ccp.process.CcpSuccessStatus;
@@ -13,7 +13,7 @@ public class JnSyncBusinessEvaluatePreRegistration extends CcpNextStep{
 	}
 	
 	@Override
-	public CcpStepResult executeThisStep(CcpMapDecorator values) {
+	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {
 		
 		if(new JnEntityPreRegistration().exists(values) == false) {
 			return new CcpStepResult(values, JnProcessStatus.preRegistrationIsMissing.status, this);
