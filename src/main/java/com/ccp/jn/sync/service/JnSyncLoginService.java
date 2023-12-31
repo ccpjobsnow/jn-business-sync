@@ -1,5 +1,6 @@
 package com.ccp.jn.sync.service;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -58,7 +59,7 @@ public class JnSyncLoginService{
 					.addAlternativeStep(JnProcessStatus.wrongPassword, evaluateTries)
 					.addMostExpectedStep(executeLogin);
 			
-			return validatePassword.goToTheNextStep(values).values;
+			return validatePassword.goToTheNextStep(values).values.put("sessionToken", "{valorDoToken}").put("words", Arrays.asList(new CcpMapDecorator().put("word", "java").put("type", "IT")));
 		};
 
 		CcpMapDecorator values = new CcpMapDecorator(json);
@@ -270,7 +271,7 @@ public class JnSyncLoginService{
 			CcpNextStep evaluateToken = new JnSyncBusinessEvaluateToken().addAlternativeStep(JnProcessStatus.wrongToken, evaluateTokenTries).addAlternativeStep(new CcpSuccessStatus(), removeTokenTries);
 			
 			CcpStepResult goToTheNextStep = evaluateToken.goToTheNextStep(valores);
-			return goToTheNextStep.values;
+			return goToTheNextStep.values.put("sessionToken", "{valorDoToken}").put("words", Arrays.asList(new CcpMapDecorator().put("word", "java").put("type", "IT")));
 			
 		};
 		/*
