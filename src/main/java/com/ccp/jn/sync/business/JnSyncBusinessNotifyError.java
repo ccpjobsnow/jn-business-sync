@@ -7,7 +7,7 @@ public class JnSyncBusinessNotifyError {
 
 	public CcpJsonRepresentation apply(Throwable e) {
 		CcpJsonRepresentation md = new CcpJsonRepresentation(e);
-		CcpJsonRepresentation send = JnTopic.notifyError.send(md);
+		CcpJsonRepresentation send = JnTopic.jnNotifyError.send(md);
 		return send;
 	}
 	

@@ -6,8 +6,8 @@ import static com.ccp.jn.sync.business.JnProcessStatus.requestAlreadyAnswered;
 import static com.ccp.jn.sync.business.JnProcessStatus.requestToUnlockDoesNotExist;
 import static com.ccp.jn.sync.business.JnProcessStatus.thisUserIsNotAllowedToDoSupport;
 import static com.jn.commons.utils.JnConstants.PUT_PASSWORD;
-import static com.jn.commons.utils.JnTopic.requestTokenAgain;
-import static com.jn.commons.utils.JnTopic.requestUnlockToken;
+import static com.jn.commons.utils.JnTopic.jnRequestTokenAgain;
+import static com.jn.commons.utils.JnTopic.jnRequestUnlockToken;
 
 import java.util.function.Function;
 
@@ -40,7 +40,7 @@ public enum JnSyncSupportService {
 			JnEntityRequestUnlockTokenAnswered answerEntity = new JnEntityRequestUnlockTokenAnswered();
 			JnEntityRequestUnlockToken requestEntity = new JnEntityRequestUnlockToken();
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, responsibleEntity, answerEntity, requestEntity, requestUnlockToken);
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, responsibleEntity, answerEntity, requestEntity, jnRequestUnlockToken);
 			
 			return result;
 		}
@@ -65,7 +65,7 @@ public enum JnSyncSupportService {
 			JnEntityRequestTokenAgainAnswered answerEntity = new JnEntityRequestTokenAgainAnswered();
 			JnEntityRequestTokenAgain requestEntity = new JnEntityRequestTokenAgain();
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_NOTHING, responsibleEntity, answerEntity, requestEntity, requestTokenAgain);
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_NOTHING, responsibleEntity, answerEntity, requestEntity, jnRequestTokenAgain);
 			
 			return result;
 		}
