@@ -88,7 +88,7 @@ public class JnSyncLoginService{
 		
 		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email).put("language", language);
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnTopic.jnSendUserToken.send(valores);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnTopic.sendUserToken.send(valores);
 
 		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
@@ -142,7 +142,7 @@ public class JnSyncLoginService{
 
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> {
 			new JnEntityRequestTokenAgain().create(valores);
-			return JnTopic.jnRequestTokenAgain.send(valores);
+			return JnTopic.requestTokenAgain.send(valores);
 		};
 	
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
@@ -162,7 +162,7 @@ public class JnSyncLoginService{
 	public CcpJsonRepresentation requestUnlockToken (String email, String language){
 		
 		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email).put("language", language);
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnTopic.jnRequestUnlockToken.send(valores);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnTopic.requestUnlockToken.send(valores);
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()

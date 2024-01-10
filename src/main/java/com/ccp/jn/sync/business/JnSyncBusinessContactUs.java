@@ -10,7 +10,7 @@ public class JnSyncBusinessContactUs {
 	
 	public CcpJsonRepresentation saveContactUs (Map<String, Object> json){
 		CcpJsonRepresentation save = new JnEntityContactUs().createOrUpdate(new CcpJsonRepresentation(json));
-		CcpJsonRepresentation send = JnTopic.jnNotifyContactUs.send(save);
+		CcpJsonRepresentation send = JnTopic.notifyContactUs.send(save);
 		return send;
 	}
 
