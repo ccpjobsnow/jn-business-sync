@@ -6,8 +6,6 @@ import static com.ccp.jn.sync.business.JnProcessStatus.requestAlreadyAnswered;
 import static com.ccp.jn.sync.business.JnProcessStatus.requestToUnlockDoesNotExist;
 import static com.ccp.jn.sync.business.JnProcessStatus.thisUserIsNotAllowedToDoSupport;
 import static com.jn.commons.utils.JnConstants.PUT_PASSWORD;
-import static com.jn.commons.utils.JnTopic.requestTokenAgain;
-import static com.jn.commons.utils.JnTopic.requestUnlockToken;
 
 import java.util.function.Function;
 
@@ -29,7 +27,7 @@ import com.jn.commons.entities.JnEntityRequestTokenAgainResponsible;
 import com.jn.commons.entities.JnEntityRequestUnlockToken;
 import com.jn.commons.entities.JnEntityRequestUnlockTokenAnswered;
 import com.jn.commons.entities.JnEntityRequestUnlockTokenResponsible;
-import com.jn.commons.utils.JnTopic;
+import com.jn.commons.utils.JnTopics;
 
 public enum JnSyncSupportService {
 	unlockToken {
@@ -40,7 +38,7 @@ public enum JnSyncSupportService {
 			JnEntityRequestUnlockTokenAnswered answerEntity = new JnEntityRequestUnlockTokenAnswered();
 			JnEntityRequestUnlockToken requestEntity = new JnEntityRequestUnlockToken();
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, responsibleEntity, answerEntity, requestEntity, requestUnlockToken);
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, responsibleEntity, answerEntity, requestEntity, JnTopics.requestUnlockToken.getTopicName());
 			
 			return result;
 		}
@@ -65,7 +63,7 @@ public enum JnSyncSupportService {
 			JnEntityRequestTokenAgainAnswered answerEntity = new JnEntityRequestTokenAgainAnswered();
 			JnEntityRequestTokenAgain requestEntity = new JnEntityRequestTokenAgain();
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_NOTHING, responsibleEntity, answerEntity, requestEntity, requestTokenAgain);
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_NOTHING, responsibleEntity, answerEntity, requestEntity, JnTopics.requestTokenAgain.getTopicName());
 			
 			return result;
 		}
@@ -91,7 +89,7 @@ public enum JnSyncSupportService {
 	public abstract CcpDaoProcedure getValidations(CcpJsonRepresentation valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity);
 	
 	protected CcpJsonRepresentation answerSupport(Long chatId, String email, Function<CcpJsonRepresentation, CcpJsonRepresentation> transform, CcpEntity responsibleEntity,
-			CcpEntity answerEntity, CcpEntity requestEntity, JnTopic topic) {
+			CcpEntity answerEntity, CcpEntity requestEntity, String topic) {
 		
 		CcpJsonRepresentation valores = CcpConstants.EMPTY_JSON.put("email", email).put("chatId", chatId);
 		CcpJsonRepresentation transformed = valores.getTransformed(transform);
