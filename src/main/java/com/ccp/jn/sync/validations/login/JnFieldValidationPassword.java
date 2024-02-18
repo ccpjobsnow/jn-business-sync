@@ -1,10 +1,10 @@
 package com.ccp.jn.sync.validations.login;
 
-import com.ccp.fields.validations.annotations.ObjectRules;
-import com.ccp.fields.validations.annotations.ObjectText;
-import com.ccp.fields.validations.annotations.ValidationRules;
-import com.ccp.fields.validations.enums.ObjectTextSizeValidations;
-import com.ccp.fields.validations.enums.ObjectValidations;
+import com.ccp.validation.annotations.ObjectRules;
+import com.ccp.validation.annotations.ObjectText;
+import com.ccp.validation.annotations.ValidationRules;
+import com.ccp.validation.enums.ObjectTextSizeValidations;
+import com.ccp.validation.enums.ObjectValidations;
 
 @ValidationRules(simpleObjectRules = { @ObjectRules(rule = ObjectValidations.requiredFields, fields = { "password" }) },
 		objectTextsValidations = {
