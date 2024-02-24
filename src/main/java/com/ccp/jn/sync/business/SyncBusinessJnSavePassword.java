@@ -7,7 +7,7 @@ import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.entities.JnEntityPassword;
 
-public class JnSyncBusinessSavePassword extends CcpNextStep{ 
+public class SyncBusinessJnSavePassword extends CcpNextStep{ 
 
 	private CcpPasswordHandler passwordHandler = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
 	

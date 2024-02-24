@@ -9,7 +9,7 @@ import com.ccp.process.CcpStepResult;
 import com.jn.commons.entities.JnEntityLogin;
 import com.jn.commons.entities.JnEntityUserStats;
 
-public class JnSyncBusinessCreateLogin extends CcpNextStep {
+public class SyncBusinessJnCreateLogin extends CcpNextStep {
 
 	@Override
 	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {

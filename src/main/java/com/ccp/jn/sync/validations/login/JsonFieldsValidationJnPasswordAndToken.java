@@ -6,10 +6,13 @@ import com.ccp.validation.annotations.ValidationRules;
 import com.ccp.validation.enums.ObjectTextSizeValidations;
 import com.ccp.validation.enums.SimpleObjectValidations;
 
-@ValidationRules(simpleObject = { @SimpleObject(rule = SimpleObjectValidations.requiredFields, fields = { "password" }) },
+@ValidationRules(simpleObject = {
+		@SimpleObject(rule = SimpleObjectValidations.requiredFields, fields = { "password", "token" }) },
+
 		objectTextSize  = {
-				@ObjectTextSize(rule = ObjectTextSizeValidations.equalsTo, fields = { "password"}, bound = 8) }
+				@ObjectTextSize(rule = ObjectTextSizeValidations.equalsTo, fields = { "password", "token" }, bound = 8) }
+
 )
-public class JnFieldValidationPassword {
+public class JsonFieldsValidationJnPasswordAndToken {
 
 }

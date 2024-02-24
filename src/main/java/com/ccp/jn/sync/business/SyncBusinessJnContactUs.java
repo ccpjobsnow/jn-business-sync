@@ -8,7 +8,7 @@ import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.entities.JnEntityContactUs;
 import com.jn.commons.utils.JnTopics;
 
-public class JnSyncBusinessContactUs {
+public class SyncBusinessJnContactUs {
 	
 	public CcpJsonRepresentation saveContactUs (Map<String, Object> json){
 		CcpJsonRepresentation save = new JnEntityContactUs().createOrUpdate(new CcpJsonRepresentation(json));

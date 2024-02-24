@@ -6,7 +6,7 @@ import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 
-public class JnSyncBusinessEvaluatePasswordStrength extends CcpNextStep{
+public class SyncBusinessJnEvaluatePasswordStrength extends CcpNextStep{
 
 	@Override
 	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {

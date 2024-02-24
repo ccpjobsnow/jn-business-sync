@@ -7,7 +7,7 @@ import com.ccp.exceptions.process.CcpAsyncProcess;
 import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnTopics;
 
-public class JnSyncBusinessNotifyError implements Function<Throwable, CcpJsonRepresentation> {
+public class SyncBusinessJnNotifyError implements Function<Throwable, CcpJsonRepresentation> {
 
 	public CcpJsonRepresentation apply(Throwable e) {
 		CcpJsonRepresentation md = new CcpJsonRepresentation(e);

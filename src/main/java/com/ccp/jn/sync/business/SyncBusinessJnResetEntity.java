@@ -13,7 +13,7 @@ import com.ccp.process.CcpStepResult;
 import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnTopics;
 
-public class JnSyncBusinessResetEntity extends CcpNextStep{
+public class SyncBusinessJnResetEntity extends CcpNextStep{
 
 	
 	private final CcpEntity[] entities;
@@ -22,7 +22,7 @@ public class JnSyncBusinessResetEntity extends CcpNextStep{
 	
 	private final Integer limit;
 
-	public JnSyncBusinessResetEntity(String fieldName, Integer limit, CcpEntity... entities) {
+	public SyncBusinessJnResetEntity(String fieldName, Integer limit, CcpEntity... entities) {
 		this.fieldName = fieldName;
 		this.entities = entities;
 		this.limit = limit;

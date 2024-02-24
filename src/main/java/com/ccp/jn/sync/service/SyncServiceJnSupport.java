@@ -29,7 +29,7 @@ import com.jn.commons.entities.JnEntityRequestUnlockTokenAnswered;
 import com.jn.commons.entities.JnEntityRequestUnlockTokenResponsible;
 import com.jn.commons.utils.JnTopics;
 
-public enum JnSyncSupportService {
+public enum SyncServiceJnSupport {
 	unlockToken {
 		@Override
 		public CcpJsonRepresentation execute(Long chatId, String email) {

@@ -16,6 +16,6 @@ import com.ccp.validation.enums.ObjectTextSizeValidations;
 						"channel" }, allowedValues = { "linkedin", "telegram", "friends", "others" }), }
 
 )
-public class JnFieldValidationPreRegistration {
+public class JsonFieldsValidationJnPreRegistration {
 
 }

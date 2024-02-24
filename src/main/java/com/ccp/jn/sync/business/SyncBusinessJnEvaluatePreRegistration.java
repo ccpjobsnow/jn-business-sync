@@ -6,9 +6,9 @@ import com.ccp.process.CcpStepResult;
 import com.ccp.process.CcpSuccessStatus;
 import com.jn.commons.entities.JnEntityPreRegistration;
 
-public class JnSyncBusinessEvaluatePreRegistration extends CcpNextStep{
+public class SyncBusinessJnEvaluatePreRegistration extends CcpNextStep{
 
-	public JnSyncBusinessEvaluatePreRegistration(CcpNextStep nextProcess) {
+	public SyncBusinessJnEvaluatePreRegistration(CcpNextStep nextProcess) {
 		this.addMostExpectedStep(nextProcess);
 	}
 	

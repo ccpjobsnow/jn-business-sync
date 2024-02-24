@@ -10,13 +10,13 @@ import com.ccp.especifications.db.dao.CcpGetEntityId;
 import com.ccp.especifications.db.utils.CcpEntityTransferData;
 import com.ccp.exceptions.process.CcpAsyncProcess;
 import com.ccp.jn.sync.business.JnProcessStatus;
-import com.ccp.jn.sync.business.JnSyncBusinessCreateLogin;
-import com.ccp.jn.sync.business.JnSyncBusinessEvaluatePasswordStrength;
-import com.ccp.jn.sync.business.JnSyncBusinessEvaluatePreRegistration;
-import com.ccp.jn.sync.business.JnSyncBusinessEvaluateToken;
-import com.ccp.jn.sync.business.JnSyncBusinessResetEntity;
-import com.ccp.jn.sync.business.JnSyncBusinessSavePassword;
-import com.ccp.jn.sync.business.JnSyncBusinessValidatePassword;
+import com.ccp.jn.sync.business.SyncBusinessJnCreateLogin;
+import com.ccp.jn.sync.business.SyncBusinessJnEvaluatePasswordStrength;
+import com.ccp.jn.sync.business.SyncBusinessJnEvaluatePreRegistration;
+import com.ccp.jn.sync.business.SyncBusinessJnEvaluateToken;
+import com.ccp.jn.sync.business.SyncBusinessJnResetEntity;
+import com.ccp.jn.sync.business.SyncBusinessJnSavePassword;
+import com.ccp.jn.sync.business.SyncBusinessJnValidatePassword;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.ccp.process.CcpSuccessStatus;
@@ -46,19 +46,19 @@ import com.jn.commons.entities.JnEntityUserStats;
 import com.jn.commons.entities.JnEntityWeakPassword;
 import com.jn.commons.utils.JnTopics;
 
-public class JnSyncLoginService{
+public class SyncServiceJnLogin{
 	
 	public CcpJsonRepresentation executeLogin(Map<String, Object> json){
 		
 		 Function<CcpJsonRepresentation, CcpJsonRepresentation> decisionTree = values -> {
 			
 			JnCommonsBusinessSaveEntity lockPassword = new JnEntityLockedPassword().getSaver(JnProcessStatus.exceededTries);
-			CcpNextStep executeLogin = new JnSyncBusinessResetEntity("tries", 3, new JnEntityPasswordTries()).addMostExpectedStep(new JnSyncBusinessCreateLogin());
+			CcpNextStep executeLogin = new SyncBusinessJnResetEntity("tries", 3, new JnEntityPasswordTries()).addMostExpectedStep(new SyncBusinessJnCreateLogin());
 
 			CcpNextStep evaluateTries = new JnCommonsBusinessEvaluateTries(new JnEntityPasswordTries(), JnProcessStatus.wrongPassword, JnProcessStatus.exceededTries)
 					.addAlternativeStep(JnProcessStatus.exceededTries, lockPassword);
 			
-			CcpNextStep validatePassword = new JnSyncBusinessValidatePassword(new JnEntityPassword())
+			CcpNextStep validatePassword = new SyncBusinessJnValidatePassword(new JnEntityPassword())
 					.addAlternativeStep(JnProcessStatus.wrongPassword, evaluateTries)
 					.addMostExpectedStep(executeLogin);
 			
@@ -197,15 +197,15 @@ public class JnSyncLoginService{
 	}
 
 	public CcpJsonRepresentation saveWeakPassword (CcpJsonRepresentation parameters){
-		JnSyncBusinessSavePassword passwordHandler = new JnSyncBusinessSavePassword();
+		SyncBusinessJnSavePassword passwordHandler = new SyncBusinessJnSavePassword();
 		
 		 Function<CcpJsonRepresentation, CcpJsonRepresentation> decisionTree = values -> {
 			 
-			 JnSyncBusinessCreateLogin saveLogin = new JnSyncBusinessCreateLogin();
+			 SyncBusinessJnCreateLogin saveLogin = new SyncBusinessJnCreateLogin();
 			 CcpNextStep createPasswordAndExecuteLogin = passwordHandler.addMostExpectedStep(saveLogin);
 			 CcpNextStep createWeakPassword = new JnEntityWeakPassword().getSaver().addMostExpectedStep(createPasswordAndExecuteLogin);
 			 CcpNextStep deleteWeakPasswordIfExists = new JnEntityWeakPassword().getDeleter().addMostExpectedStep(createPasswordAndExecuteLogin);
-			 CcpNextStep evaluatePasswordStrength = new JnSyncBusinessEvaluatePasswordStrength().addMostExpectedStep(deleteWeakPasswordIfExists).addAlternativeStep(JnProcessStatus.weakPassword, createWeakPassword);
+			 CcpNextStep evaluatePasswordStrength = new SyncBusinessJnEvaluatePasswordStrength().addMostExpectedStep(deleteWeakPasswordIfExists).addAlternativeStep(JnProcessStatus.weakPassword, createWeakPassword);
 			 CcpStepResult goToTheNextStep = evaluatePasswordStrength.goToTheNextStep(values);
 			 
 			 return goToTheNextStep.values;
@@ -232,8 +232,8 @@ public class JnSyncLoginService{
 	public CcpJsonRepresentation unlockToken (CcpJsonRepresentation parameters){
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> decisionTree = values ->{
 			
-			return new JnSyncBusinessValidatePassword(new JnEntityRequestUnlockTokenAnswered(), JnProcessStatus.invalidPasswordToUnlockToken, "password")
-					.addMostExpectedStep(new JnSyncBusinessResetEntity("tries", 3, new JnEntityUnlockTokenTries())
+			return new SyncBusinessJnValidatePassword(new JnEntityRequestUnlockTokenAnswered(), JnProcessStatus.invalidPasswordToUnlockToken, "password")
+					.addMostExpectedStep(new SyncBusinessJnResetEntity("tries", 3, new JnEntityUnlockTokenTries())
 							.addMostExpectedStep(new CcpEntityTransferData(new JnEntityLockedToken(), new JnEntityUnlockedToken())
 									)
 							)
@@ -261,17 +261,17 @@ public class JnSyncLoginService{
 	
 	public CcpJsonRepresentation updatePassword (CcpJsonRepresentation values){
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> decisionTree = valores ->{
-			JnSyncBusinessSavePassword passwordHandler = new JnSyncBusinessSavePassword();
-			CcpNextStep evaluatePreRegistration = new JnSyncBusinessEvaluatePreRegistration(new JnSyncBusinessCreateLogin());
+			SyncBusinessJnSavePassword passwordHandler = new SyncBusinessJnSavePassword();
+			CcpNextStep evaluatePreRegistration = new SyncBusinessJnEvaluatePreRegistration(new SyncBusinessJnCreateLogin());
 			CcpNextStep savePassword = passwordHandler.addMostExpectedStep(evaluatePreRegistration);
-			CcpNextStep evaluatePasswordStrength = new JnSyncBusinessEvaluatePasswordStrength().addMostExpectedStep(savePassword);//TODO todo mundo passar o most expected por construtor
+			CcpNextStep evaluatePasswordStrength = new SyncBusinessJnEvaluatePasswordStrength().addMostExpectedStep(savePassword);//TODO todo mundo passar o most expected por construtor
 			CcpNextStep unLockPassword = new CcpEntityTransferData(new JnEntityLockedPassword(), new JnEntityUnlockedPassword()).addMostExpectedStep(evaluatePasswordStrength);
 			CcpNextStep solveLoginConflict = new CcpEntityTransferData(new JnEntityLoginConflict(), new JnEntityLoginConflictSolved()).addMostExpectedStep(unLockPassword);
 			JnEntityTokenTries entity = new JnEntityTokenTries();
-			CcpNextStep removeTokenTries = new JnSyncBusinessResetEntity("tries", 3, entity).addMostExpectedStep(solveLoginConflict);
+			CcpNextStep removeTokenTries = new SyncBusinessJnResetEntity("tries", 3, entity).addMostExpectedStep(solveLoginConflict);
 			CcpNextStep saver = new JnEntityLockedToken().getSaver(JnProcessStatus.loginTokenIsLocked).addEmptyStep();
 			CcpNextStep evaluateTokenTries = new JnCommonsBusinessEvaluateTries(entity, JnProcessStatus.wrongToken, JnProcessStatus.exceededTries).addAlternativeStep(JnProcessStatus.exceededTries, saver);
-			CcpNextStep evaluateToken = new JnSyncBusinessEvaluateToken().addAlternativeStep(JnProcessStatus.wrongToken, evaluateTokenTries).addAlternativeStep(new CcpSuccessStatus(), removeTokenTries);
+			CcpNextStep evaluateToken = new SyncBusinessJnEvaluateToken().addAlternativeStep(JnProcessStatus.wrongToken, evaluateTokenTries).addAlternativeStep(new CcpSuccessStatus(), removeTokenTries);
 			
 			CcpStepResult goToTheNextStep = evaluateToken.goToTheNextStep(valores);
 			return goToTheNextStep.values.put("sessionToken", "{valorDoToken}").put("words", Arrays.asList(CcpConstants.EMPTY_JSON.put("word", "java").put("type", "IT")));

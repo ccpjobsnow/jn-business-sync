@@ -5,7 +5,7 @@ import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 import com.jn.commons.entities.JnEntityLoginToken;
 
-public class JnSyncBusinessEvaluateToken extends CcpNextStep{
+public class SyncBusinessJnEvaluateToken extends CcpNextStep{
 
 	@Override
 	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {

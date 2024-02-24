@@ -7,20 +7,20 @@ import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
 
-public class JnSyncBusinessValidatePassword extends CcpNextStep {
+public class SyncBusinessJnValidatePassword extends CcpNextStep {
 
 	final CcpPasswordHandler passwordHandler = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
 	final JnProcessStatus wrongPasswordStatus;
 	final CcpEntity entity;
 	final String fieldName;
 	
-	public JnSyncBusinessValidatePassword(CcpEntity entity, JnProcessStatus wrongPasswordStatus, String fieldName) {
+	public SyncBusinessJnValidatePassword(CcpEntity entity, JnProcessStatus wrongPasswordStatus, String fieldName) {
 		this.wrongPasswordStatus = wrongPasswordStatus;
 		this.fieldName = fieldName;
 		this.entity = entity;
 	}
 	
-	public JnSyncBusinessValidatePassword(CcpEntity entity) {
+	public SyncBusinessJnValidatePassword(CcpEntity entity) {
 		this(entity, JnProcessStatus.wrongPassword, "password");
 	}
 	
