@@ -90,7 +90,7 @@ public class SyncServiceJnLogin{
 		
 		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email).put("language", language);
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> new CcpAsyncProcess().send(valores, JnTopics.sendUserToken.getTopicName(), new JnEntityAsyncTask());
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> new CcpAsyncProcess().send(valores, JnTopics.sendUserToken, new JnEntityAsyncTask());
 
 		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
@@ -144,7 +144,7 @@ public class SyncServiceJnLogin{
 
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> {
 			new JnEntityRequestTokenAgain().create(valores);
-			return new CcpAsyncProcess().send(valores, JnTopics.requestTokenAgain.getTopicName(), new JnEntityAsyncTask());
+			return new CcpAsyncProcess().send(valores, JnTopics.requestTokenAgain, new JnEntityAsyncTask());
 		};
 	
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
@@ -164,7 +164,7 @@ public class SyncServiceJnLogin{
 	public CcpJsonRepresentation requestUnlockToken (String email, String language){
 		
 		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email).put("language", language);
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> new CcpAsyncProcess().send(valores, JnTopics.requestUnlockToken.getTopicName(), new JnEntityAsyncTask());
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> new CcpAsyncProcess().send(valores, JnTopics.requestUnlockToken, new JnEntityAsyncTask());
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
