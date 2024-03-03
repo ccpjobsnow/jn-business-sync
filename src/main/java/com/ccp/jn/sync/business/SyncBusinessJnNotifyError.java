@@ -11,7 +11,7 @@ public class SyncBusinessJnNotifyError implements Function<Throwable, CcpJsonRep
 
 	public CcpJsonRepresentation apply(Throwable e) {
 		CcpJsonRepresentation md = new CcpJsonRepresentation(e);
-		CcpJsonRepresentation send = new CcpAsyncProcess().send(md, JnTopics.notifyError.getTopicName(), new JnEntityAsyncTask());
+		CcpJsonRepresentation send = new CcpAsyncProcess().send(md, JnTopics.notifyError, new JnEntityAsyncTask());
 		return send;
 	}
 	
