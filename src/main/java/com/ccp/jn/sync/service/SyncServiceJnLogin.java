@@ -277,9 +277,6 @@ public class SyncServiceJnLogin{
 			return goToTheNextStep.values.put("sessionToken", "{valorDoToken}").put("words", Arrays.asList(CcpConstants.EMPTY_JSON.put("word", "java").put("type", "IT")));
 			
 		};
-		/*
-		 *TODO Salvar senha desbloqueada???
-		 */
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(new JnEntityUserStats()).and()
