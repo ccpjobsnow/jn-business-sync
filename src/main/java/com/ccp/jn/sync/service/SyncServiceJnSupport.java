@@ -38,7 +38,7 @@ public enum SyncServiceJnSupport {
 			JnEntityRequestUnlockTokenAnswered answerEntity = new JnEntityRequestUnlockTokenAnswered();
 			JnEntityRequestUnlockToken requestEntity = new JnEntityRequestUnlockToken();
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, responsibleEntity, answerEntity, requestEntity, JnTopics.requestUnlockToken.getTopicName());
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, responsibleEntity, answerEntity, requestEntity, JnTopics.requestUnlockToken.name());
 			
 			return result;
 		}
@@ -63,7 +63,7 @@ public enum SyncServiceJnSupport {
 			JnEntityRequestTokenAgainAnswered answerEntity = new JnEntityRequestTokenAgainAnswered();
 			JnEntityRequestTokenAgain requestEntity = new JnEntityRequestTokenAgain();
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_NOTHING, responsibleEntity, answerEntity, requestEntity, JnTopics.requestTokenAgain.getTopicName());
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_NOTHING, responsibleEntity, answerEntity, requestEntity, JnTopics.requestTokenAgain.name());
 			
 			return result;
 		}

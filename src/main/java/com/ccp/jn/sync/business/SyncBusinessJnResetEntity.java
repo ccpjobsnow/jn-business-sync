@@ -32,7 +32,7 @@ public class SyncBusinessJnResetEntity extends CcpNextStep{
 		CcpJsonRepresentation entities = values.getInnerJson("_entities");
 		List<String> entidades = Arrays.asList(this.entities).stream().map(x -> x.getClass().getSimpleName()).collect(Collectors.toList());
 		CcpJsonRepresentation packageToRemoveTries = values.put("fieldName", this.fieldName).put("limit", this.limit).put("entities", entidades);
-		new CcpAsyncProcess().send(packageToRemoveTries, JnTopics.removeTries, new JnEntityAsyncTask());
+		new CcpAsyncProcess().send(packageToRemoveTries, JnTopics.removeTries.name(), new JnEntityAsyncTask());
 		
 		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON;
 		for (String entityName : entidades) {
