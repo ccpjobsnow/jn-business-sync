@@ -1,6 +1,6 @@
 package com.ccp.jn.sync.service;
 
-import static com.ccp.constantes.CcpConstants.DO_NOTHING;
+import static com.ccp.constantes.CcpConstants.DO_BY_PASS;
 import static com.ccp.jn.sync.business.JnProcessStatus.loginTokenIsMissing;
 import static com.ccp.jn.sync.business.JnProcessStatus.requestAlreadyAnswered;
 import static com.ccp.jn.sync.business.JnProcessStatus.requestToUnlockDoesNotExist;
@@ -63,7 +63,7 @@ public enum SyncServiceJnSupport {
 			JnEntityRequestTokenAgainAnswered answerEntity = new JnEntityRequestTokenAgainAnswered();
 			JnEntityRequestTokenAgain requestEntity = new JnEntityRequestTokenAgain();
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_NOTHING, responsibleEntity, answerEntity, requestEntity, JnTopics.requestTokenAgain.name());
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_BY_PASS, responsibleEntity, answerEntity, requestEntity, JnTopics.requestTokenAgain.name());
 			
 			return result;
 		}
@@ -101,7 +101,7 @@ public enum SyncServiceJnSupport {
 			JnEntityEmailTemplateMessage messageEntity = new JnEntityEmailTemplateMessage();
 			JnEntityEmailParametersToSend parameterEntity = new JnEntityEmailParametersToSend();
 			gm
-			.addOneStep(DO_NOTHING, parameterEntity, messageEntity)
+			.addOneStep(DO_BY_PASS, parameterEntity, messageEntity)
 			.executeAllSteps(topic, answerEntity, transformed, language);
 			requestEntity.delete(valores);
 			return values;
