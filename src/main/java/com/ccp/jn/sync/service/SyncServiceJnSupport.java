@@ -96,7 +96,7 @@ public enum SyncServiceJnSupport {
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = values -> {
 			CcpJsonRepresentation entities = values.getInnerJson("_entities");
-			String language = entities.getInnerJson(requestEntity.name()).getAsString("language");
+			String language = entities.getInnerJson(requestEntity.getEntityName()).getAsString("language");
 			JnCommonsBusinessGetMessage gm = new JnCommonsBusinessGetMessage();
 			JnEntityEmailTemplateMessage messageEntity = new JnEntityEmailTemplateMessage();
 			JnEntityEmailParametersToSend parameterEntity = new JnEntityEmailParametersToSend();

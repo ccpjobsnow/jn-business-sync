@@ -29,7 +29,7 @@ public class SyncBusinessJnValidatePassword extends CcpNextStep {
 	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {
 		
 		CcpJsonRepresentation entities = values.getInnerJson("_entities");
-		CcpJsonRepresentation pass = entities.getInnerJson(this.entity.name());
+		CcpJsonRepresentation pass = entities.getInnerJson(this.entity.getEntityName());
 	
 		String password = values.getAsString("password");
 		String passwordDb = pass.getAsString(this.fieldName);

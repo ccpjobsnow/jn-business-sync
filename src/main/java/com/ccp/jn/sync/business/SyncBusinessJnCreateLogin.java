@@ -20,7 +20,7 @@ public class SyncBusinessJnCreateLogin extends CcpNextStep {
 		new JnEntityLogin().createOrUpdate(tokenChanged);
 
 
-		CcpJsonRepresentation userStats = tokenChanged.getInnerJson("_entities").getInnerJson(new JnEntityUserStats().name()).getJsonPiece("loginCount", "lastLogin");
+		CcpJsonRepresentation userStats = tokenChanged.getInnerJson("_entities").getInnerJson(new JnEntityUserStats().getEntityName()).getJsonPiece("loginCount", "lastLogin");
 		CcpJsonRepresentation putAll = tokenChanged.putAll(userStats);
 		return new CcpStepResult(putAll, 200, this);
 	}
