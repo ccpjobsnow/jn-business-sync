@@ -15,7 +15,7 @@ import com.ccp.especifications.db.dao.CcpDaoProcedure;
 import com.ccp.especifications.db.dao.CcpGetEntityId;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.jn.sync.business.JnProcessStatus;
-import com.jn.commons.business.JnCommonsBusinessGetMessage;
+import com.jn.commons.business.utils.JnCommonsBusinessUtilsGetMessage;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityFailedUnlockToken;
@@ -97,7 +97,7 @@ public enum SyncServiceJnSupport {
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = values -> {
 			CcpJsonRepresentation entities = values.getInnerJson("_entities");
 			String language = entities.getInnerJson(requestEntity.getEntityName()).getAsString("language");
-			JnCommonsBusinessGetMessage gm = new JnCommonsBusinessGetMessage();
+			JnCommonsBusinessUtilsGetMessage gm = new JnCommonsBusinessUtilsGetMessage();
 			JnEntityEmailTemplateMessage messageEntity = new JnEntityEmailTemplateMessage();
 			JnEntityEmailParametersToSend parameterEntity = new JnEntityEmailParametersToSend();
 			gm

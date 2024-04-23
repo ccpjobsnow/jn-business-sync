@@ -6,7 +6,8 @@ import com.jn.commons.entities.JnEntityAsyncTask;
 public class SyncServiceJnAsyncTask {
 
 	public CcpJsonRepresentation apply(String asyncTaskId) {
-		CcpJsonRepresentation asyncTask = new JnEntityAsyncTask().getOneById(asyncTaskId);
+		JnEntityAsyncTask jnEntityAsyncTask = new JnEntityAsyncTask();
+		CcpJsonRepresentation asyncTask = jnEntityAsyncTask.getOneById(asyncTaskId);
 		return asyncTask;
 	}
 	

@@ -7,10 +7,9 @@ import java.util.stream.Collectors;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.utils.CcpEntity;
-import com.ccp.exceptions.process.CcpAsyncProcess;
+import com.ccp.jn.sync.business.utils.JnSyncMensageriaSender;
 import com.ccp.process.CcpNextStep;
 import com.ccp.process.CcpStepResult;
-import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnTopics;
 
 public class SyncBusinessJnResetEntity extends CcpNextStep{
@@ -32,7 +31,7 @@ public class SyncBusinessJnResetEntity extends CcpNextStep{
 		CcpJsonRepresentation entities = values.getInnerJson("_entities");
 		List<String> entidades = Arrays.asList(this.entities).stream().map(x -> x.getClass().getSimpleName()).collect(Collectors.toList());
 		CcpJsonRepresentation packageToRemoveTries = values.put("fieldName", this.fieldName).put("limit", this.limit).put("entities", entidades);
-		new CcpAsyncProcess().send(packageToRemoveTries, JnTopics.removeTries.name(), new JnEntityAsyncTask());
+		new JnSyncMensageriaSender().send(packageToRemoveTries, JnTopics.removeTries);
 		
 		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON;
 		for (String entityName : entidades) {
