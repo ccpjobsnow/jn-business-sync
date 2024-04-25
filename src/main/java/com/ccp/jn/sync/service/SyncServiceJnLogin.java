@@ -167,7 +167,7 @@ public class SyncServiceJnLogin{
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> new JnSyncMensageriaSender().send(valores, JnTopics.requestUnlockToken);
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			//TODO VERIFICAR DUPLICIDADE
+			//FIXME VERIFICAR DUPLICIDADE
 			.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.unableToRequestUnLockToken).and()
