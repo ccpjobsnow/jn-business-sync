@@ -51,13 +51,13 @@ public class SyncServiceJnLogin{
 		
 		 Function<CcpJsonRepresentation, CcpJsonRepresentation> decisionTree = values -> {
 			
-			JnCommonsBusinessStepSaveEntity lockPassword = new JnEntityLockedPassword().getSaver(JnProcessStatus.exceededTries);
-			CcpNextStep executeLogin = new SyncBusinessJnResetEntity("tries", 3, new JnEntityPasswordTries()).addMostExpectedStep(new SyncBusinessJnCreateLogin());
+			JnCommonsBusinessStepSaveEntity lockPassword = JnEntityLockedPassword.INSTANCE.getSaver(JnProcessStatus.exceededTries);
+			CcpNextStep executeLogin = new SyncBusinessJnResetEntity("tries", 3, JnEntityPasswordTries.INSTANCE).addMostExpectedStep(new SyncBusinessJnCreateLogin());
 
-			CcpNextStep evaluateTries = new JnCommonsBusinessStepEvaluateTries(new JnEntityPasswordTries(), JnProcessStatus.wrongPassword, JnProcessStatus.exceededTries)
+			CcpNextStep evaluateTries = new JnCommonsBusinessStepEvaluateTries(JnEntityPasswordTries.INSTANCE, JnProcessStatus.wrongPassword, JnProcessStatus.exceededTries)
 					.addAlternativeStep(JnProcessStatus.exceededTries, lockPassword);
 			
-			CcpNextStep validatePassword = new SyncBusinessJnValidatePassword(new JnEntityPassword())
+			CcpNextStep validatePassword = new SyncBusinessJnValidatePassword(JnEntityPassword.INSTANCE)
 					.addAlternativeStep(JnProcessStatus.wrongPassword, evaluateTries)
 					.addMostExpectedStep(executeLogin);
 			
@@ -68,16 +68,16 @@ public class SyncServiceJnLogin{
 
 		CcpJsonRepresentation findById =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
-			.loadThisIdFromEntity(new JnEntityUserStats()).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLockedPassword()).returnStatus(JnProcessStatus.passwordIsLocked).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.loginInUse).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPassword()).returnStatus(JnProcessStatus.passwordIsMissing).and()
-			.ifThisIdIsPresentInEntity(new JnEntityPassword()).executeAction(decisionTree).andFinallyReturningThisFields("words", "wordsToken", "sessionToken")
+			.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+			.ifThisIdIsPresentInEntity(JnEntityRequestUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+			.loadThisIdFromEntity(JnEntityUserStats.INSTANCE).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsLocked).and()
+			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(JnProcessStatus.loginInUse).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsMissing).and()
+			.ifThisIdIsPresentInEntity(JnEntityPassword.INSTANCE).executeAction(decisionTree).andFinallyReturningThisFields("words", "wordsToken", "sessionToken")
 		.endThisProcedureRetrievingTheResultingData()
 		;
 		
@@ -93,14 +93,14 @@ public class SyncServiceJnLogin{
 
 		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLockedPassword()).returnStatus(JnProcessStatus.passwordIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).executeAction(action).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.loginInUse).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPassword()).returnStatus(JnProcessStatus.passwordIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinallyReturningThisFields("asyncTaskId")
+			.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+			.ifThisIdIsPresentInEntity(JnEntityRequestUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsLocked).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).executeAction(action).and()
+			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(JnProcessStatus.loginInUse).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsMissing).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinallyReturningThisFields("asyncTaskId")
 		.endThisProcedureRetrievingTheResultingData();
 
 		return result;
@@ -112,14 +112,14 @@ public class SyncServiceJnLogin{
 
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLockedPassword()).returnStatus(JnProcessStatus.passwordIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.loginInUse).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPassword()).returnStatus(JnProcessStatus.passwordIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinallyReturningThisFields()
+			.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+			.ifThisIdIsPresentInEntity(JnEntityRequestUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsLocked).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(JnProcessStatus.loginInUse).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsMissing).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(JnProcessStatus.preRegistrationIsMissing).andFinallyReturningThisFields()
 		.endThisProcedure()
 		;
 	}
@@ -128,11 +128,11 @@ public class SyncServiceJnLogin{
 		
 		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email);
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = x -> new CcpEntityTransferData(new JnEntityLogin(), new JnEntityLogout()).goToTheNextStep(x).values;
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = x -> new CcpEntityTransferData(JnEntityLogin.INSTANCE, JnEntityLogout.INSTANCE).goToTheNextStep(x).values;
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.unableToExecuteLogout).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLogin()).executeAction(action).andFinallyReturningThisFields()
+			.ifThisIdIsNotPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(JnProcessStatus.unableToExecuteLogout).and()
+			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).executeAction(action).andFinallyReturningThisFields()
 		.endThisProcedure()
 		;
 	}
@@ -142,20 +142,20 @@ public class SyncServiceJnLogin{
 		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email).put("language", language);
 
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> {
-			new JnEntityRequestTokenAgain().create(valores);
+			JnEntityRequestTokenAgain.INSTANCE.create(valores);
 			JnSyncMensageriaSender jnMensageria = new JnSyncMensageriaSender();
 			return jnMensageria.send(valores, JnTopics.requestTokenAgain);
 		};
 	
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.ifThisIdIsPresentInEntity(new JnEntityRequestTokenAgain()).returnStatus(JnProcessStatus.tokenAlreadyRequested).and()
-			.ifThisIdIsPresentInEntity(new JnEntityRequestTokenAgainAnswered()).returnStatus(JnProcessStatus.tokenAlreadySent).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityRequestTokenAgain()).executeAction(action).andFinallyReturningThisFields("asyncTaskId")
+			.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+			.ifThisIdIsPresentInEntity(JnEntityRequestUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+			.ifThisIdIsPresentInEntity(JnEntityRequestTokenAgain.INSTANCE).returnStatus(JnProcessStatus.tokenAlreadyRequested).and()
+			.ifThisIdIsPresentInEntity(JnEntityRequestTokenAgainAnswered.INSTANCE).returnStatus(JnProcessStatus.tokenAlreadySent).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityRequestTokenAgain.INSTANCE).executeAction(action).andFinallyReturningThisFields("asyncTaskId")
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;
@@ -167,13 +167,14 @@ public class SyncServiceJnLogin{
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> new JnSyncMensageriaSender().send(valores, JnTopics.requestUnlockToken);
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.unableToRequestUnLockToken).and()
-			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
-			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockTokenAnswered()).returnStatus(JnProcessStatus.unlockTokenAlreadyAnswered).and()
-			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityRequestUnlockToken()).executeAction(action).andFinallyReturningThisFields("asyncTaskId")
+			//TODO VERIFICAR DUPLICIDADE
+			.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.unableToRequestUnLockToken).and()
+			.ifThisIdIsPresentInEntity(JnEntityRequestUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+			.ifThisIdIsPresentInEntity(JnEntityRequestUnlockTokenAnswered.INSTANCE).returnStatus(JnProcessStatus.unlockTokenAlreadyAnswered).and()
+			.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityRequestUnlockToken.INSTANCE).executeAction(action).andFinallyReturningThisFields("asyncTaskId")
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;
@@ -181,17 +182,17 @@ public class SyncServiceJnLogin{
 	
 	public void savePreRegistration (CcpJsonRepresentation values){
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> new JnEntityPreRegistration().createOrUpdate(valores);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnEntityPreRegistration.INSTANCE.createOrUpdate(valores);
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLogin()).returnStatus(JnProcessStatus.loginInUse).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLockedPassword()).returnStatus(JnProcessStatus.passwordIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).executeAction(action).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityPassword()).returnStatus(JnProcessStatus.passwordIsMissing).andFinallyReturningThisFields()
+			.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+			.ifThisIdIsPresentInEntity(JnEntityRequestUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(JnProcessStatus.loginInUse).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsLocked).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).executeAction(action).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsMissing).andFinallyReturningThisFields()
 		.endThisProcedure()
 		;
 	}
@@ -203,8 +204,8 @@ public class SyncServiceJnLogin{
 			 
 			 SyncBusinessJnCreateLogin saveLogin = new SyncBusinessJnCreateLogin();
 			 CcpNextStep createPasswordAndExecuteLogin = passwordHandler.addMostExpectedStep(saveLogin);
-			 CcpNextStep createWeakPassword = new JnEntityWeakPassword().getSaver().addMostExpectedStep(createPasswordAndExecuteLogin);
-			 CcpNextStep deleteWeakPasswordIfExists = new JnEntityWeakPassword().getDeleter().addMostExpectedStep(createPasswordAndExecuteLogin);
+			 CcpNextStep createWeakPassword = JnEntityWeakPassword.INSTANCE.getSaver().addMostExpectedStep(createPasswordAndExecuteLogin);
+			 CcpNextStep deleteWeakPasswordIfExists = JnEntityWeakPassword.INSTANCE.getDeleter().addMostExpectedStep(createPasswordAndExecuteLogin);
 			 CcpNextStep evaluatePasswordStrength = new SyncBusinessJnEvaluatePasswordStrength().addMostExpectedStep(deleteWeakPasswordIfExists).addAlternativeStep(JnProcessStatus.weakPassword, createWeakPassword);
 			 CcpStepResult goToTheNextStep = evaluatePasswordStrength.goToTheNextStep(values);
 			 
@@ -213,13 +214,13 @@ public class SyncServiceJnLogin{
 		 
 		CcpJsonRepresentation values = new CcpGetEntityId(parameters)
 			.toBeginProcedureAnd()
-				.loadThisIdFromEntity(new JnEntityUserStats())
+				.loadThisIdFromEntity(JnEntityUserStats.INSTANCE)
 				.and()	
-					.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-					.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
-					.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-					.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-					.ifThisIdIsNotPresentInEntity(new JnEntityPreRegistration()).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
+					.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+					.ifThisIdIsPresentInEntity(JnEntityRequestUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+					.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+					.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+					.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
 					.executeAction(decisionTree)
 				.andFinallyReturningThisFields()
 			.endThisProcedureRetrievingTheResultingData();
@@ -232,13 +233,13 @@ public class SyncServiceJnLogin{
 	public CcpJsonRepresentation unlockToken (CcpJsonRepresentation parameters){
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> decisionTree = values ->{
 			
-			return new SyncBusinessJnValidatePassword(new JnEntityRequestUnlockTokenAnswered(), JnProcessStatus.invalidPasswordToUnlockToken, "password")
-					.addMostExpectedStep(new SyncBusinessJnResetEntity("tries", 3, new JnEntityUnlockTokenTries())
-							.addMostExpectedStep(new CcpEntityTransferData(new JnEntityLockedToken(), new JnEntityUnlockedToken())
+			return new SyncBusinessJnValidatePassword(JnEntityRequestUnlockTokenAnswered.INSTANCE, JnProcessStatus.invalidPasswordToUnlockToken, "password")
+					.addMostExpectedStep(new SyncBusinessJnResetEntity("tries", 3, JnEntityUnlockTokenTries.INSTANCE)
+							.addMostExpectedStep(new CcpEntityTransferData(JnEntityLockedToken.INSTANCE, JnEntityUnlockedToken.INSTANCE)
 									)
 							)
-					.addAlternativeStep(JnProcessStatus.invalidPasswordToUnlockToken, new JnCommonsBusinessStepEvaluateTries(new JnEntityUnlockTokenTries(), JnProcessStatus.invalidPasswordToUnlockToken, JnProcessStatus.unlockTokenHasFailed)
-							.addAlternativeStep(JnProcessStatus.unlockTokenHasFailed, new JnEntityFailedUnlockToken().getSaver(JnProcessStatus.unlockTokenHasFailed))
+					.addAlternativeStep(JnProcessStatus.invalidPasswordToUnlockToken, new JnCommonsBusinessStepEvaluateTries(JnEntityUnlockTokenTries.INSTANCE, JnProcessStatus.invalidPasswordToUnlockToken, JnProcessStatus.unlockTokenHasFailed)
+							.addAlternativeStep(JnProcessStatus.unlockTokenHasFailed, JnEntityFailedUnlockToken.INSTANCE.getSaver(JnProcessStatus.unlockTokenHasFailed))
 							)
 					.goToTheNextStep(values).values;
 			
@@ -246,10 +247,10 @@ public class SyncServiceJnLogin{
 		
 		CcpJsonRepresentation result = new CcpGetEntityId(parameters)
 		.toBeginProcedureAnd()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.tokenIsNotLocked).and()
-			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityRequestUnlockTokenAnswered()).returnStatus(JnProcessStatus.waitingForSupport).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.tokenIsNotLocked).and()
+			.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityRequestUnlockTokenAnswered.INSTANCE).returnStatus(JnProcessStatus.waitingForSupport).and()
 			.executeAction(decisionTree).andFinallyReturningThisFields()
 		.endThisProcedureRetrievingTheResultingData();
 
@@ -265,12 +266,11 @@ public class SyncServiceJnLogin{
 			CcpNextStep evaluatePreRegistration = new SyncBusinessJnEvaluatePreRegistration(new SyncBusinessJnCreateLogin());
 			CcpNextStep savePassword = passwordHandler.addMostExpectedStep(evaluatePreRegistration);
 			CcpNextStep evaluatePasswordStrength = new SyncBusinessJnEvaluatePasswordStrength().addMostExpectedStep(savePassword);//TODO todo mundo passar o most expected por construtor
-			CcpNextStep unLockPassword = new CcpEntityTransferData(new JnEntityLockedPassword(), new JnEntityUnlockedPassword()).addMostExpectedStep(evaluatePasswordStrength);
-			CcpNextStep solveLoginConflict = new CcpEntityTransferData(new JnEntityLoginConflict(), new JnEntityLoginConflictSolved()).addMostExpectedStep(unLockPassword);
-			JnEntityTokenTries entity = new JnEntityTokenTries();
-			CcpNextStep removeTokenTries = new SyncBusinessJnResetEntity("tries", 3, entity).addMostExpectedStep(solveLoginConflict);
-			CcpNextStep saver = new JnEntityLockedToken().getSaver(JnProcessStatus.loginTokenIsLocked).addEmptyStep();
-			CcpNextStep evaluateTokenTries = new JnCommonsBusinessStepEvaluateTries(entity, JnProcessStatus.wrongToken, JnProcessStatus.exceededTries).addAlternativeStep(JnProcessStatus.exceededTries, saver);
+			CcpNextStep unLockPassword = new CcpEntityTransferData(JnEntityLockedPassword.INSTANCE, JnEntityUnlockedPassword.INSTANCE).addMostExpectedStep(evaluatePasswordStrength);
+			CcpNextStep solveLoginConflict = new CcpEntityTransferData(JnEntityLoginConflict.INSTANCE, JnEntityLoginConflictSolved.INSTANCE).addMostExpectedStep(unLockPassword);
+			CcpNextStep removeTokenTries = new SyncBusinessJnResetEntity("tries", 3, JnEntityTokenTries.INSTANCE).addMostExpectedStep(solveLoginConflict);
+			CcpNextStep saver = JnEntityLockedToken.INSTANCE.getSaver(JnProcessStatus.loginTokenIsLocked).addEmptyStep();
+			CcpNextStep evaluateTokenTries = new JnCommonsBusinessStepEvaluateTries(JnEntityTokenTries.INSTANCE, JnProcessStatus.wrongToken, JnProcessStatus.exceededTries).addAlternativeStep(JnProcessStatus.exceededTries, saver);
 			CcpNextStep evaluateToken = new SyncBusinessJnEvaluateToken().addAlternativeStep(JnProcessStatus.wrongToken, evaluateTokenTries).addAlternativeStep(new CcpSuccessStatus(), removeTokenTries);
 			
 			CcpStepResult goToTheNextStep = evaluateToken.goToTheNextStep(valores);
@@ -279,11 +279,11 @@ public class SyncServiceJnLogin{
 		};
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.loadThisIdFromEntity(new JnEntityUserStats()).and()
-			.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-			.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
-			.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+			.loadThisIdFromEntity(JnEntityUserStats.INSTANCE).and()
+			.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+			.ifThisIdIsPresentInEntity(JnEntityRequestUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
 			.executeAction(decisionTree).andFinallyReturningThisFields("words", "wordsToken", "sessionToken")	
 		.endThisProcedureRetrievingTheResultingData();
 		

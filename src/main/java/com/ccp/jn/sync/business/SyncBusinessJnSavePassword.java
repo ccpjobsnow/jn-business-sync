@@ -15,7 +15,7 @@ public class SyncBusinessJnSavePassword extends CcpNextStep{
 	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {
 		String password = values.getAsString("password");
 		String passwordHash = this.passwordHandler.getPasswordHash(password);
-		new JnEntityPassword().createOrUpdate(values.put("password", passwordHash));
+		JnEntityPassword.INSTANCE.createOrUpdate(values.put("password", passwordHash));
 		return new CcpStepResult(values, 200, this);
 	}
 

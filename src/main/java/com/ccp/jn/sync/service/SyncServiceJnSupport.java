@@ -34,11 +34,8 @@ public enum SyncServiceJnSupport {
 		@Override
 		public CcpJsonRepresentation execute(Long chatId, String email) {
 			
-			JnEntityRequestUnlockTokenResponsible responsibleEntity = new JnEntityRequestUnlockTokenResponsible();
-			JnEntityRequestUnlockTokenAnswered answerEntity = new JnEntityRequestUnlockTokenAnswered();
-			JnEntityRequestUnlockToken requestEntity = new JnEntityRequestUnlockToken();
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, responsibleEntity, answerEntity, requestEntity, JnTopics.requestUnlockToken.name());
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, JnEntityRequestUnlockTokenResponsible.INSTANCE, JnEntityRequestUnlockTokenAnswered.INSTANCE, JnEntityRequestUnlockToken.INSTANCE, JnTopics.requestUnlockToken.name());
 			
 			return result;
 		}
@@ -47,9 +44,9 @@ public enum SyncServiceJnSupport {
 		public CcpDaoProcedure getValidations(CcpJsonRepresentation valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity) {
 			CcpDaoProcedure rules = new CcpGetEntityId(valores)
 					.toBeginProcedureAnd()
-						.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+						.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
 						.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(thisUserIsNotAllowedToDoSupport).and()
-						.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(loginTokenIsMissing).and()
+						.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(loginTokenIsMissing).and()
 						.ifThisIdIsPresentInEntity(answerEntity).returnStatus(requestAlreadyAnswered).and()
 						.ifThisIdIsNotPresentInEntity(requestEntity).returnStatus(requestToUnlockDoesNotExist).and();
 			return rules;
@@ -59,11 +56,8 @@ public enum SyncServiceJnSupport {
 		@Override
 		public CcpJsonRepresentation execute(Long chatId, String email) {
 			
-			JnEntityRequestTokenAgainResponsible responsibleEntity = new JnEntityRequestTokenAgainResponsible();
-			JnEntityRequestTokenAgainAnswered answerEntity = new JnEntityRequestTokenAgainAnswered();
-			JnEntityRequestTokenAgain requestEntity = new JnEntityRequestTokenAgain();
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_BY_PASS, responsibleEntity, answerEntity, requestEntity, JnTopics.requestTokenAgain.name());
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_BY_PASS, JnEntityRequestTokenAgainResponsible.INSTANCE, JnEntityRequestTokenAgainAnswered.INSTANCE, JnEntityRequestTokenAgain.INSTANCE, JnTopics.requestTokenAgain.name());
 			
 			return result;
 		}
@@ -72,11 +66,11 @@ public enum SyncServiceJnSupport {
 		public CcpDaoProcedure getValidations(CcpJsonRepresentation valores, CcpEntity responsibleEntity, CcpEntity answerEntity, CcpEntity requestEntity) {
 			CcpDaoProcedure validations = new CcpGetEntityId(valores)
 					.toBeginProcedureAnd()
-						.ifThisIdIsPresentInEntity(new JnEntityFailedUnlockToken()).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
-						.ifThisIdIsPresentInEntity(new JnEntityRequestUnlockToken()).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
-						.ifThisIdIsPresentInEntity(new JnEntityLockedToken()).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
+						.ifThisIdIsPresentInEntity(JnEntityFailedUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenHasFailed).and()
+						.ifThisIdIsPresentInEntity(JnEntityRequestUnlockToken.INSTANCE).returnStatus(JnProcessStatus.unlockTokenAlreadyRequested).and()
+						.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
 						.ifThisIdIsNotPresentInEntity(responsibleEntity).returnStatus(thisUserIsNotAllowedToDoSupport).and()
-						.ifThisIdIsNotPresentInEntity(new JnEntityLoginToken()).returnStatus(loginTokenIsMissing).and()
+						.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(loginTokenIsMissing).and()
 						.ifThisIdIsPresentInEntity(answerEntity).returnStatus(requestAlreadyAnswered).and()
 						.ifThisIdIsNotPresentInEntity(requestEntity).returnStatus(requestToUnlockDoesNotExist).and();
 			return validations;
@@ -98,10 +92,8 @@ public enum SyncServiceJnSupport {
 			CcpJsonRepresentation entities = values.getInnerJson("_entities");
 			String language = entities.getInnerJson(requestEntity.getEntityName()).getAsString("language");
 			JnCommonsBusinessUtilsGetMessage gm = new JnCommonsBusinessUtilsGetMessage();
-			JnEntityEmailTemplateMessage messageEntity = new JnEntityEmailTemplateMessage();
-			JnEntityEmailParametersToSend parameterEntity = new JnEntityEmailParametersToSend();
 			gm
-			.addOneStep(DO_BY_PASS, parameterEntity, messageEntity)
+			.addOneStep(DO_BY_PASS, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
 			.executeAllSteps(topic, answerEntity, transformed, language);
 			requestEntity.delete(valores);
 			return values;

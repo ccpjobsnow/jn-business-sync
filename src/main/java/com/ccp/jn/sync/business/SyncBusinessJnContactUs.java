@@ -10,9 +10,8 @@ import com.jn.commons.utils.JnTopics;
 public class SyncBusinessJnContactUs {
 	
 	public CcpJsonRepresentation saveContactUs (Map<String, Object> json){
-		JnEntityContactUs jnEntityContactUs = new JnEntityContactUs();
 		CcpJsonRepresentation values = new CcpJsonRepresentation(json);
-		CcpJsonRepresentation save = jnEntityContactUs.createOrUpdate(values);
+		CcpJsonRepresentation save = JnEntityContactUs.INSTANCE.createOrUpdate(values);
 		JnSyncMensageriaSender jnMensageria = new JnSyncMensageriaSender();
 		CcpJsonRepresentation send = jnMensageria.send(save, JnTopics.notifyContactUs);
 		return send;

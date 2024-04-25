@@ -15,7 +15,7 @@ public class SyncBusinessJnEvaluatePreRegistration extends CcpNextStep{
 	@Override
 	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {
 		
-		if(new JnEntityPreRegistration().exists(values) == false) {
+		if(JnEntityPreRegistration.INSTANCE.exists(values) == false) {
 			return new CcpStepResult(values, JnProcessStatus.preRegistrationIsMissing.status, this);
 		}
 		

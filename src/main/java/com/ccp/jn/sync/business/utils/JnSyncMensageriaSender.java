@@ -34,9 +34,8 @@ public class JnSyncMensageriaSender {
 	}
 
 	public CcpJsonRepresentation send(CcpJsonRepresentation values, Enum<?> topic) {
-		JnEntityAsyncTask entity = new JnEntityAsyncTask();
 		String topicName = topic.name();
-		CcpJsonRepresentation send = this.send(values, topicName, entity);
+		CcpJsonRepresentation send = this.send(values, topicName, JnEntityAsyncTask.INSTANCE);
 		return send;
 	}
 }

@@ -10,7 +10,7 @@ public class SyncBusinessJnEvaluateToken extends CcpNextStep{
 	@Override
 	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {
 
-		CcpJsonRepresentation loginRequest = values.getInnerJson("_entities").getInnerJson(new JnEntityLoginToken().getEntityName());
+		CcpJsonRepresentation loginRequest = values.getInnerJson("_entities").getInnerJson(JnEntityLoginToken.INSTANCE.getEntityName());
 		
 		String tokenDb = loginRequest.getAsString("token");
 		String token = values.getAsString("token");
