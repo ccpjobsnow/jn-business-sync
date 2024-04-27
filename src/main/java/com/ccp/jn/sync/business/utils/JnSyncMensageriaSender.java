@@ -12,6 +12,12 @@ import com.jn.commons.entities.JnEntityAsyncTask;
 public class JnSyncMensageriaSender {
 	private final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.getDependency(CcpMensageriaSender.class);
 	
+	public static final JnSyncMensageriaSender INSTANCE = new JnSyncMensageriaSender();
+	
+	private JnSyncMensageriaSender() {
+		
+	}
+	
 	private CcpJsonRepresentation send(CcpJsonRepresentation values, String topic, CcpEntity entity) {
 		
 		String token = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text().generateToken(20);

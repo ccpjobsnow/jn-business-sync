@@ -4,14 +4,13 @@ import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.sync.business.utils.JnSyncMensageriaSender;
-import com.jn.commons.utils.JnTopics;
+import com.jn.commons.utils.JnAsyncBusiness;
 
 public class SyncBusinessJnNotifyError implements Function<Throwable, CcpJsonRepresentation> {
 
 	public CcpJsonRepresentation apply(Throwable e) {
 		CcpJsonRepresentation md = new CcpJsonRepresentation(e);
-		JnSyncMensageriaSender jnMensageria = new JnSyncMensageriaSender();
-		CcpJsonRepresentation send = jnMensageria.send(md, JnTopics.notifyError);
+		CcpJsonRepresentation send = JnSyncMensageriaSender.INSTANCE.send(md, JnAsyncBusiness.notifyError);
 		return send;
 	}
 	

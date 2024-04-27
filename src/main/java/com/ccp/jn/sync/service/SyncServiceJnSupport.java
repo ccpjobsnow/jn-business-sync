@@ -15,7 +15,7 @@ import com.ccp.especifications.db.dao.CcpDaoProcedure;
 import com.ccp.especifications.db.dao.CcpGetEntityId;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.jn.sync.business.JnProcessStatus;
-import com.jn.commons.business.utils.JnCommonsBusinessUtilsGetMessage;
+import com.jn.commons.business.utils.CommonsBusinessUtilsGetMessage;
 import com.jn.commons.entities.JnEntityEmailParametersToSend;
 import com.jn.commons.entities.JnEntityEmailTemplateMessage;
 import com.jn.commons.entities.JnEntityFailedUnlockToken;
@@ -27,7 +27,7 @@ import com.jn.commons.entities.JnEntityRequestTokenAgainResponsible;
 import com.jn.commons.entities.JnEntityRequestUnlockToken;
 import com.jn.commons.entities.JnEntityRequestUnlockTokenAnswered;
 import com.jn.commons.entities.JnEntityRequestUnlockTokenResponsible;
-import com.jn.commons.utils.JnTopics;
+import com.jn.commons.utils.JnAsyncBusiness;
 
 public enum SyncServiceJnSupport {
 	unlockToken {
@@ -35,7 +35,7 @@ public enum SyncServiceJnSupport {
 		public CcpJsonRepresentation execute(Long chatId, String email) {
 			
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, JnEntityRequestUnlockTokenResponsible.INSTANCE, JnEntityRequestUnlockTokenAnswered.INSTANCE, JnEntityRequestUnlockToken.INSTANCE, JnTopics.requestUnlockToken.name());
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, PUT_PASSWORD, JnEntityRequestUnlockTokenResponsible.INSTANCE, JnEntityRequestUnlockTokenAnswered.INSTANCE, JnEntityRequestUnlockToken.INSTANCE, JnAsyncBusiness.requestUnlockToken.name());
 			
 			return result;
 		}
@@ -57,7 +57,7 @@ public enum SyncServiceJnSupport {
 		public CcpJsonRepresentation execute(Long chatId, String email) {
 			
 			
-			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_BY_PASS, JnEntityRequestTokenAgainResponsible.INSTANCE, JnEntityRequestTokenAgainAnswered.INSTANCE, JnEntityRequestTokenAgain.INSTANCE, JnTopics.requestTokenAgain.name());
+			CcpJsonRepresentation result = this.answerSupport(chatId, email, DO_BY_PASS, JnEntityRequestTokenAgainResponsible.INSTANCE, JnEntityRequestTokenAgainAnswered.INSTANCE, JnEntityRequestTokenAgain.INSTANCE, JnAsyncBusiness.requestTokenAgain.name());
 			
 			return result;
 		}
@@ -91,8 +91,8 @@ public enum SyncServiceJnSupport {
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = values -> {
 			CcpJsonRepresentation entities = values.getInnerJson("_entities");
 			String language = entities.getInnerJson(requestEntity.getEntityName()).getAsString("language");
-			JnCommonsBusinessUtilsGetMessage gm = new JnCommonsBusinessUtilsGetMessage();
-			gm
+			CommonsBusinessUtilsGetMessage jnCommonsBusinessUtilsGetMessage = new CommonsBusinessUtilsGetMessage();
+			jnCommonsBusinessUtilsGetMessage
 			.addOneStep(DO_BY_PASS, JnEntityEmailParametersToSend.INSTANCE, JnEntityEmailTemplateMessage.INSTANCE)
 			.executeAllSteps(topic, answerEntity, transformed, language);
 			requestEntity.delete(valores);
