@@ -15,7 +15,7 @@ public class SyncBusinessJnCreateLogin extends CcpNextStep {
 	public CcpStepResult executeThisStep(CcpJsonRepresentation values) {
 		
 		CcpTextDecorator textDecorator = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text();
-		String token = textDecorator.generateToken(8);
+		String token = textDecorator.generateToken(8).content;
 		CcpJsonRepresentation tokenChanged = values.put("token", token);
 		JnEntityLogin.INSTANCE.createOrUpdate(tokenChanged);
 
