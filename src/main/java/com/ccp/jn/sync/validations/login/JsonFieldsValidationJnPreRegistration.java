@@ -1,20 +1,14 @@
 package com.ccp.jn.sync.validations.login;
 
 import com.ccp.validation.annotations.AllowedValues;
-import com.ccp.validation.annotations.ObjectTextSize;
 import com.ccp.validation.annotations.SimpleObject;
 import com.ccp.validation.annotations.ValidationRules;
 import com.ccp.validation.enums.AllowedValuesValidations;
-import com.ccp.validation.enums.ObjectTextSizeValidations;
 import com.ccp.validation.enums.SimpleObjectValidations;
 
-@ValidationRules(
-		simpleObject = {@SimpleObject(rule = SimpleObjectValidations.requiredFields, fields = {"jobs", "recruiting"})},
-
-		objectTextSize  = { 
-		@ObjectTextSize(rule = ObjectTextSizeValidations.equalsTo, fields = {
-		"password", "token" }, bound = 8) },
-	allowedValues = {
+@ValidationRules(simpleObject = {
+		@SimpleObject(rule = SimpleObjectValidations.requiredFields, fields = { "channel", "goal" }) },
+		allowedValues = {
 				@AllowedValues(rule = AllowedValuesValidations.arrayWithAllowedTexts, fields = {
 						"goal" }, allowedValues = { "jobs", "recruiting" }),
 				@AllowedValues(rule = AllowedValuesValidations.objectWithAllowedTexts, fields = {
