@@ -1,11 +1,11 @@
 package com.ccp.jn.sync.status.login;
 
 public enum CreateLoginToken implements EndpointsLogin{
-	emailInvalido(400),
-	tokenBloqueado(403),
-	tokenFaltando(404),
-	faltandoPreRegistration(201),
-	caminhoFeliz(200),
+	invalidEmail(400),
+	lockedToken(403),
+	missingEmail(404),
+	missingAnswers(201),
+	expectedStatus(200),
 	;
 
 	public final int status;

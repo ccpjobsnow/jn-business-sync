@@ -1,13 +1,13 @@
 package com.ccp.jn.sync.status.login;
 
 public enum SavePreRegistration implements EndpointsLogin{
-	emailInvalido(400),
-	tokenBloqueado(403),
+	invalidEmail(400),
+	lockedToken(403),
 	tokenFaltando(404),
-	senhaBloqueada(401),
-	usuarioJaLogado(409),
-	faltandoCadastrarSenha(202),
-	caminhoFeliz(200),
+	lockedPassword(401),
+	loginConflict(409),
+	missingPassword(202),
+	expectedStatus(200),
 	;
 
 	public final int status;

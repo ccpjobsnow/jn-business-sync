@@ -1,9 +1,9 @@
-package com.ccp.jn.sync.business;
+package com.ccp.jn.sync.business.contactus;
 
 import java.util.Map;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.jn.sync.business.utils.JnSyncMensageriaSender;
+import com.ccp.jn.sync.commons.JnSyncMensageriaSender;
 import com.jn.commons.entities.JnEntityContactUs;
 import com.jn.commons.utils.JnAsyncBusiness;
 

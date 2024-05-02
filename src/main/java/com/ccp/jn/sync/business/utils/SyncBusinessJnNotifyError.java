@@ -1,9 +1,9 @@
-package com.ccp.jn.sync.business;
+package com.ccp.jn.sync.business.utils;
 
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.jn.sync.business.utils.JnSyncMensageriaSender;
+import com.ccp.jn.sync.commons.JnSyncMensageriaSender;
 import com.jn.commons.utils.JnAsyncBusiness;
 
 public class SyncBusinessJnNotifyError implements Function<Throwable, CcpJsonRepresentation> {

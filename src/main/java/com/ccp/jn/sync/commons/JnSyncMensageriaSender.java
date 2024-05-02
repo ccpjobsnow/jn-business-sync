@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.business.utils;
+package com.ccp.jn.sync.commons;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;

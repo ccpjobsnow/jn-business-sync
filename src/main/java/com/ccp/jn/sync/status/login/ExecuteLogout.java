@@ -1,9 +1,9 @@
 package com.ccp.jn.sync.status.login;
 
 public enum ExecuteLogout implements EndpointsLogin{
-	emailInvalido(400),
-	usuarioNaoLogado(404),
-	caminhoFeliz(200),
+	invalidEmail(400),
+	missingLogin(404),
+	expectedStatus(200),
 	;
 
 	public final int status;
