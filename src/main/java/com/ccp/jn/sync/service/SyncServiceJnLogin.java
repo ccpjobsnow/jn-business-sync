@@ -6,6 +6,7 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.dao.CcpGetEntityId;
+import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.jn.sync.business.utils.JnSyncMensageriaSender;
 import com.ccp.jn.sync.status.login.CreateLoginEmail;
 import com.ccp.jn.sync.status.login.CreateLoginToken;
@@ -21,7 +22,7 @@ import com.jn.commons.entities.JnEntityLoginEmail;
 import com.jn.commons.entities.JnEntityLoginToken;
 import com.jn.commons.entities.JnEntityPassword;
 import com.jn.commons.entities.JnEntityPreRegistration;
-import com.jn.commons.entities.JnEntityTokenTries;
+import com.jn.commons.entities.JnEntityTokenAttempts;
 import com.jn.commons.entities.JnEntityUserStats;
 import com.jn.commons.utils.JnAsyncBusiness;
 
@@ -148,12 +149,41 @@ public class SyncServiceJnLogin{
 		 * Fazer validação de token
 		 * Preparar mensagem para enviar na fila
 		 */
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnSyncMensageriaSender.INSTANCE.send(valores, JnAsyncBusiness.savePassword);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> {
+			
+			String tokenFromDatabase = valores.getValueFromPath("_entities", JnEntityLoginToken.INSTANCE.getEntityName(), "token");
+			
+			String tokenFomUser = valores.getAsString("token");
+			
+			boolean correctToken = tokenFomUser.equals(tokenFromDatabase);
+			
+			if(correctToken) {
+				CcpJsonRepresentation send = JnSyncMensageriaSender.INSTANCE.send(valores, JnAsyncBusiness.savePassword);
+				return send;
+			}
+
+			Integer attemptsFromDatabase = valores.getValueFromPath("_entities", JnEntityTokenAttempts.INSTANCE.getEntityName(), "attempts");
+			
+			boolean exceededAttempts = attemptsFromDatabase >= 3;
+			CcpJsonRepresentation toReturn = values.removeKey("_entities");
+			if(exceededAttempts) {//TODO PARAMETRIZAR O 3
+				throw new CcpFlow(toReturn, UpdatePassword.tokenRecemBloqueado.status);
+			}
+			String email = valores.getAsString("email");
+			CcpJsonRepresentation put = CcpConstants.EMPTY_JSON
+					.put("attempts", attemptsFromDatabase + 1)
+					.put("email", email)
+					;
+			JnEntityTokenAttempts.INSTANCE.createOrUpdate(put);
+			
+			throw new CcpFlow(toReturn, UpdatePassword.tokenDigitadoIncorretamente.status);
+		};
 
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntityUserStats.INSTANCE).and()
-			.loadThisIdFromEntity(JnEntityTokenTries.INSTANCE).and()
+			.loadThisIdFromEntity(JnEntityTokenAttempts.INSTANCE).and()
+			.loadThisIdFromEntity(JnEntityLoginToken.INSTANCE).and()
 			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(UpdatePassword.tokenBloqueado).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(UpdatePassword.tokenFaltando).and()
 			.executeAction(action).andFinallyReturningThisFields("sessionToken")	
