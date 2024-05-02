@@ -6,8 +6,14 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.dao.CcpGetEntityId;
-import com.ccp.jn.sync.business.JnProcessStatus;
 import com.ccp.jn.sync.business.utils.JnSyncMensageriaSender;
+import com.ccp.jn.sync.status.login.CreateLoginEmail;
+import com.ccp.jn.sync.status.login.CreateLoginToken;
+import com.ccp.jn.sync.status.login.ExecuteLogin;
+import com.ccp.jn.sync.status.login.ExecuteLogout;
+import com.ccp.jn.sync.status.login.ExistsLoginEmail;
+import com.ccp.jn.sync.status.login.SavePreRegistration;
+import com.ccp.jn.sync.status.login.UpdatePassword;
 import com.jn.commons.entities.JnEntityLockedPassword;
 import com.jn.commons.entities.JnEntityLockedToken;
 import com.jn.commons.entities.JnEntityLogin;
@@ -35,12 +41,11 @@ public class SyncServiceJnLogin{
 		CcpJsonRepresentation findById =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntityUserStats.INSTANCE).and()
-			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsLocked).and()
-			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(JnProcessStatus.loginInUse).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(ExecuteLogin.tokenBloqueado).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(ExecuteLogin.tokenFaltando).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(ExecuteLogin.senhaBloqueada).and()
+			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(ExecuteLogin.usuarioJaLogado).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(ExecuteLogin.faltandoCadastrarSenha).and()
 			.ifThisIdIsPresentInEntity(JnEntityPassword.INSTANCE).executeAction(action).andFinallyReturningThisFields("sessionToken")
 		.endThisProcedureRetrievingTheResultingData()
 		;
@@ -57,29 +62,29 @@ public class SyncServiceJnLogin{
 
 		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsLocked).and()
-			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(JnProcessStatus.loginInUse).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(CreateLoginEmail.tokenBloqueado).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(CreateLoginEmail.senhaBloqueada).and()
+			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(CreateLoginEmail.usuarioJaLogado).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(CreateLoginEmail.faltandoCadastrarSenha).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(CreateLoginEmail.faltandoPreRegistration).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).executeAction(action).andFinallyReturningThisFields()
 		.endThisProcedureRetrievingTheResultingData();
 
 		return result;
 	}
 	
-	public void existsLoginToken (String email){
+	public void existsLoginEmail (String email){
 		
 		CcpJsonRepresentation values = new CcpJsonRepresentation(CcpConstants.EMPTY_JSON.put("email", email));
 
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(JnProcessStatus.loginEmailIsMissing).and()
-			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsLocked).and()
-			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(JnProcessStatus.loginInUse).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(JnProcessStatus.preRegistrationIsMissing)
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(ExistsLoginEmail.tokenBloqueado).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(ExistsLoginEmail.tokenFaltando).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(ExistsLoginEmail.senhaBloqueada).and()
+			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(ExistsLoginEmail.usuarioJaLogado).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(ExistsLoginEmail.faltandoCadastrarSenha).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(ExistsLoginEmail.faltandoPreRegistration)
 		.andFinallyReturningThisFields()
 		.endThisProcedure()
 		;
@@ -91,7 +96,7 @@ public class SyncServiceJnLogin{
 		
 		 new CcpGetEntityId(CcpConstants.EMPTY_JSON.put("email", email))
 		.toBeginProcedureAnd()
-			.ifThisIdIsNotPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(JnProcessStatus.unableToExecuteLogout).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(ExecuteLogout.usuarioNaoLogado).and()
 			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).executeAction(action).andFinallyReturningThisFields()
 		.endThisProcedure()
 		;
@@ -102,11 +107,11 @@ public class SyncServiceJnLogin{
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnEntityPreRegistration.INSTANCE.createOrUpdate(valores);
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
-			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(JnProcessStatus.loginInUse).and()
-			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(JnProcessStatus.passwordIsMissing).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(SavePreRegistration.tokenBloqueado).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(SavePreRegistration.tokenFaltando).and()
+			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(SavePreRegistration.usuarioJaLogado).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedPassword.INSTANCE).returnStatus(SavePreRegistration.senhaBloqueada).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPassword.INSTANCE).returnStatus(SavePreRegistration.faltandoCadastrarSenha).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).executeAction(action).andFinallyReturningThisFields()
 		.endThisProcedure()
 		;
@@ -120,9 +125,9 @@ public class SyncServiceJnLogin{
 
 		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(JnProcessStatus.loginEmailIsMissing).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(JnProcessStatus.preRegistrationIsMissing).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(CreateLoginToken.tokenBloqueado).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(CreateLoginToken.tokenFaltando).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityPreRegistration.INSTANCE).returnStatus(CreateLoginToken.faltandoPreRegistration).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).executeAction(action).andFinallyReturningThisFields()
 		.endThisProcedureRetrievingTheResultingData();
 
@@ -149,8 +154,8 @@ public class SyncServiceJnLogin{
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntityUserStats.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityTokenTries.INSTANCE).and()
-			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsLocked).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(JnProcessStatus.loginTokenIsMissing).and()
+			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(UpdatePassword.tokenBloqueado).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(UpdatePassword.tokenFaltando).and()
 			.executeAction(action).andFinallyReturningThisFields("sessionToken")	
 		.endThisProcedureRetrievingTheResultingData();
 		
