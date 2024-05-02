@@ -29,7 +29,8 @@ public enum JnProcessStatus implements CcpProcessStatus {
 	requestToUnlockDoesNotExist(422), 
 	thisUserIsNotAllowedToDoSupport(401), 
 	requestAlreadyAnswered(409),
-	waitingForSupport(202)
+	waitingForSupport(202), 
+	loginEmailIsMissing(404)
 	
 	;
 	int status;
