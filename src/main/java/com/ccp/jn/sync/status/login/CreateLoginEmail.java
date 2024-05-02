@@ -1,8 +1,6 @@
 package com.ccp.jn.sync.status.login;
 
-import com.ccp.process.CcpProcessStatus;
-
-public enum CreateLoginEmail implements CcpProcessStatus{
+public enum CreateLoginEmail implements EndpointsLogin{
 	emailInvalido(400),
 	tokenBloqueado(403),
 	tokenFaltando(404),

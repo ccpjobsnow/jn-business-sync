@@ -1,8 +1,6 @@
 package com.ccp.jn.sync.status.login;
 
-import com.ccp.process.CcpProcessStatus;
-
-public enum ExecuteLogout implements CcpProcessStatus{
+public enum ExecuteLogout implements EndpointsLogin{
 	emailInvalido(400),
 	usuarioNaoLogado(404),
 	caminhoFeliz(200),
