@@ -16,7 +16,8 @@ import com.ccp.validation.enums.SimpleObjectValidations;
 
 		objectTextSize  = {
 				@ObjectTextSize(rule = ObjectTextSizeValidations.equalsTo, fields = { "token" }, bound = 8) 
-				,@ObjectTextSize(rule = ObjectTextSizeValidations.equalsOrGreaterThan, fields = { "password"}, bound = 8) }
+				,@ObjectTextSize(rule = ObjectTextSizeValidations.equalsOrGreaterThan, fields = { "password"}, bound = 8) 
+				,@ObjectTextSize(rule = ObjectTextSizeValidations.equalsOrLessThan, fields = { "password"}, bound = 20) }
 
 )
 public class JsonFieldsValidationJnPasswordAndToken {

@@ -3,7 +3,7 @@ package com.ccp.jn.sync.status.login;
 public enum UpdatePassword implements EndpointsLogin{
 	invalidEmail(400),
 	lockedToken(403),
-	missingToken(404),
+	missingEmail(404),
 	wrongToken(401),
 	tokenLockedRecently(429),
 	expectedStatus(200),

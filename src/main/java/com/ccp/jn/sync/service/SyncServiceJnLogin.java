@@ -99,7 +99,7 @@ public class SyncServiceJnLogin{
 	
 	public void executeLogout (String email){
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnSyncMensageriaSender.INSTANCE.send(valores, JnAsyncBusiness.executeLogout);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = values -> JnSyncMensageriaSender.INSTANCE.send(values, JnAsyncBusiness.executeLogout);
 		
 		 new CcpGetEntityId(CcpConstants.EMPTY_JSON.put("email", email))
 		.toBeginProcedureAnd()
@@ -168,7 +168,7 @@ public class SyncServiceJnLogin{
 			.loadThisIdFromEntity(JnEntityLoginToken.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityTokenAttempts.INSTANCE).and()
 			.ifThisIdIsPresentInEntity(JnEntityLockedToken.INSTANCE).returnStatus(UpdatePassword.lockedToken).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(UpdatePassword.missingToken).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(UpdatePassword.missingEmail).and()
 			.executeAction(action).andFinallyReturningThisFields()	
 		.endThisProcedureRetrievingTheResultingData();
 		
