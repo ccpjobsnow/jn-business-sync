@@ -1,6 +1,6 @@
 package com.ccp.jn.sync.status.login;
 
-public enum ExecuteLogout implements EndpointsLogin{
+public enum StatusExecuteLogout implements StatusEndpointsLogin{
 	invalidEmail(400),
 	missingLogin(404),
 	expectedStatus(200),
@@ -10,7 +10,7 @@ public enum ExecuteLogout implements EndpointsLogin{
 	
 	
 	
-	private ExecuteLogout(int status) {
+	private StatusExecuteLogout(int status) {
 		this.status = status;
 	}
 

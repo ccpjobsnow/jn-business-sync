@@ -1,14 +1,11 @@
 package com.ccp.jn.sync.status.login;
 
-public enum ExecuteLogin implements EndpointsLogin{
+public enum StatusUpdatePassword implements StatusEndpointsLogin{
 	invalidEmail(400),
 	lockedToken(403),
 	missingEmail(404),
-	lockedPassword(423),
-	wrongPassword(401),
-	passwordLockedRecently(429),
-	loginConflict(409),
-	missingPassword(202),
+	wrongToken(401),
+	tokenLockedRecently(429),
 	expectedStatus(200),
 	;
 
@@ -16,7 +13,7 @@ public enum ExecuteLogin implements EndpointsLogin{
 	
 	
 	
-	private ExecuteLogin(int status) {
+	private StatusUpdatePassword(int status) {
 		this.status = status;
 	}
 
