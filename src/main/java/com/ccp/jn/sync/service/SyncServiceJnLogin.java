@@ -28,19 +28,21 @@ import com.jn.commons.entities.JnEntityLoginStats;
 import com.jn.commons.utils.JnAsyncBusiness;
 
 public class SyncServiceJnLogin{
-	
+	/*
+	 */
 
 	public CcpJsonRepresentation executeLogin(Map<String, Object> json){
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action =
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateTries =
 				new EvaluateTries(
+						JnEntityLoginLockedPassword.INSTANCE, 
+						JnEntityLoginPasswordAttempts.INSTANCE, 
 						JnEntityLoginPassword.INSTANCE, 
 						"password", 
-						JnAsyncBusiness.executeLogin, 
 						"password", 
-						JnEntityLoginPasswordAttempts.INSTANCE, 
+						StatusExecuteLogin.passwordLockedRecently,
 						StatusExecuteLogin.wrongPassword, 
-						StatusExecuteLogin.passwordLockedRecently
+						JnAsyncBusiness.executeLogin 
 						);
 
 		CcpJsonRepresentation values = new CcpJsonRepresentation(json);
@@ -55,7 +57,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginLockedPassword.INSTANCE).returnStatus(StatusExecuteLogin.lockedPassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLogin.INSTANCE).returnStatus(StatusExecuteLogin.loginConflict).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusExecuteLogin.missingPassword).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE).executeAction(action).andFinallyReturningThisFields("sessionToken")
+			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE).executeAction(evaluateTries).andFinallyReturningThisFields("sessionToken")
 		.endThisProcedureRetrievingTheResultingData()
 		;
 		return findById;
@@ -143,16 +145,17 @@ public class SyncServiceJnLogin{
 
 	public CcpJsonRepresentation updatePassword (CcpJsonRepresentation values){
 
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action =
-			new EvaluateTries(
-					JnEntityLoginToken.INSTANCE, 
-					"token", 
-					JnAsyncBusiness.savePassword, 
-					"token", 
-					JnEntityLoginTokenAttempts.INSTANCE, 
-					StatusUpdatePassword.wrongToken, 
-					StatusUpdatePassword.tokenLockedRecently
-					);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateTries =
+				new EvaluateTries(
+						JnEntityLoginLockedToken.INSTANCE, 
+						JnEntityLoginTokenAttempts.INSTANCE, 
+						JnEntityLoginToken.INSTANCE, 
+						"tokenHash", 
+						"token", 
+						StatusUpdatePassword.tokenLockedRecently,
+						StatusUpdatePassword.wrongToken, 
+						JnAsyncBusiness.updatePassword 
+						);
 		
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
@@ -161,7 +164,7 @@ public class SyncServiceJnLogin{
 			.loadThisIdFromEntity(JnEntityLoginTokenAttempts.INSTANCE).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginLockedToken.INSTANCE).returnStatus(StatusUpdatePassword.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusUpdatePassword.missingEmail).and()
-			.executeAction(action).andFinallyReturningThisFields()	
+			.executeAction(evaluateTries).andFinallyReturningThisFields()	
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;

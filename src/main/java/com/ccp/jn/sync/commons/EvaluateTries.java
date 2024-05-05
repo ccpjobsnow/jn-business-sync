@@ -4,82 +4,95 @@ import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.decorators.CcpStringDecorator;
-import com.ccp.decorators.CcpTextDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.process.CcpProcessStatus;
 import com.jn.commons.entities.base.JnBaseEntity;
 import com.jn.commons.utils.JnAsyncBusiness;
+import com.jn.commons.utils.JnGenerateRandomToken;
 
 public class EvaluateTries implements Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
-	private final JnBaseEntity entity;
 	
+	private final JnBaseEntity entityToGetTheSecret;
+	
+	private final JnBaseEntity entityToCreateTheLockWhenExceedTries;
+
+	private final JnBaseEntity entityToGetTheAttempts;
+
 	private final String userFieldName;
 	
-	private final JnAsyncBusiness topic;
-
 	private final String databaseFieldName;
-	
-	private final JnBaseEntity entityAttempts;
-	
-	private final CcpProcessStatus whenWrongType;
 
-	private final CcpProcessStatus whenExceedAttempts;
+	private final CcpProcessStatus statusToReturnWhenWrongType;
+	
+	private final CcpProcessStatus statusToReturnWhenExceedAttempts;
+	
+	private final JnAsyncBusiness topicToRegisterSuccess;
 
-	public EvaluateTries(JnBaseEntity entity, String userFieldName, JnAsyncBusiness topic, String databaseFieldName,
-			JnBaseEntity entityAttempts, CcpProcessStatus whenWrongType, CcpProcessStatus whenExceedAttempts) {
-		this.entity = entity;
-		this.userFieldName = userFieldName;
-		this.topic = topic;
+	public EvaluateTries(
+			JnBaseEntity entityToCreateTheLockWhenExceedTries,
+			JnBaseEntity entityToGetTheAttempts, 
+			JnBaseEntity entityToGetTheSecret, 
+			String databaseFieldName, 
+			String userFieldName, 
+			CcpProcessStatus statusToReturnWhenExceedAttempts, 
+			CcpProcessStatus statusToReturnWhenWrongType,
+			JnAsyncBusiness topicToRegisterSuccess
+			) {
+
+		this.entityToCreateTheLockWhenExceedTries = entityToCreateTheLockWhenExceedTries;
+		this.statusToReturnWhenExceedAttempts = statusToReturnWhenExceedAttempts;
+		this.statusToReturnWhenWrongType = statusToReturnWhenWrongType;
+		this.topicToRegisterSuccess = topicToRegisterSuccess;
+		this.entityToGetTheAttempts = entityToGetTheAttempts;
+		this.entityToGetTheSecret = entityToGetTheSecret;
 		this.databaseFieldName = databaseFieldName;
-		this.entityAttempts = entityAttempts;
-		this.whenWrongType = whenWrongType;
-		this.whenExceedAttempts = whenExceedAttempts;
+		this.userFieldName = userFieldName;
 	}
 
-	@Override
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
 		
-		String entityName = this.entity.getEntityName();
+		String entityName = this.entityToGetTheSecret.getEntityName();
 		
-		String tokenFromDatabase = values.getValueFromPath("_entities", entityName, this.databaseFieldName);
+		String secretFromDatabase = values.getValueFromPath("_entities", entityName, this.databaseFieldName);
 		
-		String tokenFomUser = values.getAsString(this.userFieldName);
+		String secretFomUser = values.getAsString(this.userFieldName);
 		
 		CcpPasswordHandler dependency = CcpDependencyInjection.getDependency(CcpPasswordHandler.class);
 		
-		dependency.matches(tokenFomUser, tokenFromDatabase);
+		boolean correctSecret = dependency.matches(secretFomUser, secretFromDatabase);
 		
-		boolean correctToken = tokenFomUser.equals(tokenFromDatabase);
-
 		CcpJsonRepresentation toReturn = values.removeKey("_entities");
 		
-		if(correctToken) {
-			CcpTextDecorator sessionToken = new CcpStringDecorator(CcpConstants.CHARACTERS_TO_GENERATE_TOKEN).text().generateToken(30);
-			toReturn.put("sessionToken", sessionToken);
-			CcpJsonRepresentation send = JnSyncMensageriaSender.INSTANCE.send(toReturn, this.topic);
+		if(correctSecret) {
+
+			JnGenerateRandomToken transformer = new JnGenerateRandomToken(30, "sessionToken");
+			CcpJsonRepresentation transformed = toReturn.getTransformed(transformer);
+			CcpJsonRepresentation send = JnSyncMensageriaSender.INSTANCE.send(transformed, this.topicToRegisterSuccess);
 			return send;
 		}
 
-		String attemptsEntityName = this.entityAttempts.getEntityName();
-		Integer attemptsFromDatabase = values.getValueFromPath("_entities", attemptsEntityName, "attempts");
+		String attemptsEntityName = this.entityToGetTheAttempts.getEntityName();
+		Integer attemptsFromDatabase = values.getValueFromPath(0, "_entities", attemptsEntityName, "attempts");
 		
+		//TODO PARAMETRIZAR O 3
 		boolean exceededAttempts = attemptsFromDatabase >= 3;
-		if(exceededAttempts) {//TODO PARAMETRIZAR O 3
-			int status = this.whenExceedAttempts.status();
+		if(exceededAttempts) {
+			int status = this.statusToReturnWhenExceedAttempts.status();
+			this.entityToCreateTheLockWhenExceedTries.createOrUpdate(values);
 			throw new CcpFlow(toReturn, status);
 		}
+		
+		
 		String email = values.getAsString("email");
 		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON
 				.put("attempts", attemptsFromDatabase + 1)
 				.put("email", email)
 				;
-		this.entityAttempts.createOrUpdate(put);
-		
-		int status = this.whenWrongType.status();
+		this.entityToGetTheAttempts.createOrUpdate(put);
+		int status = this.statusToReturnWhenWrongType.status();
 		throw new CcpFlow(toReturn, status);
 	}
 	
