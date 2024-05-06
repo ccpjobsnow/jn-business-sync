@@ -12,7 +12,7 @@ import com.jn.commons.entities.base.JnBaseEntity;
 import com.jn.commons.utils.JnAsyncBusiness;
 import com.jn.commons.utils.JnGenerateRandomToken;
 
-public class EvaluateTries implements Function<CcpJsonRepresentation, CcpJsonRepresentation>{
+public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
 	
 	private final JnBaseEntity entityToGetTheSecret;
@@ -31,7 +31,7 @@ public class EvaluateTries implements Function<CcpJsonRepresentation, CcpJsonRep
 	
 	private final JnAsyncBusiness topicToRegisterSuccess;
 
-	public EvaluateTries(
+	public EvaluateAttempts(
 			JnBaseEntity entityToCreateTheLockWhenExceedTries,
 			JnBaseEntity entityToGetTheAttempts, 
 			JnBaseEntity entityToGetTheSecret, 
@@ -56,7 +56,7 @@ public class EvaluateTries implements Function<CcpJsonRepresentation, CcpJsonRep
 		
 		String entityName = this.entityToGetTheSecret.getEntityName();
 		
-		String secretFromDatabase = values.getValueFromPath("_entities", entityName, this.databaseFieldName);
+		String secretFromDatabase = values.getValueFromPath("", "_entities", entityName, this.databaseFieldName);
 		
 		String secretFomUser = values.getAsString(this.userFieldName);
 		
@@ -75,7 +75,7 @@ public class EvaluateTries implements Function<CcpJsonRepresentation, CcpJsonRep
 		}
 
 		String attemptsEntityName = this.entityToGetTheAttempts.getEntityName();
-		Integer attemptsFromDatabase = values.getValueFromPath(0, "_entities", attemptsEntityName, "attempts");
+		Double attemptsFromDatabase = values.getValueFromPath(1d, "_entities", attemptsEntityName, "attempts");
 		
 		//TODO PARAMETRIZAR O 3
 		boolean exceededAttempts = attemptsFromDatabase >= 3;

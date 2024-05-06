@@ -8,7 +8,7 @@ import com.ccp.validation.enums.SimpleObjectValidations;
 
 @ValidationRules(simpleObject = { @SimpleObject(rule = SimpleObjectValidations.requiredFields, fields = { "password" }) },
 		objectTextSize  = {
-				@ObjectTextSize(rule = ObjectTextSizeValidations.equalsTo, fields = { "password"}, bound = 8) }
+				@ObjectTextSize(rule = ObjectTextSizeValidations.equalsOrGreaterThan, fields = { "password"}, bound = 8) }
 )
 public class JsonFieldsValidationJnPassword {
 

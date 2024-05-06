@@ -20,7 +20,7 @@ public class JnSyncMensageriaSender {
 	
 	private CcpJsonRepresentation send(CcpJsonRepresentation values, String topic, CcpEntity entity) {
 		
-		String formattedCurrentDateTime = new CcpTimeDecorator().getFormattedCurrentDateTime("dd/MM/yyyy HH:mm:ss");
+		String formattedCurrentDateTime = new CcpTimeDecorator().getFormattedDateTime("dd/MM/yyyy HH:mm:ss");
 	
 		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
 				.put("started", System.currentTimeMillis())
