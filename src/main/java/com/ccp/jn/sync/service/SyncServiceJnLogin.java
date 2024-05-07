@@ -127,7 +127,6 @@ public class SyncServiceJnLogin{
 		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(JnEntityLoginTokenLocked.INSTANCE).returnStatus(StatusCreateLoginToken.statusLockedToken).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusCreateLoginToken.statusMissingEmail).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).returnStatus(StatusCreateLoginToken.missingAnswers).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).executeAction(action).andFinallyReturningThisFields()
 		.endThisProcedureRetrievingTheResultingData();
