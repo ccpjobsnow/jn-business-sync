@@ -155,7 +155,7 @@ public class SyncServiceJnLogin{
 			.loadThisIdFromEntity(JnEntityLoginTokenAttempts.INSTANCE).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginTokenLocked.INSTANCE).returnStatus(StatusUpdatePassword.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusUpdatePassword.missingEmail).and()
-			.executeAction(evaluateTries).andFinallyReturningThisFields()	
+			.executeAction(evaluateTries).andFinallyReturningThisFields("sessionToken")	
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;
