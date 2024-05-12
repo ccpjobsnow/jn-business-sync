@@ -31,14 +31,14 @@ public class SyncServiceJnLogin{
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateTries =
 				new EvaluateAttempts(
-						JnEntityLoginPasswordLocked.INSTANCE, 
 						JnEntityLoginPasswordAttempts.INSTANCE, 
 						JnEntityLoginPassword.INSTANCE, 
 						"password", 
 						"password", 
 						StatusExecuteLogin.passwordLockedRecently,
 						StatusExecuteLogin.wrongPassword, 
-						JnAsyncBusiness.executeLogin 
+						JnAsyncBusiness.executeLogin,
+						JnAsyncBusiness.lockPassword 
 						);
 
 
@@ -139,14 +139,14 @@ public class SyncServiceJnLogin{
 
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateTries =
 				new EvaluateAttempts(
-						JnEntityLoginTokenLocked.INSTANCE, 
 						JnEntityLoginTokenAttempts.INSTANCE, 
 						JnEntityLoginToken.INSTANCE, 
 						"tokenHash", 
 						"token", 
 						StatusUpdatePassword.tokenLockedRecently,
 						StatusUpdatePassword.wrongToken, 
-						JnAsyncBusiness.updatePassword 
+						JnAsyncBusiness.updatePassword, 
+						JnAsyncBusiness.lockToken 
 						);
 		
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)

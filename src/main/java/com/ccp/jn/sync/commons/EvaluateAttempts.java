@@ -17,8 +17,6 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 	
 	private final JnBaseEntity entityToGetTheSecret;
 	
-	private final JnBaseEntity entityToCreateTheLockWhenExceedTries;
-
 	private final JnBaseEntity entityToGetTheAttempts;
 
 	private final String userFieldName;
@@ -31,18 +29,19 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 	
 	private final JnAsyncBusiness topicToRegisterSuccess;
 
+	private final JnAsyncBusiness topicToCreateTheLockWhenExceedTries;
+
 	public EvaluateAttempts(
-			JnBaseEntity entityToCreateTheLockWhenExceedTries,
 			JnBaseEntity entityToGetTheAttempts, 
 			JnBaseEntity entityToGetTheSecret, 
 			String databaseFieldName, 
 			String userFieldName, 
 			CcpProcessStatus statusToReturnWhenExceedAttempts, 
 			CcpProcessStatus statusToReturnWhenWrongType,
+			JnAsyncBusiness topicToCreateTheLockWhenExceedTries,
 			JnAsyncBusiness topicToRegisterSuccess
 			) {
 
-		this.entityToCreateTheLockWhenExceedTries = entityToCreateTheLockWhenExceedTries;
 		this.statusToReturnWhenExceedAttempts = statusToReturnWhenExceedAttempts;
 		this.statusToReturnWhenWrongType = statusToReturnWhenWrongType;
 		this.topicToRegisterSuccess = topicToRegisterSuccess;
@@ -50,6 +49,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		this.entityToGetTheSecret = entityToGetTheSecret;
 		this.databaseFieldName = databaseFieldName;
 		this.userFieldName = userFieldName;
+		this.topicToCreateTheLockWhenExceedTries = topicToCreateTheLockWhenExceedTries;
 	}
 
 	public CcpJsonRepresentation apply(CcpJsonRepresentation values) {
@@ -80,8 +80,8 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		//TODO PARAMETRIZAR O 3
 		boolean exceededAttempts = attemptsFromDatabase >= 3;
 		if(exceededAttempts) {
+			JnSyncMensageriaSender.INSTANCE.send(toReturn, this.topicToCreateTheLockWhenExceedTries);
 			int status = this.statusToReturnWhenExceedAttempts.status();
-			this.entityToCreateTheLockWhenExceedTries.createOrUpdate(values);
 			throw new CcpFlow(toReturn, status);
 		}
 		
