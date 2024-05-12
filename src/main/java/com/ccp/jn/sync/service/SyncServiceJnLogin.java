@@ -2,7 +2,6 @@ package com.ccp.jn.sync.service;
 
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.crud.CcpGetEntityId;
 import com.ccp.jn.sync.commons.EvaluateAttempts;
@@ -18,12 +17,10 @@ import com.jn.commons.entities.JnEntityLoginAnswers;
 import com.jn.commons.entities.JnEntityLoginEmail;
 import com.jn.commons.entities.JnEntityLoginPassword;
 import com.jn.commons.entities.JnEntityLoginPasswordAttempts;
-import com.jn.commons.entities.JnEntityLoginPasswordLocked;
 import com.jn.commons.entities.JnEntityLoginSessionCurrent;
 import com.jn.commons.entities.JnEntityLoginStats;
 import com.jn.commons.entities.JnEntityLoginToken;
 import com.jn.commons.entities.JnEntityLoginTokenAttempts;
-import com.jn.commons.entities.JnEntityLoginTokenLocked;
 import com.jn.commons.utils.JnAsyncBusiness;
 
 public class SyncServiceJnLogin{
@@ -37,8 +34,8 @@ public class SyncServiceJnLogin{
 						"password", 
 						StatusExecuteLogin.passwordLockedRecently,
 						StatusExecuteLogin.wrongPassword, 
-						JnAsyncBusiness.executeLogin,
-						JnAsyncBusiness.lockPassword 
+						JnAsyncBusiness.lockPassword, 
+						JnAsyncBusiness.executeLogin
 						);
 
 
@@ -47,9 +44,9 @@ public class SyncServiceJnLogin{
 			.loadThisIdFromEntity(JnEntityLoginPassword.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityLoginStats.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityLoginPasswordAttempts.INSTANCE).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginTokenLocked.INSTANCE).returnStatus(StatusExecuteLogin.lockedToken).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusExecuteLogin.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusExecuteLogin.missingEmail).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginPasswordLocked.INSTANCE).returnStatus(StatusExecuteLogin.lockedPassword).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE.getMirrorEntity()).returnStatus(StatusExecuteLogin.lockedPassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.INSTANCE).returnStatus(StatusExecuteLogin.loginConflict).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusExecuteLogin.missingPassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE).executeAction(evaluateTries).andFinallyReturningThisFields("sessionToken")
@@ -58,16 +55,14 @@ public class SyncServiceJnLogin{
 		return findById;
 	}
 	
-	public CcpJsonRepresentation createLoginEmail (String email){
-		
-		CcpJsonRepresentation values = CcpConstants.EMPTY_JSON.put("email", email);
+	public CcpJsonRepresentation createLoginEmail (CcpJsonRepresentation values){
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnEntityLoginEmail.INSTANCE.createOrUpdate(valores);
 
 		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntityLoginTokenLocked.INSTANCE).returnStatus(StatusCreateLoginEmail.lockedToken).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginPasswordLocked.INSTANCE).returnStatus(StatusCreateLoginEmail.lockedPassword).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusCreateLoginEmail.lockedToken).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE.getMirrorEntity()).returnStatus(StatusCreateLoginEmail.lockedPassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.INSTANCE).returnStatus(StatusCreateLoginEmail.loginConflict).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).executeAction(action).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusCreateLoginEmail.missingPassword).and()
@@ -77,15 +72,13 @@ public class SyncServiceJnLogin{
 		return result;
 	}
 	
-	public void existsLoginEmail (String email){
+	public void existsLoginEmail (CcpJsonRepresentation values){
 		
-		CcpJsonRepresentation values = new CcpJsonRepresentation(CcpConstants.EMPTY_JSON.put("email", email));
-
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntityLoginTokenLocked.INSTANCE).returnStatus(StatusExistsLoginEmail.lockedToken).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusExistsLoginEmail.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusExistsLoginEmail.missingEmail).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginPasswordLocked.INSTANCE).returnStatus(StatusExistsLoginEmail.lockedPassword).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE.getMirrorEntity()).returnStatus(StatusExistsLoginEmail.lockedPassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.INSTANCE).returnStatus(StatusExistsLoginEmail.loginConflict).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).returnStatus(StatusExistsLoginEmail.missingAnswers).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusExistsLoginEmail.missingPassword).andFinallyReturningThisFields()
@@ -110,10 +103,10 @@ public class SyncServiceJnLogin{
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnEntityLoginAnswers.INSTANCE.createOrUpdate(valores);
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntityLoginTokenLocked.INSTANCE).returnStatus(StatusSavePreRegistration.lockedToken).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusSavePreRegistration.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusSavePreRegistration.tokenFaltando).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.INSTANCE).returnStatus(StatusSavePreRegistration.loginConflict).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginPasswordLocked.INSTANCE).returnStatus(StatusSavePreRegistration.lockedPassword).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE.getMirrorEntity()).returnStatus(StatusSavePreRegistration.lockedPassword).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).executeAction(action).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusSavePreRegistration.missingPassword).andFinallyReturningThisFields()
 		.endThisProcedure()
@@ -126,7 +119,7 @@ public class SyncServiceJnLogin{
 
 		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntityLoginTokenLocked.INSTANCE).returnStatus(StatusCreateLoginToken.statusLockedToken).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusCreateLoginToken.statusLockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusUpdatePassword.missingEmail).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).returnStatus(StatusCreateLoginToken.missingAnswers).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).executeAction(action).andFinallyReturningThisFields()
@@ -145,8 +138,8 @@ public class SyncServiceJnLogin{
 						"token", 
 						StatusUpdatePassword.tokenLockedRecently,
 						StatusUpdatePassword.wrongToken, 
-						JnAsyncBusiness.updatePassword, 
-						JnAsyncBusiness.lockToken 
+						JnAsyncBusiness.lockToken,
+						JnAsyncBusiness.updatePassword 
 						);
 		
 		CcpJsonRepresentation result =  new CcpGetEntityId(values)
@@ -154,7 +147,7 @@ public class SyncServiceJnLogin{
 			.loadThisIdFromEntity(JnEntityLoginStats.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityLoginToken.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityLoginTokenAttempts.INSTANCE).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginTokenLocked.INSTANCE).returnStatus(StatusUpdatePassword.lockedToken).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusUpdatePassword.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusUpdatePassword.missingEmail).and()
 			.executeAction(evaluateTries).andFinallyReturningThisFields("sessionToken")	
 		.endThisProcedureRetrievingTheResultingData();

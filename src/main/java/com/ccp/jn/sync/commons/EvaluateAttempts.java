@@ -85,7 +85,6 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 			throw new CcpFlow(toReturn, status);
 		}
 		
-		
 		String email = values.getAsString("email");
 		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON
 				.put("attempts", attemptsFromDatabase + 1)
