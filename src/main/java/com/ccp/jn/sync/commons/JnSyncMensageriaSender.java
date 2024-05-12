@@ -29,14 +29,15 @@ public class JnSyncMensageriaSender {
 				.put("topic", topic)
 				.putAll(values)
 				;
-		JnGenerateRandomToken transformer = new JnGenerateRandomToken(20, "id");
+		JnGenerateRandomToken transformer = new JnGenerateRandomToken(20, "messageId");
 		CcpJsonRepresentation transformed = messageDetails.getTransformed(transformer);
 		
-		String asyncTaskId = entity.getId(transformed);
-		entity.createOrUpdate(transformed, asyncTaskId);
+		String messageId = transformed.getAsString("messageId");
+		entity.createOrUpdate(transformed);
 		
 		this.mensageriaSender.send(topic, transformed);
-		return messageDetails.put("asyncTaskId", asyncTaskId);
+		CcpJsonRepresentation put = messageDetails.put("messageId", messageId);
+		return put;
 	}
 
 	public CcpJsonRepresentation send(CcpJsonRepresentation values, Enum<?> topic) {
