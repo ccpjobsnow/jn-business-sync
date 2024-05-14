@@ -10,6 +10,7 @@ public enum StatusExecuteLogin implements StatusEndpointsLogin{
 	loginConflict(409),
 	missingPassword(202),
 	expectedStatus(200),
+	invalidSession(401),
 	;
 
 	public final int status;
