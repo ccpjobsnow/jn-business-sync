@@ -4,7 +4,7 @@ public enum StatusUpdatePassword implements StatusEndpointsLogin{
 	invalidEmail(400),
 	lockedToken(403),
 	missingEmail(404),
-	wrongToken(401),
+	wrongToken(421),
 	tokenLockedRecently(429),
 	expectedStatus(200),
 	;

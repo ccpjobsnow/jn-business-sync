@@ -4,7 +4,7 @@ public enum StatusExistsLoginEmail implements StatusEndpointsLogin{
 	invalidEmail(400),
 	lockedToken(403),
 	missingEmail(404),
-	lockedPassword(401),
+	lockedPassword(421),
 	loginConflict(409),
 	missingPassword(202),
 	missingAnswers(201),
