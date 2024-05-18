@@ -8,7 +8,6 @@ import com.ccp.jn.sync.commons.EvaluateAttempts;
 import com.ccp.jn.sync.commons.JnSyncMensageriaSender;
 import com.ccp.jn.sync.status.login.StatusCreateLoginEmail;
 import com.ccp.jn.sync.status.login.StatusCreateLoginToken;
-import com.ccp.jn.sync.status.login.StatusExecuteLogin;
 import com.ccp.jn.sync.status.login.StatusExecuteLogout;
 import com.ccp.jn.sync.status.login.StatusExistsLoginEmail;
 import com.ccp.jn.sync.status.login.StatusSavePreRegistration;
@@ -18,10 +17,10 @@ import com.jn.commons.entities.JnEntityLoginEmail;
 import com.jn.commons.entities.JnEntityLoginPassword;
 import com.jn.commons.entities.JnEntityLoginPasswordAttempts;
 import com.jn.commons.entities.JnEntityLoginSessionCurrent;
-import com.jn.commons.entities.JnEntityLoginSessionToken;
 import com.jn.commons.entities.JnEntityLoginStats;
 import com.jn.commons.entities.JnEntityLoginToken;
 import com.jn.commons.entities.JnEntityLoginTokenAttempts;
+import com.jn.commons.status.StatusExecuteLogin;
 import com.jn.commons.utils.JnAsyncBusiness;
 
 public class SyncServiceJnLogin{
@@ -53,7 +52,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE).executeAction(evaluateTries).andFinallyReturningThisFields("sessionToken")
 		.endThisProcedureRetrievingTheResultingData()
 		;
-		return findById;
+		return findById; 
 	}
 	
 	public CcpJsonRepresentation createLoginEmail (CcpJsonRepresentation values){
@@ -75,7 +74,7 @@ public class SyncServiceJnLogin{
 	
 	public void existsLoginEmail (CcpJsonRepresentation values){
 		
-		 new CcpGetEntityId(values)
+		 new CcpGetEntityId(values) 
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusExistsLoginEmail.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusExistsLoginEmail.missingEmail).and()
@@ -155,18 +154,5 @@ public class SyncServiceJnLogin{
 		
 		return result;
 	}
-	
-	public void validateSession(CcpJsonRepresentation resume) {
-		new CcpGetEntityId(resume)
-		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusExecuteLogin.lockedToken).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE.getMirrorEntity()).returnStatus(StatusExecuteLogin.lockedPassword).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusExecuteLogin.missingPassword).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusExecuteLogin.missingEmail).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginSessionToken.INSTANCE).returnStatus(StatusExecuteLogin.invalidSession).andFinallyReturningThisFields("sessionToken")
-		.endThisProcedureRetrievingTheResultingData();
-		
-	}
-
 }
 
