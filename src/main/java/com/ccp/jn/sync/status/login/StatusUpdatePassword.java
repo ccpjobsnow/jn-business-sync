@@ -1,6 +1,8 @@
 package com.ccp.jn.sync.status.login;
 
-public enum StatusUpdatePassword implements StatusEndpointsLogin{
+import com.ccp.process.CcpProcessStatus;
+
+public enum StatusUpdatePassword implements CcpProcessStatus{
 	invalidEmail(400),
 	lockedToken(403),
 	missingEmail(404),

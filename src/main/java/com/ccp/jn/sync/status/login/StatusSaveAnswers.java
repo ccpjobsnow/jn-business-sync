@@ -1,6 +1,8 @@
 package com.ccp.jn.sync.status.login;
 
-public enum StatusSavePreRegistration implements StatusEndpointsLogin{
+import com.ccp.process.CcpProcessStatus;
+
+public enum StatusSaveAnswers implements CcpProcessStatus{
 	invalidEmail(400),
 	lockedToken(403),
 	tokenFaltando(404),
@@ -14,7 +16,7 @@ public enum StatusSavePreRegistration implements StatusEndpointsLogin{
 	
 	
 	
-	private StatusSavePreRegistration(int status) {
+	private StatusSaveAnswers(int status) {
 		this.status = status;
 	}
 

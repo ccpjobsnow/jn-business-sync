@@ -10,7 +10,7 @@ import com.ccp.jn.sync.status.login.StatusCreateLoginEmail;
 import com.ccp.jn.sync.status.login.StatusCreateLoginToken;
 import com.ccp.jn.sync.status.login.StatusExecuteLogout;
 import com.ccp.jn.sync.status.login.StatusExistsLoginEmail;
-import com.ccp.jn.sync.status.login.StatusSavePreRegistration;
+import com.ccp.jn.sync.status.login.StatusSaveAnswers;
 import com.ccp.jn.sync.status.login.StatusUpdatePassword;
 import com.jn.commons.entities.JnEntityLoginAnswers;
 import com.jn.commons.entities.JnEntityLoginEmail;
@@ -103,12 +103,12 @@ public class SyncServiceJnLogin{
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnEntityLoginAnswers.INSTANCE.createOrUpdate(valores);
 		 new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
-			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusSavePreRegistration.lockedToken).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusSavePreRegistration.tokenFaltando).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.INSTANCE).returnStatus(StatusSavePreRegistration.loginConflict).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE.getMirrorEntity()).returnStatus(StatusSavePreRegistration.lockedPassword).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusSaveAnswers.lockedToken).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusSaveAnswers.tokenFaltando).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.INSTANCE).returnStatus(StatusSaveAnswers.loginConflict).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE.getMirrorEntity()).returnStatus(StatusSaveAnswers.lockedPassword).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).executeAction(action).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusSavePreRegistration.missingPassword).andFinallyReturningThisFields()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusSaveAnswers.missingPassword).andFinallyReturningThisFields()
 		.endThisProcedure()
 		;
 	}
@@ -120,6 +120,7 @@ public class SyncServiceJnLogin{
 		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusCreateLoginToken.statusLockedToken).and()
+			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(StatusCreateLoginToken.statusAlreadySentToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusUpdatePassword.missingEmail).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).returnStatus(StatusCreateLoginToken.missingAnswers).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).executeAction(action).andFinallyReturningThisFields()
