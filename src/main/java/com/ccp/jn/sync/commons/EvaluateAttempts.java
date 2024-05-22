@@ -75,8 +75,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		}
 
 		String attemptsEntityName = this.entityToGetTheAttempts.getEntityName();
-		Double attemptsFromDatabase = values.getValueFromPath(1d, "_entities", attemptsEntityName, "attempts");
-		
+		Double attemptsFromDatabase = values.getValueFromPath(0d, "_entities", attemptsEntityName, "attempts");
 		//TODO PARAMETRIZAR O 3
 		boolean exceededAttempts = attemptsFromDatabase >= 3;
 		if(exceededAttempts) {
