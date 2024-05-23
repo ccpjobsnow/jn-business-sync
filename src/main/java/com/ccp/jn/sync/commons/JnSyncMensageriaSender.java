@@ -10,7 +10,7 @@ import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnGenerateRandomToken;
 
 public class JnSyncMensageriaSender {
-	private final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.getDependency(CcpMensageriaSender.class);
+	public final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.getDependency(CcpMensageriaSender.class);
 	
 	public static final JnSyncMensageriaSender INSTANCE = new JnSyncMensageriaSender();
 	

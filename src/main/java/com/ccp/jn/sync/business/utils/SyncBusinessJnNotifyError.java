@@ -10,8 +10,8 @@ public class SyncBusinessJnNotifyError implements Function<Throwable, CcpJsonRep
 
 	public CcpJsonRepresentation apply(Throwable e) {
 		CcpJsonRepresentation md = new CcpJsonRepresentation(e);
-		CcpJsonRepresentation send = JnSyncMensageriaSender.INSTANCE.send(md, JnAsyncBusiness.notifyError);
-		return send;
+		JnSyncMensageriaSender.INSTANCE.mensageriaSender.send(JnAsyncBusiness.notifyError.name(), md);
+		return md;
 	}
 	
 }
