@@ -56,7 +56,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		
 		String entityName = this.entityToGetTheSecret.getEntityName();
 		
-		String secretFromDatabase = values.getValueFromPath("", "_entities", entityName, this.databaseFieldName);
+		String secretFromDatabase = values.getValueFromPath("", CcpConstants.ENTITIES_LABEL, entityName, this.databaseFieldName);
 		
 		String secretFomUser = values.getAsString(this.userFieldName);
 		
@@ -64,7 +64,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		
 		boolean correctSecret = dependency.matches(secretFomUser, secretFromDatabase);
 		
-		CcpJsonRepresentation toReturn = values.removeKey("_entities");
+		CcpJsonRepresentation toReturn = values.removeKey(CcpConstants.ENTITIES_LABEL);
 		
 		if(correctSecret) {
 
@@ -75,7 +75,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		}
 
 		String attemptsEntityName = this.entityToGetTheAttempts.getEntityName();
-		Double attemptsFromDatabase = values.getValueFromPath(0d, "_entities", attemptsEntityName, "attempts");
+		Double attemptsFromDatabase = values.getValueFromPath(0d, CcpConstants.ENTITIES_LABEL, attemptsEntityName, "attempts");
 		//TODO PARAMETRIZAR O 3
 		boolean exceededAttempts = attemptsFromDatabase >= 3;
 		if(exceededAttempts) {

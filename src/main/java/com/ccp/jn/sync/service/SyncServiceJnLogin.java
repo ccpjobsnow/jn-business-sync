@@ -2,6 +2,7 @@ package com.ccp.jn.sync.service;
 
 import java.util.function.Function;
 
+import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.crud.CcpGetEntityId;
 import com.ccp.jn.sync.commons.EvaluateAttempts;
@@ -88,7 +89,7 @@ public class SyncServiceJnLogin{
 	
 	
 	public void executeLogout (CcpJsonRepresentation sessionValues){
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = values -> JnSyncMensageriaSender.INSTANCE.send(values.removeKey("_entities"), JnAsyncBusiness.executeLogout);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = values -> JnSyncMensageriaSender.INSTANCE.send(values.removeKey(CcpConstants.ENTITIES_LABEL), JnAsyncBusiness.executeLogout);
 		
 		 new CcpGetEntityId(sessionValues)
 		.toBeginProcedureAnd()
@@ -115,7 +116,7 @@ public class SyncServiceJnLogin{
 
 	public CcpJsonRepresentation createLoginToken (CcpJsonRepresentation values){
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnSyncMensageriaSender.INSTANCE.send(valores.removeKey("_entities"), JnAsyncBusiness.sendUserToken);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnSyncMensageriaSender.INSTANCE.send(valores.removeKey(CcpConstants.ENTITIES_LABEL), JnAsyncBusiness.sendUserToken);
 
 		CcpJsonRepresentation result = new CcpGetEntityId(values)
 		.toBeginProcedureAnd()
