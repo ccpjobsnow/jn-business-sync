@@ -132,7 +132,7 @@ public class SyncServiceJnLogin{
 
 	public CcpJsonRepresentation updatePassword (CcpJsonRepresentation values){
 
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateTries =
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateAttempts =
 				new EvaluateAttempts(
 						JnEntityLoginTokenAttempts.INSTANCE, 
 						JnEntityLoginToken.INSTANCE, 
@@ -151,7 +151,7 @@ public class SyncServiceJnLogin{
 			.loadThisIdFromEntity(JnEntityLoginTokenAttempts.INSTANCE).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusUpdatePassword.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusUpdatePassword.missingEmail).and()
-			.executeAction(evaluateTries).andFinallyReturningThisFields("sessionToken")	
+			.executeAction(evaluateAttempts).andFinallyReturningThisFields("sessionToken")	
 		.endThisProcedureRetrievingTheResultingData();
 		
 		return result;
