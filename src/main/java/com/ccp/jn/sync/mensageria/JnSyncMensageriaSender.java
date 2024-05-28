@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.commons;
+package com.ccp.jn.sync.mensageria;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
@@ -6,8 +6,10 @@ import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
+import com.ccp.validation.CcpJsonFieldsValidations;
 import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnGenerateRandomToken;
+import com.jn.commons.utils.JnTopic;
 
 public class JnSyncMensageriaSender {
 	private final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.getDependency(CcpMensageriaSender.class);
@@ -18,16 +20,16 @@ public class JnSyncMensageriaSender {
 		
 	}
 	
-	private CcpJsonRepresentation send(CcpJsonRepresentation values, String topic, CcpEntity entity) {
+	private CcpJsonRepresentation send(CcpJsonRepresentation json, String topic, CcpEntity entity) {
 		
 		String formattedCurrentDateTime = new CcpTimeDecorator().getFormattedDateTime("dd/MM/yyyy HH:mm:ss");
 	
 		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
 				.put("started", System.currentTimeMillis())
 				.put("data", formattedCurrentDateTime)
-				.put("request", values)
+				.put("request", json)
 				.put("topic", topic)
-				.putAll(values)
+				.putAll(json)
 				;
 		JnGenerateRandomToken transformer = new JnGenerateRandomToken(20, "messageId");
 		CcpJsonRepresentation transformed = messageDetails.getTransformed(transformer);
@@ -40,9 +42,12 @@ public class JnSyncMensageriaSender {
 		return put;
 	}
 
-	public CcpJsonRepresentation send(CcpJsonRepresentation values, Enum<?> topic) {
+	public CcpJsonRepresentation send(CcpJsonRepresentation json, JnTopic topic) {
 		String topicName = topic.name();
-		CcpJsonRepresentation send = this.send(values, topicName, JnEntityAsyncTask.INSTANCE);
-		return send;
+		Class<? extends JnTopic> validationClass = topic.getClass();
+		CcpJsonFieldsValidations.validate(validationClass, json.content, topicName);
+		CcpJsonRepresentation send = this.send(json, topicName, JnEntityAsyncTask.INSTANCE);
+		CcpJsonRepresentation result = CcpConstants.EMPTY_JSON.put(topicName, send);
+		return result;
 	}
 }

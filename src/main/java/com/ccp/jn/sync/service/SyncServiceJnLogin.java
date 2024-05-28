@@ -6,7 +6,7 @@ import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.especifications.db.crud.CcpGetEntityId;
 import com.ccp.jn.sync.commons.EvaluateAttempts;
-import com.ccp.jn.sync.commons.JnSyncMensageriaSender;
+import com.ccp.jn.sync.mensageria.JnSyncMensageriaSender;
 import com.ccp.jn.sync.status.login.StatusCreateLoginEmail;
 import com.ccp.jn.sync.status.login.StatusCreateLoginToken;
 import com.ccp.jn.sync.status.login.StatusExecuteLogout;
@@ -25,7 +25,7 @@ import com.jn.commons.status.StatusExecuteLogin;
 import com.jn.commons.utils.JnAsyncBusiness;
 
 public class SyncServiceJnLogin{
-	public CcpJsonRepresentation executeLogin(CcpJsonRepresentation values){
+	public CcpJsonRepresentation executeLogin(CcpJsonRepresentation json){
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateTries =
 				new EvaluateAttempts(
@@ -40,7 +40,7 @@ public class SyncServiceJnLogin{
 						);
 
 
-		CcpJsonRepresentation findById =  new CcpGetEntityId(values)
+		CcpJsonRepresentation findById =  new CcpGetEntityId(json)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntityLoginPassword.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityLoginStats.INSTANCE).and()
@@ -56,11 +56,11 @@ public class SyncServiceJnLogin{
 		return findById; 
 	}
 	
-	public CcpJsonRepresentation createLoginEmail (CcpJsonRepresentation values){
+	public CcpJsonRepresentation createLoginEmail (CcpJsonRepresentation json){
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnEntityLoginEmail.INSTANCE.createOrUpdate(valores);
 
-		CcpJsonRepresentation result = new CcpGetEntityId(values)
+		CcpJsonRepresentation result = new CcpGetEntityId(json)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusCreateLoginEmail.lockedToken).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE.getMirrorEntity()).returnStatus(StatusCreateLoginEmail.lockedPassword).and()
@@ -73,9 +73,9 @@ public class SyncServiceJnLogin{
 		return result;
 	}
 	
-	public void existsLoginEmail (CcpJsonRepresentation values){
+	public void existsLoginEmail (CcpJsonRepresentation json){
 		
-		 new CcpGetEntityId(values) 
+		 new CcpGetEntityId(json) 
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusExistsLoginEmail.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusExistsLoginEmail.missingEmail).and()
@@ -99,10 +99,10 @@ public class SyncServiceJnLogin{
 		;
 	}
 	
-	public void saveAnswers (CcpJsonRepresentation values){
+	public void saveAnswers (CcpJsonRepresentation json){
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnEntityLoginAnswers.INSTANCE.createOrUpdate(valores);
-		 new CcpGetEntityId(values)
+		 new CcpGetEntityId(json)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusSaveAnswers.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusSaveAnswers.tokenFaltando).and()
@@ -114,11 +114,11 @@ public class SyncServiceJnLogin{
 		;
 	}
 
-	public CcpJsonRepresentation createLoginToken (CcpJsonRepresentation values){
+	public CcpJsonRepresentation createLoginToken (CcpJsonRepresentation json){
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnSyncMensageriaSender.INSTANCE.send(valores.removeKey(CcpConstants.ENTITIES_LABEL), JnAsyncBusiness.sendUserToken);
 
-		CcpJsonRepresentation result = new CcpGetEntityId(values)
+		CcpJsonRepresentation result = new CcpGetEntityId(json)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusCreateLoginToken.statusLockedToken).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(StatusCreateLoginToken.statusAlreadySentToken).and()
@@ -130,7 +130,7 @@ public class SyncServiceJnLogin{
 		return result;
 	}
 
-	public CcpJsonRepresentation updatePassword (CcpJsonRepresentation values){
+	public CcpJsonRepresentation updatePassword (CcpJsonRepresentation json){
 
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateAttempts =
 				new EvaluateAttempts(
@@ -144,7 +144,7 @@ public class SyncServiceJnLogin{
 						JnAsyncBusiness.updatePassword 
 						);
 		
-		CcpJsonRepresentation result =  new CcpGetEntityId(values)
+		CcpJsonRepresentation result =  new CcpGetEntityId(json)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntityLoginStats.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityLoginToken.INSTANCE).and()
