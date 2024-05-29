@@ -50,4 +50,11 @@ public class JnSyncMensageriaSender {
 		CcpJsonRepresentation result = CcpConstants.EMPTY_JSON.put(topicName, send);
 		return result;
 	}
+	
+	public void send(Throwable e, JnTopic topic) {
+		CcpJsonRepresentation transformed = new CcpJsonRepresentation(e);
+		String name = topic.name();
+		this.mensageriaSender.send(name, transformed);
+		
+	}
 }
