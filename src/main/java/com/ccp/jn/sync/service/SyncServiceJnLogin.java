@@ -25,6 +25,11 @@ import com.jn.commons.status.StatusExecuteLogin;
 import com.jn.commons.utils.JnAsyncBusiness;
 
 public class SyncServiceJnLogin{
+	
+	private SyncServiceJnLogin() {}
+	
+	public static final SyncServiceJnLogin INSTANCE = new SyncServiceJnLogin();
+	
 	public CcpJsonRepresentation executeLogin(CcpJsonRepresentation json){
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateTries =
