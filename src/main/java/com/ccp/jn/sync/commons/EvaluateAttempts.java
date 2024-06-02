@@ -55,9 +55,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		
-		String entityName = this.entityToGetTheSecret.getEntityName();
-		
-		String secretFromDatabase = json.getValueFromPath("", CcpConstants.ENTITIES_LABEL, entityName, this.databaseFieldName);
+		String secretFromDatabase = this.entityToGetTheSecret.getInnerJsonFromMainAndMirrorEntities(json).getAsString(this.databaseFieldName);
 		
 		String secretFomUser = json.getAsString(this.userFieldName);
 		
@@ -65,22 +63,22 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		
 		boolean correctSecret = dependency.matches(secretFomUser, secretFromDatabase);
 		
-		CcpJsonRepresentation toReturn = json.removeKey(CcpConstants.ENTITIES_LABEL);
+		CcpJsonRepresentation toReturn = json.removeKey("_entities");
 		
 		if(correctSecret) {
 
 			JnGenerateRandomToken transformer = new JnGenerateRandomToken(30, "sessionToken");
 			CcpJsonRepresentation transformed = toReturn.getTransformed(transformer);
-			CcpJsonRepresentation send = JnSyncMensageriaSender.INSTANCE.send(transformed, this.topicToRegisterSuccess);
+			CcpJsonRepresentation send = JnSyncMensageriaSender.INSTANCE.whenSendMessage(this.topicToRegisterSuccess).apply(transformed);
 			return send;
 		}
 
 		String attemptsEntityName = this.entityToGetTheAttempts.getEntityName();
-		Double attemptsFromDatabase = json.getValueFromPath(0d, CcpConstants.ENTITIES_LABEL, attemptsEntityName, "attempts");
+		Double attemptsFromDatabase = json.getValueFromPath(0d,"_entities", attemptsEntityName, "attempts");
 		//TODO PARAMETRIZAR O 3
 		boolean exceededAttempts = attemptsFromDatabase >= 3;
 		if(exceededAttempts) {
-			JnSyncMensageriaSender.INSTANCE.send(toReturn, this.topicToCreateTheLockWhenExceedTries);
+			JnSyncMensageriaSender.INSTANCE.whenSendMessage(this.topicToCreateTheLockWhenExceedTries).apply(toReturn);
 			int status = this.statusToReturnWhenExceedAttempts.status();
 			throw new CcpFlow(toReturn, status);
 		}

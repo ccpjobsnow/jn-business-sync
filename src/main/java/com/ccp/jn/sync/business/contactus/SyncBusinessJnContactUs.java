@@ -12,7 +12,7 @@ public class SyncBusinessJnContactUs {
 	public CcpJsonRepresentation saveContactUs (Map<String, Object> json){
 		CcpJsonRepresentation jsonDecorator = new CcpJsonRepresentation(json);
 		CcpJsonRepresentation save = JnEntityContactUs.INSTANCE.createOrUpdate(jsonDecorator);
-		CcpJsonRepresentation send = JnSyncMensageriaSender.INSTANCE.send(save, JnAsyncBusiness.notifyContactUs);
+		CcpJsonRepresentation send = JnSyncMensageriaSender.INSTANCE.whenSendMessage(JnAsyncBusiness.notifyContactUs).apply(save);
 		return send;
 	}
 

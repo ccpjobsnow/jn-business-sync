@@ -56,7 +56,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.INSTANCE).returnStatus(StatusExecuteLogin.loginConflict).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusExecuteLogin.missingPassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE).executeAction(evaluateTries).andFinallyReturningThisFields("sessionToken")
-		.endThisProcedureRetrievingTheResultingData()
+		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING)
 		;
 		return findById; 
 	}
@@ -73,7 +73,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).executeAction(action).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusCreateLoginEmail.missingPassword).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).returnStatus(StatusCreateLoginEmail.missingAnswers).andFinallyReturningThisFields()
-		.endThisProcedureRetrievingTheResultingData();
+		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING);
 
 		return result;
 	}
@@ -88,19 +88,19 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.INSTANCE).returnStatus(StatusExistsLoginEmail.loginConflict).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).returnStatus(StatusExistsLoginEmail.missingAnswers).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusExistsLoginEmail.missingPassword).andFinallyReturningThisFields()
-		.endThisProcedure()
+		.endThisProcedure(CcpConstants.DO_NOTHING)
 		;
 	}
 	
 	
 	public void executeLogout (CcpJsonRepresentation sessionValues){
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = values -> JnSyncMensageriaSender.INSTANCE.send(values.removeKey(CcpConstants.ENTITIES_LABEL), JnAsyncBusiness.executeLogout);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = JnSyncMensageriaSender.INSTANCE.whenSendMessage(JnAsyncBusiness.executeLogout);
 		
 		 new CcpGetEntityId(sessionValues)
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginSessionCurrent.INSTANCE).returnStatus(StatusExecuteLogout.missingLogin).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.INSTANCE).executeAction(action).andFinallyReturningThisFields()
-		.endThisProcedure()
+		.endThisProcedure(CcpConstants.DO_NOTHING)
 		;
 	}
 	
@@ -115,13 +115,13 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.INSTANCE.getMirrorEntity()).returnStatus(StatusSaveAnswers.lockedPassword).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).executeAction(action).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.INSTANCE).returnStatus(StatusSaveAnswers.missingPassword).andFinallyReturningThisFields()
-		.endThisProcedure()
+		.endThisProcedure(CcpConstants.DO_NOTHING)
 		;
 	}
 
-	public CcpJsonRepresentation createLoginToken (CcpJsonRepresentation json){
+	public CcpJsonRepresentation createLoginToken(CcpJsonRepresentation json){
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnSyncMensageriaSender.INSTANCE.send(valores.removeKey(CcpConstants.ENTITIES_LABEL), JnAsyncBusiness.sendUserToken);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = JnSyncMensageriaSender.INSTANCE.whenSendMessage(JnAsyncBusiness.sendUserToken);
 
 		CcpJsonRepresentation result = new CcpGetEntityId(json)
 		.toBeginProcedureAnd()
@@ -130,7 +130,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusUpdatePassword.missingEmail).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).returnStatus(StatusCreateLoginToken.missingAnswers).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).executeAction(action).andFinallyReturningThisFields()
-		.endThisProcedureRetrievingTheResultingData();
+		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING);
 
 		return result;
 	}
@@ -157,7 +157,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusUpdatePassword.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusUpdatePassword.missingEmail).and()
 			.executeAction(evaluateAttempts).andFinallyReturningThisFields("sessionToken")	
-		.endThisProcedureRetrievingTheResultingData();
+		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING);
 		
 		return result;
 	}
