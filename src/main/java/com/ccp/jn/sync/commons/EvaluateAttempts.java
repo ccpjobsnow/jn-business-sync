@@ -63,7 +63,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		
 		boolean correctSecret = dependency.matches(secretFomUser, secretFromDatabase);
 		
-		CcpJsonRepresentation toReturn = json.removeKey("_entities");
+		CcpJsonRepresentation toReturn = json.removeField("_entities");
 		
 		if(correctSecret) {
 
