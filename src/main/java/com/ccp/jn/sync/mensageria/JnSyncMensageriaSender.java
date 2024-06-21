@@ -44,10 +44,11 @@ public class JnSyncMensageriaSender {
 		return put;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Function<CcpJsonRepresentation,CcpJsonRepresentation> whenSendMessage(JnTopic topic) {
 		Function<CcpJsonRepresentation,CcpJsonRepresentation> function = json ->{
 			String topicName = topic.name();
-			Class<? extends JnTopic> validationClass = topic.getClass();
+			Class<? extends JnTopic> validationClass = (Class<? extends JnTopic>) topic.validationClass();
 			CcpJsonFieldsValidations.validate(validationClass, json.content, topicName);
 			CcpJsonRepresentation send = this.send(json, topicName, JnEntityAsyncTask.INSTANCE);
 			CcpJsonRepresentation result = CcpConstants.EMPTY_JSON.put(topicName, send);
