@@ -13,13 +13,12 @@ import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnTopic;
 
 public class JnSyncMensageriaSender {
+	
 	private final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.getDependency(CcpMensageriaSender.class);
 	
 	public static final JnSyncMensageriaSender INSTANCE = new JnSyncMensageriaSender();
 	
-	private JnSyncMensageriaSender() {
-		
-	}
+	private JnSyncMensageriaSender() {}
 	
 	private CcpJsonRepresentation send(CcpJsonRepresentation json, String topic, CcpEntity entity) {
 		
