@@ -8,10 +8,10 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.jn.sync.mensageria.JnSyncMensageriaSender;
+import com.ccp.json.transformers.CcpJsonTransformerGenerateRandomToken;
 import com.ccp.process.CcpProcessStatus;
 import com.jn.commons.entities.base.JnBaseEntity;
 import com.jn.commons.utils.JnAsyncBusiness;
-import com.jn.commons.utils.JnGenerateRandomToken;
 
 public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
@@ -55,7 +55,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 		
-		String secretFromDatabase = this.entityToGetTheSecret.getInnerJsonFromMainAndMirrorEntities(json).getAsString(this.databaseFieldName);
+		String secretFromDatabase = json.getValueFromPath("","_entities", this.entityToGetTheSecret.getEntityName(), this.databaseFieldName);
 		
 		String secretFomUser = json.getAsString(this.userFieldName);
 		
@@ -67,10 +67,10 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		
 		if(correctSecret) {
 
-			JnGenerateRandomToken transformer = new JnGenerateRandomToken(30, "sessionToken");
+			CcpJsonTransformerGenerateRandomToken transformer = new CcpJsonTransformerGenerateRandomToken(30, "sessionToken");
 			CcpJsonRepresentation transformed = toReturn.getTransformed(transformer);
-			CcpJsonRepresentation send = JnSyncMensageriaSender.INSTANCE.whenSendMessage(this.topicToRegisterSuccess).apply(transformed);
-			return send;
+			JnSyncMensageriaSender.INSTANCE.whenSendMessage(this.topicToRegisterSuccess).apply(transformed);
+			return transformed;
 		}
 
 		String attemptsEntityName = this.entityToGetTheAttempts.getEntityName();
@@ -79,8 +79,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		boolean exceededAttempts = attemptsFromDatabase >= 3;
 		if(exceededAttempts) {
 			JnSyncMensageriaSender.INSTANCE.whenSendMessage(this.topicToCreateTheLockWhenExceedTries).apply(toReturn);
-			int status = this.statusToReturnWhenExceedAttempts.status();
-			throw new CcpFlow(toReturn, status);
+			throw new CcpFlow(toReturn, this.statusToReturnWhenExceedAttempts);
 		}
 		
 		String email = json.getAsString("email");
@@ -89,8 +88,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 				.put("email", email)
 				;
 		this.entityToGetTheAttempts.createOrUpdate(put);
-		int status = this.statusToReturnWhenWrongType.status();
-		throw new CcpFlow(toReturn, status);
+		throw new CcpFlow(toReturn, this.statusToReturnWhenWrongType);
 	}
 	
 	

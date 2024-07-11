@@ -6,6 +6,7 @@ public enum StatusUpdatePassword implements CcpProcessStatus{
 	invalidEmail(400),
 	lockedToken(403),
 	missingEmail(404),
+	missingToken(404),
 	wrongToken(421),
 	tokenLockedRecently(429),
 	expectedStatus(200),

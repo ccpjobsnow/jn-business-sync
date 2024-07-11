@@ -10,7 +10,6 @@ import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
 import com.ccp.validation.CcpJsonFieldsValidations;
 import com.jn.commons.entities.JnEntityAsyncTask;
-import com.jn.commons.utils.JnGenerateRandomToken;
 import com.jn.commons.utils.JnTopic;
 
 public class JnSyncMensageriaSender {
@@ -33,8 +32,7 @@ public class JnSyncMensageriaSender {
 				.put("topic", topic)
 				.putAll(json)
 				;
-		JnGenerateRandomToken transformer = new JnGenerateRandomToken(20, "messageId");
-		CcpJsonRepresentation transformed = messageDetails.getTransformed(transformer);
+		CcpJsonRepresentation transformed = messageDetails.put("messageId", System.currentTimeMillis());
 		
 		String messageId = transformed.getAsString("messageId");
 		entity.createOrUpdate(transformed);

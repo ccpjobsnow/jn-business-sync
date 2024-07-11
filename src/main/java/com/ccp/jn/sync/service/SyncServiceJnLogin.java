@@ -152,10 +152,10 @@ public class SyncServiceJnLogin{
 		CcpJsonRepresentation result =  new CcpGetEntityId(json)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntityLoginStats.INSTANCE).and()
-			.loadThisIdFromEntity(JnEntityLoginToken.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityLoginTokenAttempts.INSTANCE).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE.getMirrorEntity()).returnStatus(StatusUpdatePassword.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusUpdatePassword.missingEmail).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(StatusUpdatePassword.missingToken).and()
 			.executeAction(evaluateAttempts).andFinallyReturningThisFields("sessionToken")	
 		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING);
 		
