@@ -8,7 +8,6 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.jn.sync.mensageria.JnSyncMensageriaSender;
-import com.ccp.json.transformers.CcpJsonTransformerGenerateRandomToken;
 import com.ccp.process.CcpProcessStatus;
 import com.jn.commons.entities.base.JnBaseEntity;
 import com.jn.commons.utils.JnAsyncBusiness;
@@ -67,8 +66,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		
 		if(correctSecret) {
 
-			CcpJsonTransformerGenerateRandomToken transformer = new CcpJsonTransformerGenerateRandomToken(30, "sessionToken");
-			CcpJsonRepresentation transformed = toReturn.getTransformed(transformer);
+			CcpJsonRepresentation transformed = toReturn.putRandomToken(30, "sessionToken");
 			JnSyncMensageriaSender.INSTANCE.whenSendMessage(this.topicToRegisterSuccess).apply(transformed);
 			return transformed;
 		}
