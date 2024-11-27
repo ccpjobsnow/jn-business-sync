@@ -1,5 +1,6 @@
 package com.ccp.jn.sync.mensageria;
 
+import java.util.Map;
 import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
@@ -54,7 +55,21 @@ public class JnSyncMensageriaSender {
 		return function;
 	}
 	
-	public void send(Throwable e, JnTopic topic) {
+	public Map<String, Object> sendJsonToTopic(JnTopic topic, Map<String, Object> map) {
+		CcpJsonRepresentation json = new CcpJsonRepresentation(map);
+		CcpJsonRepresentation response = this.sendJsonToTopic(topic, json);
+		return response.content;
+	}
+	
+	public CcpJsonRepresentation sendJsonToTopic(JnTopic topic, CcpJsonRepresentation json) {
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> whenSendMessage = this.whenSendMessage(topic);
+
+		CcpJsonRepresentation responseFromTopic = whenSendMessage.apply(json);
+		
+		return responseFromTopic;
+	}
+	
+	public void sendErrorToTopic(Throwable e, JnTopic topic) {
 		CcpJsonRepresentation transformed = new CcpJsonRepresentation(e);
 		String name = topic.name();
 		this.mensageriaSender.send(name, transformed);

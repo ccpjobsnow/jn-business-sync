@@ -10,7 +10,7 @@ import com.jn.commons.utils.JnAsyncBusiness;
 public class SyncBusinessJnNotifyError implements Function<Throwable, CcpJsonRepresentation> {
 
 	public CcpJsonRepresentation apply(Throwable e) {
-		JnSyncMensageriaSender.INSTANCE.send(e, JnAsyncBusiness.notifyError);
+		JnSyncMensageriaSender.INSTANCE.sendErrorToTopic(e, JnAsyncBusiness.notifyError);
 		return CcpConstants.EMPTY_JSON;
 	}
 	
