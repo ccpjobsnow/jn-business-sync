@@ -94,7 +94,7 @@ public class SyncServiceJnLogin{
 	
 	
 	public void executeLogout (CcpJsonRepresentation sessionValues){
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = JnSyncMensageriaSender.INSTANCE.whenSendMessage(JnAsyncBusiness.executeLogout);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = new JnSyncMensageriaSender(JnAsyncBusiness.executeLogout);
 		
 		 new CcpGetEntityId(sessionValues)
 		.toBeginProcedureAnd()
@@ -121,7 +121,6 @@ public class SyncServiceJnLogin{
 
 	public CcpJsonRepresentation createLoginToken(CcpJsonRepresentation json){
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = JnSyncMensageriaSender.INSTANCE.whenSendMessage(JnAsyncBusiness.sendUserToken);
 
 		CcpJsonRepresentation result = new CcpGetEntityId(json)
 		.toBeginProcedureAnd()
@@ -129,7 +128,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.INSTANCE).returnStatus(StatusCreateLoginToken.statusAlreadySentToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.INSTANCE).returnStatus(StatusUpdatePassword.missingEmail).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.INSTANCE).returnStatus(StatusCreateLoginToken.missingAnswers).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).executeAction(action).andFinallyReturningThisFields("x")
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.INSTANCE).executeAction(new JnSyncMensageriaSender(JnAsyncBusiness.sendUserToken)).andFinallyReturningThisFields("x")
 		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING);
 
 		return result;

@@ -3,76 +3,42 @@ package com.ccp.jn.sync.mensageria;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.mensageria.sender.CcpMensageriaSender;
-import com.ccp.validation.CcpJsonFieldsValidations;
 import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnTopic;
 
-public class JnSyncMensageriaSender {
+public class JnSyncMensageriaSender implements Function<CcpJsonRepresentation, CcpJsonRepresentation> {
 	
 	private final CcpMensageriaSender mensageriaSender = CcpDependencyInjection.getDependency(CcpMensageriaSender.class);
 	
-	public static final JnSyncMensageriaSender INSTANCE = new JnSyncMensageriaSender();
+	private final JnTopic topic;
 	
-	private JnSyncMensageriaSender() {}
-	
-	private CcpJsonRepresentation send(CcpJsonRepresentation json, String topic, CcpEntity entity) {
-		
-		String formattedCurrentDateTime = new CcpTimeDecorator().getFormattedDateTime("dd/MM/yyyy HH:mm:ss");
-	
-		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
-				.put("started", System.currentTimeMillis())
-				.put("data", formattedCurrentDateTime)
-				.put("request", json)
-				.put("topic", topic)
-				.putAll(json)
-				;
-		CcpJsonRepresentation transformed = messageDetails.put("messageId", System.currentTimeMillis());
-		
-		String messageId = transformed.getAsString("messageId");
-		entity.createOrUpdate(transformed);
-		
-		this.mensageriaSender.send(topic, transformed);
-		CcpJsonRepresentation put = messageDetails.put("messageId", messageId);
-		return put;
+	public JnSyncMensageriaSender(JnTopic topic) {
+		this.topic = topic;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Function<CcpJsonRepresentation,CcpJsonRepresentation> whenSendMessage(JnTopic topic) {
-		Function<CcpJsonRepresentation,CcpJsonRepresentation> function = json ->{
-			String topicName = topic.name();
-			Class<? extends JnTopic> validationClass = (Class<? extends JnTopic>) topic.validationClass();
-			CcpJsonFieldsValidations.validate(validationClass, json.content, topicName);
-			CcpJsonRepresentation send = this.send(json, topicName, JnEntityAsyncTask.INSTANCE);
-			CcpJsonRepresentation result = CcpConstants.EMPTY_JSON.put(topicName, send);
-			return result;
-		};
-		return function;
-	}
-	
-	public Map<String, Object> sendJsonToTopic(JnTopic topic, Map<String, Object> map) {
+	public Map<String, Object> apply(Map<String, Object> map) {
 		CcpJsonRepresentation json = new CcpJsonRepresentation(map);
-		CcpJsonRepresentation response = this.sendJsonToTopic(topic, json);
+		CcpJsonRepresentation response = this.apply(json);
 		return response.content;
 	}
 	
-	public CcpJsonRepresentation sendJsonToTopic(JnTopic topic, CcpJsonRepresentation json) {
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> whenSendMessage = this.whenSendMessage(topic);
+	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 
-		CcpJsonRepresentation responseFromTopic = whenSendMessage.apply(json);
+		CcpJsonRepresentation responseFromTopic = JnSyncPackageMessage.INSTANCE.apply(json);
 		
+		JnEntityAsyncTask.INSTANCE.createOrUpdate(responseFromTopic);
+		
+		this.mensageriaSender.send(this.topic.name(), responseFromTopic);
+
 		return responseFromTopic;
 	}
 	
-	public void sendErrorToTopic(Throwable e, JnTopic topic) {
-		CcpJsonRepresentation transformed = new CcpJsonRepresentation(e);
-		String name = topic.name();
-		this.mensageriaSender.send(name, transformed);
-		
+	public String toString() {
+		return this.topic.name();
 	}
+	
+	
 }

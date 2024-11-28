@@ -67,7 +67,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		if(correctSecret) {
 
 			CcpJsonRepresentation transformed = toReturn.putRandomToken(30, "sessionToken");
-			JnSyncMensageriaSender.INSTANCE.sendJsonToTopic(this.topicToRegisterSuccess, transformed);
+			new JnSyncMensageriaSender(this.topicToRegisterSuccess).apply(transformed);
 			return transformed;
 		}
 
@@ -76,7 +76,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		//TODO PARAMETRIZAR O 3
 		boolean exceededAttempts = attemptsFromDatabase >= 3;
 		if(exceededAttempts) {
-			JnSyncMensageriaSender.INSTANCE.sendJsonToTopic(this.topicToCreateTheLockWhenExceedTries, toReturn);
+			new JnSyncMensageriaSender(this.topicToCreateTheLockWhenExceedTries).apply(toReturn);
 			throw new CcpFlow(toReturn, this.statusToReturnWhenExceedAttempts);
 		}
 		
