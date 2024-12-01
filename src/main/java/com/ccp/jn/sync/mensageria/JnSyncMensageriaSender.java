@@ -29,7 +29,7 @@ public class JnSyncMensageriaSender implements Function<CcpJsonRepresentation, C
 
 		CcpJsonRepresentation responseFromTopic = JnSyncPackageMessage.INSTANCE.apply(json);
 		
-		JnEntityAsyncTask.INSTANCE.createOrUpdate(responseFromTopic);
+		JnEntityAsyncTask.ENTITY.createOrUpdate(responseFromTopic);
 		
 		this.mensageriaSender.send(this.topic.name(), responseFromTopic);
 

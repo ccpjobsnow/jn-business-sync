@@ -5,19 +5,19 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.jn.sync.mensageria.JnSyncMensageriaSender;
 import com.ccp.process.CcpProcessStatus;
-import com.jn.commons.entities.base.JnBaseEntity;
 import com.jn.commons.utils.JnAsyncBusiness;
 
 public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
 	
-	private final JnBaseEntity entityToGetTheSecret;
+	private final CcpEntity entityToGetTheSecret;
 	
-	private final JnBaseEntity entityToGetTheAttempts;
+	private final CcpEntity entityToGetTheAttempts;
 
 	private final String userFieldName;
 	
@@ -32,8 +32,8 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 	private final JnAsyncBusiness topicToCreateTheLockWhenExceedTries;
 
 	public EvaluateAttempts(
-			JnBaseEntity entityToGetTheAttempts, 
-			JnBaseEntity entityToGetTheSecret, 
+			CcpEntity entityToGetTheAttempts, 
+			CcpEntity entityToGetTheSecret, 
 			String databaseFieldName, 
 			String userFieldName, 
 			CcpProcessStatus statusToReturnWhenExceedAttempts, 
