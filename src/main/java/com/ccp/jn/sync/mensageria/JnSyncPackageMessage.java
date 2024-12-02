@@ -6,7 +6,7 @@ import java.util.function.Function;
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpTimeDecorator;
-import com.ccp.especifications.db.utils.decorators.CcpLongevityEntity;
+import com.ccp.especifications.db.utils.decorators.CcpEntityExpurg;
 import com.ccp.validation.CcpJsonFieldsValidations;
 import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnTopic;
@@ -27,7 +27,7 @@ public class JnSyncPackageMessage implements Function<CcpJsonRepresentation,CcpJ
 		Class<? extends JnTopic> validationClass = (Class<? extends JnTopic>) topic.validationClass();
 		CcpJsonFieldsValidations.validate(validationClass, json.content, topicName);
 		CcpTimeDecorator ccpTimeDecorator = new CcpTimeDecorator();
-		String formattedCurrentDateTime = ccpTimeDecorator.getFormattedDateTime(CcpLongevityEntity.second.format);
+		String formattedCurrentDateTime = ccpTimeDecorator.getFormattedDateTime(CcpEntityExpurg.second.format);
 		
 		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
 				.put(JnEntityAsyncTask.Fields.started.name(), System.currentTimeMillis())
