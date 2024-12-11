@@ -73,7 +73,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 
 		String attemptsEntityName = this.entityToGetTheAttempts.getEntityName();
 		Double attemptsFromDatabase = json.getValueFromPath(0d,"_entities", attemptsEntityName, "attempts");
-		//TODO PARAMETRIZAR O 3
+		//LATER PARAMETRIZAR O 3
 		boolean exceededAttempts = attemptsFromDatabase >= 3;
 		if(exceededAttempts) {
 			new JnSyncMensageriaSender(this.topicToCreateTheLockWhenExceedTries).apply(toReturn);

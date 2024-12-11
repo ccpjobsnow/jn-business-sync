@@ -35,6 +35,7 @@ public class JnSyncPackageMessage implements Function<CcpJsonRepresentation,CcpJ
 				.put(JnEntityAsyncTask.Fields.messageId.name(), UUID.randomUUID())
 				.put(JnEntityAsyncTask.Fields.topic.name(), topicName)
 				.put(JnEntityAsyncTask.Fields.request.name(), json)
+				.putAll(json)
 				;
 		return messageDetails;
 	}

@@ -17,7 +17,7 @@ public class SyncBusinessJnContactUs {
 	}
 
 	public void verifyContactUs(String sender, String subjectType) {
-		// TODO Auto-generated method stub
+		// LATER Auto-generated method stub
 		
 	}
 }
