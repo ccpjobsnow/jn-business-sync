@@ -23,6 +23,7 @@ import com.jn.commons.entities.JnEntityLoginToken;
 import com.jn.commons.entities.JnEntityLoginTokenAttempts;
 import com.jn.commons.status.StatusExecuteLogin;
 import com.jn.commons.utils.JnAsyncBusiness;
+import com.jn.commons.utils.JnDeleteKeysFromCache;
 
 public class SyncServiceJnLogin{
 	
@@ -56,7 +57,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.ENTITY).returnStatus(StatusExecuteLogin.loginConflict).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusExecuteLogin.missingPassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.ENTITY).executeAction(evaluateTries).andFinallyReturningThisFields("sessionToken")
-		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING)
+		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
 		return findById; 
 	}
@@ -73,7 +74,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.ENTITY).executeAction(action).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusCreateLoginEmail.missingPassword).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.ENTITY).returnStatus(StatusCreateLoginEmail.missingAnswers).andFinallyReturningThisFields("x")
-		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING);
+		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE);
 
 		return result;
 	}
@@ -88,7 +89,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.ENTITY).returnStatus(StatusExistsLoginEmail.loginConflict).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.ENTITY).returnStatus(StatusExistsLoginEmail.missingAnswers).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusExistsLoginEmail.missingPassword).andFinallyReturningThisFields("x")
-		.endThisProcedure(CcpConstants.DO_NOTHING)
+		.endThisProcedure(CcpConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
 	}
 	
@@ -100,7 +101,7 @@ public class SyncServiceJnLogin{
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginSessionCurrent.ENTITY).returnStatus(StatusExecuteLogout.missingLogin).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.ENTITY).executeAction(action).andFinallyReturningThisFields("x")
-		.endThisProcedure(CcpConstants.DO_NOTHING)
+		.endThisProcedure(CcpConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
 	}
 	
@@ -115,7 +116,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.ENTITY.getTwinEntity()).returnStatus(StatusSaveAnswers.lockedPassword).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.ENTITY).executeAction(action).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusSaveAnswers.missingPassword).andFinallyReturningThisFields("x")
-		.endThisProcedure(CcpConstants.DO_NOTHING)
+		.endThisProcedure(CcpConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
 	}
 
@@ -129,7 +130,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.ENTITY).returnStatus(StatusUpdatePassword.missingEmail).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.ENTITY).returnStatus(StatusCreateLoginToken.missingAnswers).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.ENTITY).executeAction(new JnSyncMensageriaSender(JnAsyncBusiness.sendUserToken)).andFinallyReturningThisFields("x")
-		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING);
+		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE);
 
 		return result;
 	}
@@ -156,7 +157,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.ENTITY).returnStatus(StatusUpdatePassword.missingEmail).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.ENTITY).returnStatus(StatusUpdatePassword.missingToken).and()
 			.executeAction(evaluateAttempts).andFinallyReturningThisFields("sessionToken")	
-		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING);
+		.endThisProcedureRetrievingTheResultingData(CcpConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE);
 		
 		return result;
 	}
