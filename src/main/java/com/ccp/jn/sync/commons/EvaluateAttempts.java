@@ -2,7 +2,7 @@ package com.ccp.jn.sync.commons;
 
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
@@ -81,7 +81,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		}
 		
 		String email = json.getAsString("email");
-		CcpJsonRepresentation put = CcpConstants.EMPTY_JSON
+		CcpJsonRepresentation put = CcpOtherConstants.EMPTY_JSON
 				.put("attempts", attemptsFromDatabase + 1)
 				.put("email", email)
 				;

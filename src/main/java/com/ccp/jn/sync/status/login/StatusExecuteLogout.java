@@ -16,7 +16,7 @@ public enum StatusExecuteLogout implements CcpProcessStatus{
 		this.status = status;
 	}
 
-	public int status() {
+	public int asNumber() {
 		return status;
 	}
 }

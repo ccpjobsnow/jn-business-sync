@@ -3,7 +3,7 @@ package com.ccp.jn.sync.mensageria;
 import java.util.UUID;
 import java.util.function.Function;
 
-import com.ccp.constantes.CcpConstants;
+import com.ccp.constantes.CcpOtherConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpTimeDecorator;
 import com.ccp.especifications.db.utils.decorators.CcpEntityExpurgableOptions;
@@ -29,7 +29,7 @@ public class JnSyncPackageMessage implements Function<CcpJsonRepresentation,CcpJ
 		CcpTimeDecorator ccpTimeDecorator = new CcpTimeDecorator();
 		String formattedCurrentDateTime = ccpTimeDecorator.getFormattedDateTime(CcpEntityExpurgableOptions.second.format);
 		
-		CcpJsonRepresentation messageDetails = CcpConstants.EMPTY_JSON
+		CcpJsonRepresentation messageDetails = CcpOtherConstants.EMPTY_JSON
 				.put(JnEntityAsyncTask.Fields.started.name(), System.currentTimeMillis())
 				.put(JnEntityAsyncTask.Fields.data.name(), formattedCurrentDateTime)
 				.put(JnEntityAsyncTask.Fields.messageId.name(), UUID.randomUUID())
