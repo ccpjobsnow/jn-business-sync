@@ -141,7 +141,7 @@ public class SyncServiceJnLogin{
 				new EvaluateAttempts(
 						JnEntityLoginTokenAttempts.ENTITY, 
 						JnEntityLoginToken.ENTITY, 
-						"tokenHash", 
+						"token", 
 						"token", 
 						StatusUpdatePassword.tokenLockedRecently,
 						StatusUpdatePassword.wrongToken, 
