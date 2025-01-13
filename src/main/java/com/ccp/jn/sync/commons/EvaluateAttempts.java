@@ -10,7 +10,6 @@ import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.exceptions.process.CcpFlow;
 import com.ccp.jn.sync.mensageria.JnSyncMensageriaSender;
 import com.ccp.process.CcpProcessStatus;
-import com.jn.commons.json.transformers.JnJsonTransformerPutRandomTokenSecret;
 import com.jn.commons.utils.JnAsyncBusiness;
 
 public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJsonRepresentation>{
@@ -67,9 +66,8 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		
 		if(correctSecret) {
 
-			CcpJsonRepresentation transformed = toReturn.getTransformedJson(JnJsonTransformerPutRandomTokenSecret.INSTANCE);
-			new JnSyncMensageriaSender(this.topicToRegisterSuccess).apply(transformed);
-			return transformed;
+			new JnSyncMensageriaSender(this.topicToRegisterSuccess).apply(toReturn);
+			return toReturn;
 		}
 
 		String attemptsEntityName = this.entityToGetTheAttempts.getEntityName();
