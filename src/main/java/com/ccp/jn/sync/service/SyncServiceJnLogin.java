@@ -107,7 +107,7 @@ public class SyncServiceJnLogin{
 	
 	public void saveAnswers (CcpJsonRepresentation json){
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnEntityLoginAnswers.ENTITY.createOrUpdate(valores);
+		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> valores.put("result_save_" + JnEntityLoginAnswers.ENTITY, JnEntityLoginAnswers.ENTITY.createOrUpdate(valores));
 		 new CcpGetEntityId(json)
 		.toBeginProcedureAnd()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.ENTITY.getTwinEntity()).returnStatus(StatusSaveAnswers.lockedToken).and()

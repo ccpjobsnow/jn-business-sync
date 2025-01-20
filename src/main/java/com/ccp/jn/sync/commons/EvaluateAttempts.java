@@ -40,7 +40,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 			CcpProcessStatus statusToReturnWhenWrongType,
 			JnAsyncBusiness topicToCreateTheLockWhenExceedTries,
 			JnAsyncBusiness topicToRegisterSuccess
-			) {
+			) { 
 
 		this.statusToReturnWhenExceedAttempts = statusToReturnWhenExceedAttempts;
 		this.statusToReturnWhenWrongType = statusToReturnWhenWrongType;
