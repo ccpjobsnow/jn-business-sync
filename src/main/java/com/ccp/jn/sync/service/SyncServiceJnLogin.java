@@ -105,7 +105,7 @@ public class SyncServiceJnLogin{
 		;
 	}
 	
-	public void saveAnswers (CcpJsonRepresentation json){
+	public CcpJsonRepresentation saveAnswers (CcpJsonRepresentation json){
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> valores.put("result_save_" + JnEntityLoginAnswers.ENTITY, JnEntityLoginAnswers.ENTITY.createOrUpdate(valores));
 		 new CcpGetEntityId(json)
@@ -118,6 +118,7 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusSaveAnswers.missingPassword).andFinallyReturningTheseFields("x")
 		.endThisProcedure(CcpOtherConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
+		return json;
 	}
 
 	public CcpJsonRepresentation createLoginToken(CcpJsonRepresentation json){
