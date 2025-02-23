@@ -52,17 +52,17 @@ public class SyncServiceJnLogin{
 			.loadThisIdFromEntity(JnEntityLoginStats.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityLoginPasswordAttempts.ENTITY).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.ENTITY.getTwinEntity()).returnStatus(StatusExecuteLogin.lockedToken).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.ENTITY).returnStatus(StatusExecuteLogin.missingEmail).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.ENTITY).returnStatus(StatusExecuteLogin.missingSaveEmail).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.ENTITY.getTwinEntity()).returnStatus(StatusExecuteLogin.lockedPassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.ENTITY).returnStatus(StatusExecuteLogin.loginConflict).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusExecuteLogin.missingPassword).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusExecuteLogin.missingSavePassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.ENTITY).executeAction(evaluateTries).andFinallyReturningTheseFields("sessionToken")
 		.endThisProcedureRetrievingTheResultingData(CcpOtherConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
 		return findById; 
 	}
 	
-	public CcpJsonRepresentation createLoginEmail (CcpJsonRepresentation json){
+	public CcpJsonRepresentation createLoginEmail(CcpJsonRepresentation json){
 		
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = valores -> JnEntityLoginEmail.ENTITY.createOrUpdate(valores);
 
@@ -72,14 +72,14 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.ENTITY.getTwinEntity()).returnStatus(StatusCreateLoginEmail.lockedPassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.ENTITY).returnStatus(StatusCreateLoginEmail.loginConflict).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.ENTITY).executeAction(action).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusCreateLoginEmail.missingPassword).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.ENTITY).returnStatus(StatusCreateLoginEmail.missingAnswers).andFinallyReturningTheseFields("x")
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusCreateLoginEmail.missingSavePassword).and()
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.ENTITY).returnStatus(StatusCreateLoginEmail.missingSaveAnswers).andFinallyReturningTheseFields("x")
 		.endThisProcedureRetrievingTheResultingData(CcpOtherConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE);
 
 		return result;
 	}
 	
-	public void existsLoginEmail (CcpJsonRepresentation json){
+	public CcpJsonRepresentation existsLoginEmail(CcpJsonRepresentation json){
 		
 		 new CcpGetEntityId(json) 
 		.toBeginProcedureAnd()
@@ -91,18 +91,20 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusExistsLoginEmail.missingPassword).andFinallyReturningTheseFields("x")
 		.endThisProcedure(CcpOtherConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
+	 return json;
 	}
 	
-	
-	public void executeLogout (CcpJsonRepresentation sessionValues){
+	public CcpJsonRepresentation executeLogout(CcpJsonRepresentation json){
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = new JnSyncMensageriaSender(JnAsyncBusiness.executeLogout);
 		
-		 new CcpGetEntityId(sessionValues)
+		 new CcpGetEntityId(json)
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginSessionCurrent.ENTITY).returnStatus(StatusExecuteLogout.missingLogin).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.ENTITY).executeAction(action).andFinallyReturningTheseFields("x")
 		.endThisProcedure(CcpOtherConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
+		 
+		return json;
 	}
 	
 	public CcpJsonRepresentation saveAnswers (CcpJsonRepresentation json){
@@ -136,7 +138,7 @@ public class SyncServiceJnLogin{
 		return result;
 	}
 
-	public CcpJsonRepresentation updatePassword (CcpJsonRepresentation json){
+	public CcpJsonRepresentation savePassword(CcpJsonRepresentation json){
 
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateAttempts =
 				new EvaluateAttempts(

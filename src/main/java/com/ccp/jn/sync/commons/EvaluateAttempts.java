@@ -7,7 +7,7 @@ import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.password.CcpPasswordHandler;
-import com.ccp.exceptions.process.CcpFlow;
+import com.ccp.exceptions.process.CcpFlowDiversion;
 import com.ccp.jn.sync.mensageria.JnSyncMensageriaSender;
 import com.ccp.process.CcpProcessStatus;
 import com.jn.commons.utils.JnAsyncBusiness;
@@ -76,7 +76,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		boolean exceededAttempts = attemptsFromDatabase >= 3;
 		if(exceededAttempts) {
 			new JnSyncMensageriaSender(this.topicToCreateTheLockWhenExceedTries).apply(toReturn);
-			throw new CcpFlow(toReturn, this.statusToReturnWhenExceedAttempts);
+			throw new CcpFlowDiversion(toReturn, this.statusToReturnWhenExceedAttempts);
 		}
 		
 		String email = json.getAsString("email");
@@ -85,7 +85,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 				.put("email", email)
 				;
 		this.entityToGetTheAttempts.createOrUpdate(put);
-		throw new CcpFlow(toReturn, this.statusToReturnWhenWrongType);
+		throw new CcpFlowDiversion(toReturn, this.statusToReturnWhenWrongType);
 	}
 	
 	

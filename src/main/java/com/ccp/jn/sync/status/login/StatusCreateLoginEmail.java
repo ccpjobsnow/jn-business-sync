@@ -8,8 +8,8 @@ public enum StatusCreateLoginEmail implements CcpProcessStatus{
 	missingEmail(404),
 	lockedPassword(421),
 	loginConflict(409),
-	missingPassword(202),
-	missingAnswers(201),
+	missingSavePassword(202),
+	missingSaveAnswers(201),
 	expectedStatus(200),
 	;
 
