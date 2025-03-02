@@ -16,8 +16,8 @@ public class SyncBusinessJnContactUs {
 		return send;
 	}
 
-	public void verifyContactUs(String sender, String subjectType) {
+	public SyncBusinessJnContactUs verifyContactUs(String sender, String subjectType) {
 		// LATER Auto-generated method stub
-		
+		return this;
 	}
 }
