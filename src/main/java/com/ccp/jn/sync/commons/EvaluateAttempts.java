@@ -30,6 +30,10 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 	private final JnAsyncBusiness topicToRegisterSuccess;
 
 	private final JnAsyncBusiness topicToCreateTheLockWhenExceedTries;
+	
+	private final String fieldAttempsName;
+	
+	private final String fieldEmailName;
 
 	public EvaluateAttempts(
 			CcpEntity entityToGetTheAttempts, 
@@ -39,7 +43,9 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 			CcpProcessStatus statusToReturnWhenExceedAttempts, 
 			CcpProcessStatus statusToReturnWhenWrongType,
 			JnAsyncBusiness topicToCreateTheLockWhenExceedTries,
-			JnAsyncBusiness topicToRegisterSuccess
+			JnAsyncBusiness topicToRegisterSuccess,
+			String fieldAttempsName,
+			String fieldEmailName
 			) { 
 
 		this.statusToReturnWhenExceedAttempts = statusToReturnWhenExceedAttempts;
@@ -50,6 +56,9 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		this.databaseFieldName = databaseFieldName;
 		this.userFieldName = userFieldName;
 		this.topicToCreateTheLockWhenExceedTries = topicToCreateTheLockWhenExceedTries;
+		this.fieldAttempsName = fieldAttempsName;
+		this.fieldEmailName = fieldEmailName;
+				
 	}
 
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
@@ -71,7 +80,7 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 		}
 
 		String attemptsEntityName = this.entityToGetTheAttempts.getEntityName();
-		Double attemptsFromDatabase = json.getValueFromPath(0d,"_entities", attemptsEntityName, "attempts");
+		Double attemptsFromDatabase = json.getValueFromPath(0d,"_entities", attemptsEntityName, this.fieldAttempsName);
 		//LATER PARAMETRIZAR O 3
 		boolean exceededAttempts = attemptsFromDatabase >= 3;
 		if(exceededAttempts) {
@@ -79,10 +88,10 @@ public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJson
 			throw new CcpFlowDiversion(toReturn, this.statusToReturnWhenExceedAttempts);
 		}
 		
-		String email = json.getAsString("email");
+		String email = json.getAsString(this.fieldEmailName);
 		CcpJsonRepresentation put = CcpOtherConstants.EMPTY_JSON
-				.put("attempts", attemptsFromDatabase + 1)
-				.put("email", email)
+				.put(this.fieldAttempsName, attemptsFromDatabase + 1)
+				.put(this.fieldEmailName, email)
 				;
 		this.entityToGetTheAttempts.createOrUpdate(put);
 		throw new CcpFlowDiversion(toReturn, this.statusToReturnWhenWrongType);

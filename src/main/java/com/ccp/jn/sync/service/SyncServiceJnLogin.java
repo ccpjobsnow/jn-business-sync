@@ -37,12 +37,14 @@ public class SyncServiceJnLogin{
 				new EvaluateAttempts(
 						JnEntityLoginPasswordAttempts.ENTITY, 
 						JnEntityLoginPassword.ENTITY, 
-						"password", 
-						"password", 
+						JnEntityLoginPassword.Fields.password.name(), 
+						JnEntityLoginPassword.Fields.password.name(), 
 						StatusExecuteLogin.passwordLockedRecently,
 						StatusExecuteLogin.wrongPassword, 
 						JnAsyncBusiness.lockPassword, 
-						JnAsyncBusiness.executeLogin
+						JnAsyncBusiness.executeLogin,
+						JnEntityLoginPasswordAttempts.Fields.attempts.name(),
+						JnEntityLoginPassword.Fields.email.name()
 						);
 
 
@@ -144,12 +146,14 @@ public class SyncServiceJnLogin{
 				new EvaluateAttempts(
 						JnEntityLoginTokenAttempts.ENTITY, 
 						JnEntityLoginToken.ENTITY, 
-						"token", 
-						"token", 
+						JnEntityLoginToken.Fields.token.name(),
+						JnEntityLoginToken.Fields.token.name(),
 						StatusUpdatePassword.tokenLockedRecently,
 						StatusUpdatePassword.wrongToken, 
 						JnAsyncBusiness.lockToken,
-						JnAsyncBusiness.updatePassword 
+						JnAsyncBusiness.updatePassword, 
+						JnEntityLoginTokenAttempts.Fields.attempts.name(),
+						JnEntityLoginToken.Fields.email.name()
 						);
 		
 		CcpJsonRepresentation result =  new CcpGetEntityId(json)
