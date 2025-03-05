@@ -6,7 +6,7 @@ public enum StatusCreateLoginToken implements CcpProcessStatus{
 	statusInvalidEmail(400),
 	statusLockedToken(403),
 	statusMissingEmail(404),
-	missingAnswers(201),
+	missingSaveAnswers(201),
 	statusExpectedStatus(200),
 	statusAlreadySentToken(429)
 	;
