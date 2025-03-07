@@ -27,7 +27,7 @@ public class JnSyncMensageriaSender implements Function<CcpJsonRepresentation, C
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 
-		CcpJsonRepresentation put = json.put(JnEntityAsyncTask.Fields.topic.name(), this.topic);
+		CcpJsonRepresentation put = json.put(JnEntityAsyncTask.Fields.topic.name(), this.topic); 
 		
 		CcpJsonRepresentation responseFromTopic = JnSyncPackageMessage.INSTANCE.apply(put);
 		

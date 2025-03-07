@@ -22,7 +22,7 @@ public class JnSyncPackageMessage implements Function<CcpJsonRepresentation,CcpJ
 	
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
-		JnTopic topic = json.getAsObject(JnEntityAsyncTask.Fields.topic.name());
+		JnTopic topic = json.getAsObject(JnEntityAsyncTask.Fields.topic.name()); 
 		String topicName = topic.name();
 		Class<? extends JnTopic> validationClass = (Class<? extends JnTopic>) topic.validationClass();
 		CcpJsonFieldsValidations.validate(validationClass, json.content, topicName);
