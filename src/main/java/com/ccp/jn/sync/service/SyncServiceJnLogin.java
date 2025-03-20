@@ -134,7 +134,8 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.ENTITY).returnStatus(StatusUpdatePassword.missingEmail).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.ENTITY).returnStatus(StatusCreateLoginToken.missingSaveAnswers).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.ENTITY).returnStatus(StatusCreateLoginToken.statusAlreadySentToken).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.ENTITY).executeAction(new JnSyncMensageriaSender(JnAsyncBusiness.sendUserToken)).andFinallyReturningTheseFields("x")
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.ENTITY).executeAction(new JnSyncMensageriaSender(JnAsyncBusiness.sendUserToken))
+			.andFinallyReturningTheseFields(json.fieldSet())
 		.endThisProcedureRetrievingTheResultingData(CcpOtherConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE);
 
 		return result;
