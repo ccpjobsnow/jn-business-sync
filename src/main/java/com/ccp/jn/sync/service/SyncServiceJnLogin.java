@@ -28,7 +28,7 @@ import com.jn.commons.utils.JnDeleteKeysFromCache;
 public class SyncServiceJnLogin{
 	
 	private SyncServiceJnLogin() {}
-	
+	  
 	public static final SyncServiceJnLogin INSTANCE = new SyncServiceJnLogin();
 	
 	public CcpJsonRepresentation executeLogin(CcpJsonRepresentation json){
@@ -42,7 +42,8 @@ public class SyncServiceJnLogin{
 						StatusExecuteLogin.passwordLockedRecently,
 						StatusExecuteLogin.wrongPassword, 
 						JnAsyncBusiness.lockPassword, 
-						JnAsyncBusiness.executeLogin,
+						JnAsyncBusiness.executeLogin, 
+						
 						JnEntityLoginPasswordAttempts.Fields.attempts.name(),
 						JnEntityLoginPassword.Fields.email.name()
 						);
@@ -58,7 +59,12 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.ENTITY.getTwinEntity()).returnStatus(StatusExecuteLogin.lockedPassword).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionCurrent.ENTITY).returnStatus(StatusExecuteLogin.loginConflict).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusExecuteLogin.missingSavePassword).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.ENTITY).executeAction(evaluateTries).andFinallyReturningTheseFields("sessionToken")
+			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.ENTITY).executeAction(evaluateTries).andFinallyReturningTheseFields(
+					JnEntityLoginToken.Fields.userAgent.name(),
+					JnEntityLoginToken.Fields.email.name(),
+					JnEntityLoginToken.Fields.ip.name(),
+					"sessionToken" 
+					)
 		.endThisProcedureRetrievingTheResultingData(CcpOtherConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
 		return findById; 
@@ -164,7 +170,12 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsPresentInEntity(JnEntityLoginToken.ENTITY.getTwinEntity()).returnStatus(StatusUpdatePassword.lockedToken).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.ENTITY).returnStatus(StatusUpdatePassword.missingEmail).and()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginToken.ENTITY).returnStatus(StatusUpdatePassword.missingToken).and()
-			.executeAction(evaluateAttempts).andFinallyReturningTheseFields("sessionToken")	
+			.executeAction(evaluateAttempts).andFinallyReturningTheseFields(
+					JnEntityLoginToken.Fields.userAgent.name(),
+					JnEntityLoginToken.Fields.email.name(),
+					JnEntityLoginToken.Fields.ip.name(),
+					"sessionToken" 
+					)	
 		.endThisProcedureRetrievingTheResultingData(CcpOtherConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE);
 		
 		return result;
