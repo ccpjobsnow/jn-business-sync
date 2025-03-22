@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.mensageria;
+package com.jn.sync.mensageria;
 
 import java.util.UUID;
 import java.util.function.Function;
@@ -11,14 +11,11 @@ import com.ccp.validation.CcpJsonFieldsValidations;
 import com.jn.commons.entities.JnEntityAsyncTask;
 import com.jn.commons.utils.JnTopic;
 
-public class JnSyncPackageMessage implements Function<CcpJsonRepresentation,CcpJsonRepresentation>{
-
+class PackageMessage implements Function<CcpJsonRepresentation,CcpJsonRepresentation>{
 	
-	public static final JnSyncPackageMessage INSTANCE = new JnSyncPackageMessage();
+	public static final PackageMessage INSTANCE = new PackageMessage();
 	
-	private JnSyncPackageMessage() {
-		
-	}
+	private PackageMessage() {}
 	
 	@SuppressWarnings("unchecked")
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {

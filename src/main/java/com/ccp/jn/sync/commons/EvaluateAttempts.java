@@ -8,9 +8,9 @@ import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.db.utils.CcpEntity;
 import com.ccp.especifications.password.CcpPasswordHandler;
 import com.ccp.exceptions.process.CcpFlowDisturb;
-import com.ccp.jn.sync.mensageria.JnSyncMensageriaSender;
 import com.ccp.process.CcpProcessStatus;
 import com.jn.commons.utils.JnAsyncBusiness;
+import com.jn.sync.mensageria.JnSyncMensageriaSender;
 
 public class EvaluateAttempts implements Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 

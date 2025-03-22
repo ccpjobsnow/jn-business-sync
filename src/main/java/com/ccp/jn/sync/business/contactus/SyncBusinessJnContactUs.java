@@ -3,9 +3,9 @@ package com.ccp.jn.sync.business.contactus;
 import java.util.Map;
 
 import com.ccp.decorators.CcpJsonRepresentation;
-import com.ccp.jn.sync.mensageria.JnSyncMensageriaSender;
 import com.jn.commons.entities.JnEntityContactUs;
 import com.jn.commons.utils.JnAsyncBusiness;
+import com.jn.sync.mensageria.JnSyncMensageriaSender;
 
 public class SyncBusinessJnContactUs {
 	

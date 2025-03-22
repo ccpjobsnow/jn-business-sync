@@ -1,4 +1,4 @@
-package com.ccp.jn.sync.mensageria;
+package com.jn.sync.mensageria;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -29,7 +29,7 @@ public class JnSyncMensageriaSender implements Function<CcpJsonRepresentation, C
 
 		CcpJsonRepresentation put = json.put(JnEntityAsyncTask.Fields.topic.name(), this.topic); 
 		
-		CcpJsonRepresentation responseFromTopic = JnSyncPackageMessage.INSTANCE.apply(put);
+		CcpJsonRepresentation responseFromTopic = PackageMessage.INSTANCE.apply(put);
 		
 		JnEntityAsyncTask.ENTITY.createOrUpdate(responseFromTopic);
 		
