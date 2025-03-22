@@ -125,11 +125,13 @@ public class SyncServiceJnLogin{
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginEmail.ENTITY).returnStatus(StatusSaveAnswers.tokenFaltando).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginSessionConflict.ENTITY).returnStatus(StatusSaveAnswers.loginConflict).and()
 			.ifThisIdIsPresentInEntity(JnEntityLoginPassword.ENTITY.getTwinEntity()).returnStatus(StatusSaveAnswers.lockedPassword).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.ENTITY).executeAction(action).and()
-			.ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusSaveAnswers.missingPassword).andFinallyReturningTheseFields("x")
+			.ifThisIdIsNotPresentInEntity(JnEntityLoginAnswers.ENTITY).executeAction(action)
+ 			.and().ifThisIdIsNotPresentInEntity(JnEntityLoginPassword.ENTITY).returnStatus(StatusSaveAnswers.missingPassword)
+			
+			.andFinallyReturningTheseFields("x")
 		.endThisProcedure(CcpOtherConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
-		return json;
+		return json; 
 	}
 
 	public CcpJsonRepresentation createLoginToken(CcpJsonRepresentation json){
