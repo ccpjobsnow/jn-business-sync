@@ -18,19 +18,21 @@ import com.jn.commons.entities.JnEntityLoginEmail;
 import com.jn.commons.entities.JnEntityLoginPassword;
 import com.jn.commons.entities.JnEntityLoginPasswordAttempts;
 import com.jn.commons.entities.JnEntityLoginSessionConflict;
+import com.jn.commons.entities.JnEntityLoginSessionValidation;
 import com.jn.commons.entities.JnEntityLoginStats;
 import com.jn.commons.entities.JnEntityLoginToken;
 import com.jn.commons.entities.JnEntityLoginTokenAttempts;
+import com.jn.commons.json.transformers.JnJsonTransformerPutRandomTokenHash;
 import com.jn.commons.status.StatusExecuteLogin;
 import com.jn.commons.utils.JnAsyncBusiness;
 import com.jn.commons.utils.JnDeleteKeysFromCache;
 import com.jn.sync.mensageria.JnSyncMensageriaSender;
 
-public class SyncServiceJnLogin{
+public class JnSyncServiceLogin{
 	
-	private SyncServiceJnLogin() {}
-	  
-	public static final SyncServiceJnLogin INSTANCE = new SyncServiceJnLogin();
+	private JnSyncServiceLogin() {}
+	   
+	public static final JnSyncServiceLogin INSTANCE = new JnSyncServiceLogin();
 	
 	public CcpJsonRepresentation executeLogin(CcpJsonRepresentation json){
 		
@@ -49,8 +51,11 @@ public class SyncServiceJnLogin{
 						JnEntityLoginPassword.Fields.email.name()
 						);
 
-
-		CcpJsonRepresentation findById =  new CcpGetEntityId(json)
+		CcpJsonRepresentation transformedJson = json
+				.getTransformedJson(JnJsonTransformerPutRandomTokenHash.INSTANCE)
+				.duplicateValueFromField("originalToken", "sessionToken")
+				;
+		CcpJsonRepresentation findById =  new CcpGetEntityId(transformedJson)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntityLoginPassword.ENTITY).and()
 			.loadThisIdFromEntity(JnEntityLoginStats.INSTANCE).and()
@@ -165,8 +170,9 @@ public class SyncServiceJnLogin{
 						JnEntityLoginTokenAttempts.Fields.attempts.name(),
 						JnEntityLoginToken.Fields.email.name()
 						);
-		
-		CcpJsonRepresentation result =  new CcpGetEntityId(json)
+		CcpJsonRepresentation renameField = CcpOtherConstants.EMPTY_JSON.getTransformedJson(JnJsonTransformerPutRandomTokenHash.INSTANCE).renameField("originalToken", "sessionToken").removeField(JnEntityLoginSessionValidation.Fields.token.name());
+		CcpJsonRepresentation putAll = json.putAll(renameField);
+		CcpJsonRepresentation result =  new CcpGetEntityId(putAll)
 		.toBeginProcedureAnd()
 			.loadThisIdFromEntity(JnEntityLoginStats.INSTANCE).and()
 			.loadThisIdFromEntity(JnEntityLoginTokenAttempts.ENTITY).and()
