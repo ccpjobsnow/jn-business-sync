@@ -23,7 +23,7 @@ public class JnSyncMensageriaSender implements Function<CcpJsonRepresentation, C
 		CcpJsonRepresentation json = new CcpJsonRepresentation(map);
 		CcpJsonRepresentation response = this.apply(json);
 		return response.content;
-	}
+	} 
 	
 	public CcpJsonRepresentation apply(CcpJsonRepresentation json) {
 

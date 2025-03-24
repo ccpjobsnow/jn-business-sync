@@ -39,7 +39,7 @@ public class JnSyncServiceLogin{
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> evaluateTries =
 				new EvaluateAttempts(
 						JnEntityLoginPasswordAttempts.ENTITY, 
-						JnEntityLoginPassword.ENTITY, 
+						JnEntityLoginPassword.ENTITY,  
 						JnEntityLoginPassword.Fields.password.name(), 
 						JnEntityLoginPassword.Fields.password.name(), 
 						StatusExecuteLogin.passwordLockedRecently,
@@ -111,10 +111,10 @@ public class JnSyncServiceLogin{
 	public CcpJsonRepresentation executeLogout(CcpJsonRepresentation json){
 		Function<CcpJsonRepresentation, CcpJsonRepresentation> action = new JnSyncMensageriaSender(JnAsyncBusiness.executeLogout);
 		
-		 new CcpGetEntityId(json)
+		 new CcpGetEntityId(json) 
 		.toBeginProcedureAnd()
 			.ifThisIdIsNotPresentInEntity(JnEntityLoginSessionConflict.ENTITY).returnStatus(StatusExecuteLogout.missingLogin).and()
-			.ifThisIdIsPresentInEntity(JnEntityLoginSessionConflict.ENTITY).executeAction(action).andFinallyReturningTheseFields("x")
+			.ifThisIdIsPresentInEntity(JnEntityLoginSessionValidation.ENTITY).executeAction(action).andFinallyReturningTheseFields("x")
 		.endThisProcedure(CcpOtherConstants.DO_NOTHING, JnDeleteKeysFromCache.INSTANCE)
 		;
 		 
@@ -170,7 +170,10 @@ public class JnSyncServiceLogin{
 						JnEntityLoginTokenAttempts.Fields.attempts.name(),
 						JnEntityLoginToken.Fields.email.name()
 						);
-		CcpJsonRepresentation renameField = CcpOtherConstants.EMPTY_JSON.getTransformedJson(JnJsonTransformerPutRandomTokenHash.INSTANCE).renameField("originalToken", "sessionToken").removeField(JnEntityLoginSessionValidation.Fields.token.name());
+		CcpJsonRepresentation renameField = CcpOtherConstants.EMPTY_JSON
+				.getTransformedJson(JnJsonTransformerPutRandomTokenHash.INSTANCE).renameField("originalToken", "sessionToken")
+				.removeField(JnEntityLoginSessionValidation.Fields.token.name())
+				;
 		CcpJsonRepresentation putAll = json.putAll(renameField);
 		CcpJsonRepresentation result =  new CcpGetEntityId(putAll)
 		.toBeginProcedureAnd()

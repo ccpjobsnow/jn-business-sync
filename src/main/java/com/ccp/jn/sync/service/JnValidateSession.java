@@ -11,9 +11,7 @@ import com.jn.commons.entities.JnEntityLoginPassword;
 import com.jn.commons.entities.JnEntityLoginSessionValidation;
 import com.jn.commons.entities.JnEntityLoginToken;
 import com.jn.commons.status.StatusExecuteLogin;
-import com.jn.commons.utils.JnAsyncBusiness;
 import com.jn.commons.utils.JnDeleteKeysFromCache;
-import com.jn.sync.mensageria.JnSyncMensageriaSender;
 
 public class JnValidateSession implements Function<CcpJsonRepresentation, CcpJsonRepresentation>{
 
@@ -29,11 +27,8 @@ public class JnValidateSession implements Function<CcpJsonRepresentation, CcpJso
 			throw new CcpFlowDisturb(StatusExecuteLogin.missingSessionToken);
 		}
 		
-		Function<CcpJsonRepresentation, CcpJsonRepresentation> executeLogout = new JnSyncMensageriaSender(JnAsyncBusiness.executeLogout);
-		
-		new CcpGetEntityId(json)
+		new CcpGetEntityId(json.duplicateValueFromField("sessionToken", JnEntityLoginSessionValidation.Fields.token.name())) 
 		.toBeginProcedureAnd()
-		.ifThisIdIsNotPresentInEntity(JnEntityLoginSessionValidation.ENTITY).executeAction(executeLogout).and()
 		.ifThisIdIsNotPresentInEntity(JnEntityLoginSessionValidation.ENTITY).returnStatus(StatusExecuteLogin.invalidSession).and()
 		.ifThisIdIsPresentInEntity(JnEntityLoginToken.ENTITY.getTwinEntity()).returnStatus(StatusExecuteLogin.lockedToken).and()
 		.ifThisIdIsPresentInEntity(JnEntityLoginPassword.ENTITY.getTwinEntity()).returnStatus(StatusExecuteLogin.lockedPassword).and()
